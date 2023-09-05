@@ -1,9 +1,9 @@
-import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, GSDataSource, GSContext } from "godspeed-node";
+import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, GSDataSource, GSContext } from "@godspeedsystems/core";
 import express from "express";
 import bodyParser from 'body-parser';
 import _ from "lodash";
 
-class ExpressDataSource extends GSDataSource {
+class ExpressEventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
     const app = express();
     const {
@@ -18,17 +18,11 @@ class ExpressDataSource extends GSDataSource {
     return app;
   }
 
-  execute(ctx: GSContext, args: PlainObject): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
-}
-
-class ExpressEventSource extends GSEventSource {
   subscribeToEvent(eventRoute: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>): Promise<void> {
     const routeSplit = eventRoute.split('.');
     const httpMethod: string = routeSplit[1];
     const endpoint = routeSplit[2].replace(/{(.*?)}/g, ':$1');
-    const app: express.Express = this.datasource.client as express.Express;
+    const app: express.Express = this.client as express.Express;
 
     //@ts-ignore
     app[httpMethod](endpoint, async (req: express.Request, res: express.Response) => {
@@ -71,6 +65,19 @@ class ExpressEventSource extends GSEventSource {
 }
 
 export {
-  ExpressDataSource,
   ExpressEventSource
 }
+
+// schema of your config YAML
+// docker compose
+// {{port}}
+// questaionnaire
+
+// godspeed plugin list, fetch all the plugins
+// godspeed plugin add  <plugin-name>, node_modules/dist/questuonnaire.yaml
+// generate answers
+// fetch template from the same dist folder
+// generate docker-compse section
+// append it to out own docker compose
+
+// godspeed plugin remove <plugin-name>
