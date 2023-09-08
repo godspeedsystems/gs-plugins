@@ -13,8 +13,8 @@ Godspeed Plugins are the way to extend the code godspeed framework. Currently we
 
 | No  | Plugin Name                                  | Type | npm package link | Documentation | Maintained by |
 | --- | -------------------------------------------- | ---- | ---------------- | ------------- | ------------- |
-| 1   | Microsoft SQL Server                         |      |                  |               |               |
-| 2   | Oracle Database                              |      |                  |               |               |
+| 1   | Express|Eventsource|[plugins-express-as-http](https://www.npmjs.com/package/@godspeedsystems/plugins-express-as-http)|[Link](https://github.com/godspeedsystems/gs-plugins/blob/main/express-as-http/README.md)|Godspeed|
+| 2   | Prisma|Datasource|[plugins-prisma-as-datastore](https://www.npmjs.com/package/@godspeedsystems/plugins-prisma-as-datastore)|[Link](https://github.com/godspeedsystems/gs-plugins/blob/main/prisma-as-datastore/README.md)|  Godspeed|
 | 3   | MySQL                                        |      |                  |               |               |
 | 4   | PostgreSQL                                   |      |                  |               |               |
 | 5   | MongoDB                                      |      |                  |               |               |
