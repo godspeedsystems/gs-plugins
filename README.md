@@ -1,12 +1,117 @@
 # Godspeed Plugins
 
-Godspeed Plugins are the way to extend the code godspeed framework. Currently we support adding Event Source and Data Source as plugin.
+Godspeed Plugins are the way to extend the core godspeed framework. Currently we support adding Event Source and Data Source as plugin.
 
 ## Event Source
 
 ## Data Source
 
 
+ 
+ ## Plug-in 🔗
+
+
+A brief description of how we write new plug-in in godspeed framework. 
+
+### Steps to create new plug-in in our godspeed framework:
+
+
+1. Begin by understanding the folder `structure`.
+
+2. Inside the `EventSources` directory, create a `YAML` file with a specific name. In this YAML file, ensure you specify a `type` field, and there must be a corresponding `TypeScript` file in the `types` directory that shares the same name as the `type` you defined.
+
+3. Look for the `npm package` you wish to integrate with our Godspeed framework.
+
+4. In your TypeScript file, use an import statement to bring in `GSDataSource` from the `@godspeedsystems/core` package. Then, create a class that inherits from `GSDataSource`.
+
+5. Afterward, you can access the methods provided by `GSDataSource`. Initialize your client by calling the `initClient()` function.
+
+6. Once your client is initialized, you can execute its methods using the `execute` function.
+## Example ( kafka plug-in ):
+### kafka config ( src/datasources/kafka.yaml )
+```yaml
+type: Kafka
+clientId: "kafka_proj"
+brokers: ["kafka:9092"]
+```
+
+### initializing client and execution ( src/datasources/types/Kafka.ts ) :   
+
+```javascript
+import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
+import { Kafka } from "kafkajs"; // importing required npm module.
+
+export default class KafkaAsDataSource extends GSDataSource {
+  protected async initClient(): Promise<PlainObject> {
+    const kafka = new Kafka({
+      clientId: this.config.clientId,
+      brokers: this.config.brokers,
+    });
+
+    return kafka; // client initialized.
+  }
+  async execute(ctx: GSContext, args: PlainObject): Promise<any> {
+    try {
+      const {
+        topic,
+        message,
+        meta: { fnNameInWorkflow },
+      } = args; // destructuring variables from args.
+
+      let method = fnNameInWorkflow.split(".")[2];
+      if (this.client) {
+        const producer = this.client.producer();
+        await producer.connect();
+        let result = await producer.send({
+          topic: topic,
+          messages: [{ value: message }],
+        });
+        return result;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+```
+## Example Event ( src/events/kafka_publish_event.yaml ) :
+```yaml
+'http.post./kafka-pub':
+  fn: kafka-publish
+  body:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+          required: ['message']
+  responses:
+    200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+
+```
+
+## Function Example ( src/functions/kafka-publish.yaml ) :
+
+
+```yaml
+id: kafka-publish
+summary: kafka publish message
+tasks:
+    - id: publish
+      fn: datasource.kafka.producer
+      args:
+        topic: "publish-producer1"
+        message: <% inputs.body.message%>
+```
 ## List of Plugins
 
 <!-- plugin name || type = (eventsource, datasource, both) || npm package link(text = current version) || documentation || maintained by? = (community | godspeed.systems) -->
