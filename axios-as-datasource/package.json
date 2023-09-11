@@ -1,0 +1,32 @@
+{
+  "name": "@godspeedsystems/axios-as-datasource",
+  "version": "1.0.0",
+  "description": "Axios as datasource plugin for Godspeed Framework",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "author": {
+    "name": "Ashutosh Tripathi",
+    "email": "ashutosh@godspeed.systems"
+  },
+  "keywords": [
+    "axios",
+    "godspeed"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@godspeedsystems/core": "^2.0.0-beta.3",
+    "axios": "^1.5.0",
+    "axios-retry": "^3.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
