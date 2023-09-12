@@ -22,7 +22,7 @@ const response_codes: { [key: string]: number } = {
   groupBy: 200,
 };
 
-export default class PrismaDataSource extends GSDataSource {
+class DataSource extends GSDataSource {
   protected async initClient(): Promise<object> {
     try {
       // TODO: until we fugure out, how to share path between prisma file and our module loader
@@ -76,4 +76,17 @@ export default class PrismaDataSource extends GSDataSource {
       return Promise.reject(new GSStatus(false, 400, error.message, JSON.stringify(error.message)));
     }
   }
+}
+
+const SourceType = 'DS';
+const Type = 'prisma'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = 'prisma'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {};
+
+export {
+  DataSource,
+  SourceType,
+  Type,
+  CONFIG_FILE_NAME,
+  DEFAULT_CONFIG
 }

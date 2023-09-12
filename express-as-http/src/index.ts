@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from 'body-parser';
 import _ from "lodash";
 
-class ExpressEventSource extends GSEventSource {
+class EventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
     const app = express();
     const {
@@ -26,7 +26,7 @@ class ExpressEventSource extends GSEventSource {
 
     //@ts-ignore
     app[httpMethod](endpoint, async (req: express.Request, res: express.Response) => {
-      const gsEvent: GSCloudEvent = ExpressEventSource.createGSEvent(req, endpoint)
+      const gsEvent: GSCloudEvent = EventSource.createGSEvent(req, endpoint)
       const status: GSStatus = await processEvent(gsEvent, eventConfig);
       res
         .status(status.code || 200)
@@ -64,20 +64,15 @@ class ExpressEventSource extends GSEventSource {
   }
 }
 
+const SourceType = 'ES';
+const Type = 'express'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = { port: 3000 };
+
 export {
-  ExpressEventSource
-}
-
-// schema of your config YAML
-// docker compose
-// {{port}}
-// questaionnaire
-
-// godspeed plugin list, fetch all the plugins
-// godspeed plugin add  <plugin-name>, node_modules/dist/questuonnaire.yaml
-// generate answers
-// fetch template from the same dist folder
-// generate docker-compse section
-// append it to out own docker compose
-
-// godspeed plugin remove <plugin-name>
+  EventSource,
+  SourceType,
+  Type,
+  CONFIG_FILE_NAME,
+  DEFAULT_CONFIG
+};

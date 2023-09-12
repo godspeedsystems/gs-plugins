@@ -1,7 +1,7 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import axios, { Axios, AxiosError, AxiosInstance, AxiosResponse } from 'axios'
+import axios, { Axios, AxiosInstance, AxiosResponse } from 'axios'
 
-export class AxiosAsDatasource extends GSDataSource {
+class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     const { base_url } = this.config;
 
@@ -45,4 +45,18 @@ export class AxiosAsDatasource extends GSDataSource {
       return new GSStatus(false, 500, 'Oops! Something went wrong while setting up request.', undefined, undefined);
     }
   }
+}
+
+
+const SourceType = 'DS';
+const Type = 'axios'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = 'api'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {};
+
+export {
+  DataSource,
+  SourceType,
+  Type,
+  CONFIG_FILE_NAME,
+  DEFAULT_CONFIG
 }

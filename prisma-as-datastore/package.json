@@ -28,6 +28,7 @@
     "@godspeedsystems/core": "2.0.0-beta.2",
     "@prisma/client": "^5.2.0",
     "dotenv": "^16.0.3",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "pino-pretty": "^10.2.0"
   }
 }
