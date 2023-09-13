@@ -1,14 +1,27 @@
 # Godspeed Plugins
 
-Godspeed Plugins are the way to extend the core godspeed framework. Currently we support adding Event Source and Data Source as plugin.
+[![Latest release](https://badgen.net/static/release/v1.0.32/blue?icon=awesome)](https://github.com/hasura/graphql-engine/releases/latest)
+<a href="https://www.godspeed.systems/"><img src="https://static.wixstatic.com/media/f90422_f39401b0fbe14da482ef9c5389665b41~mv2.png/v1/crop/x_0,y_531,w_1080,h_220/fill/w_295,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/Logo%20(8).png" alt="godspeed logo" align="right" width="200" ></a>
+[![Docs](https://badgen.net/static/docs/v1/green)](https://docs.godspeed.systems/docs/preface)
+
+
+# Please reach out to us on discord for any queries
+
+<a href="https://discord.gg/ZGxjWAHA"><img src="https://img.shields.io/badge/chat-discord-brightgreen.svg?logo=discord&style=flat"></a>
+
+ Godspeed Plugins are the way to extend the core godspeed framework. Currently we support adding Event Source and Data Source as plugin.
 
 ## Event Source
 
+ Any kind of entity which provides read and write mechanism for data is considered a datasource. For example, an API, a SQL or NoSQL datastore which includes RDBMS or mongodb,postgresql, key value stores, document stores etc. The settings for each datasource lies in src/datasources directory.
+
 ## Data Source
+
+ Any kind of entity which provides read and write mechanism for data is considered a datasource. For example, an API, a SQL or NoSQL datastore which includes RDBMS or mongodb,postgresql, key value stores, document stores etc. The settings for each datasource lies in src/datasources directory.
 
 
  
- ## Plug-in 🔗
+ ## 🔗 Plug-in
 
 
 A brief description of how we write new plug-in in godspeed framework. 
