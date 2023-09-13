@@ -1,38 +1,44 @@
 # Contribute to Godspeed
 
-We offer a generous free tier with the hope that you'll find value in using Godspeed and, in return, contribute to enhancing the product for the entire community. There are numerous ways in which you can make valuable contributions!
-
-[![Latest release](https://badgen.net/static/release/v1.0.32/blue?icon=awesome)](https://github.com/hasura/graphql-engine/releases/latest)
-<a href="https://www.godspeed.systems/"><img src="https://static.wixstatic.com/media/f90422_f39401b0fbe14da482ef9c5389665b41~mv2.png/v1/crop/x_0,y_531,w_1080,h_220/fill/w_295,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/Logo%20(8).png" alt="godspeed logo" align="right" width="200" ></a>
-[![Docs](https://badgen.net/static/docs/v1/green)](https://docs.godspeed.systems/docs/preface)
-
+Welcome to the Godspeed community! We appreciate your interest in contributing to our project. Your contributions help make our open-source community stronger and our product better for everyone.
 
 ## Follow, Star & Subscribe
 
-<div>
-    <a style="margin:10px;" href="https://www.linkedin.com/company/godspeed-systems/"><img src="https://badgen.net/static/follow/linkedin/blue"></a>    
-    <a style="margin:10px;" href="https://github.com/godspeedsystems/gs-node-service"><img src="https://badgen.net/static/follow/github/Priority-green"></a>
-    <a style="margin:10px;" href="https://www.youtube.com/@godspeed.systems/videos"><img src="https://badgen.net/static/follow/youtube/red"></a>
+<div style="display: flex; align-items: center;">
+    <a style="margin: 10px;" href="https://www.linkedin.com/company/godspeed-systems/"><img src="https://badgen.net/static/follow/linkedin/blue"></a>
+    <span style="margin-left: 5px;">Follow us for updates and news.</span>
 </div>
+<div style="display: flex; align-items: center;">
+    <a style="margin: 10px;" href="https://github.com/godspeedsystems/gs-node-service/"><img src="https://badgen.net/static/follow/github/Priority-green"></a>
+    <span style="margin-left: 5px;">Star our repositories to show your support.</span>
+</div>
+<div style="display: flex; align-items: center;">
+    <a style="margin: 10px;" href="https://www.youtube.com/@godspeed.systems/videos"><img src="https://badgen.net/static/follow/youtube/red"></a>
+    <span style="margin-left: 5px;">Subscribe to our channel for tutorials and demos.</span>
+</div>
+
 
 ## Recommend Us!
 
-One of the most effective ways to show your support for Godspeed is by suggesting us to your friends and colleagues.
+One of the most effective ways to support Godspeed is by recommending us to your friends and colleagues. Help us grow and reach more users who can benefit from our product.
 
 
 ## Ask & Answer Questions
 
-If you have a question about Godspeed or need assistance with problem-solving, please feel free to ask in our Discord channels. It's highly likely that someone else may have a similar question, and by assisting you, we can also support others who might come across the same inquiries and difficulties. Alternatively, you can also pay it forward by helping to answer questions from fellow users.
+Got questions or need help with Godspeed? Join our [Discord community](https://discord.com/invite/E3WU9dT7UQ). You can ask questions, share knowledge, and assist others.
 
-<a href="https://discord.gg/ZGxjWAHA"><img src="https://img.shields.io/badge/chat-discord-purple.svg?logo=discord&style=flat"></a>
+[![Discord Chat](https://img.shields.io/badge/chat-discord-purple.svg?logo=discord&style=flat)](https://discord.com/invite/E3WU9dT7UQ)
 
 
 
-# Contributing to Cal.com
+# Contributing to Godspeed
 
-Contributions are what makes the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are the heart and soul of the open-source community, turning it into a fantastic hub for learning, inspiration, and creativity. Every little bit you offer is not just welcome; it's received with genuine enthusiasm and gratitude.
 
-- Before jumping into a PR be sure to search [existing PRs](https://github.com/calcom/cal.com/pulls) or [issues](https://github.com/calcom/cal.com/issues) for an open or closed item that relates to your submission.
+- Before jumping into a PR be sure to search [existing PRs](https://github.com/godspeedsystems/gs-plugins/pulls) or [issues](https://github.com/godspeedsystems/gs-plugins/issues) for an open or closed item that relates to your submission.
+
+
+
 
 ## Priorities
 
@@ -47,40 +53,40 @@ Contributions are what makes the open source community such an amazing place to 
   </tr>
   <tr>
     <td>
-      Minor improvements, non-core feature requests
+      Issues involving minor enhancements features for plugins.
     </td>
     <td>
-      <a href="https://github.com/calcom/cal.com/issues?q=is:issue+is:open+sort:updated-desc+label:%22Low+priority%22">
+      <a href="https://github.com/godspeedsystems/gs-plugins/issues?q=is%3Aissue+is%3Aopen+label%3A%22Low+priority%22">
         <img src="https://img.shields.io/badge/-Low%20Priority-green">
       </a>
     </td>
   </tr>
    <tr>
     <td>
-      Confusing UX (... but working)
+      Issues related to improving user experience and usability of plugins.
     </td>
     <td>
-      <a href="https://github.com/calcom/cal.com/issues?q=is:issue+is:open+sort:updated-desc+label:%22Medium+priority%22">
+      <a href="https://github.com/godspeedsystems/gs-plugins/issues?q=is%3Aissue+is%3Aopen+label%3A%22Medium+priority%22">
         <img src="https://img.shields.io/badge/-Medium%20Priority-yellow">
       </a>
     </td>
   </tr>
   <tr>
     <td>
-      Core Features (Booking page, availability, timezone calculation)
+      Essential plugin development tasks, including core features and functionality.
     </td>
     <td>
-      <a href="https://github.com/calcom/cal.com/issues?q=is:issue+is:open+sort:updated-desc+label:%22High+priority%22">
+      <a href="https://github.com/godspeedsystems/gs-plugins/issues?q=is%3Aissue+is%3Aopen+label%3A%22High+priority%22">
         <img src="https://img.shields.io/badge/-High%20Priority-orange">
       </a>
     </td>
   </tr>
   <tr>
     <td>
-      Core Bugs (Login, Booking page, Emails are not working)
+      Critical issues and bugs within plugins that require immediate attention.
     </td>
     <td>
-      <a href="https://github.com/calcom/cal.com/issues?q=is:issue+is:open+sort:updated-desc+label:Urgent">
+      <a href="https://github.com/godspeedsystems/gs-plugins/issues?q=is%3Aissue+is%3Aopen+label%3AUrgent">
         <img src="https://img.shields.io/badge/-Urgent-red">
       </a>
     </td>
@@ -104,64 +110,10 @@ To develop locally:
    git checkout -b MY_BRANCH_NAME
    ```
 
-3. Install yarn:
-
-   ```sh
-   npm install -g yarn
-   ```
-
-4. Install the dependencies with:
-
-   ```sh
-   yarn
-   ```
-
-5. Set up your `.env` file:
-
-   - Duplicate `.env.example` to `.env`.
-   - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
-   - Use `openssl rand -base64 24` to generate a key and add it under `CALENDSO_ENCRYPTION_KEY` in the `.env` file.
-
-6. Start developing and watch for code changes:
-
-   ```sh
-   yarn dev
-   ```
-
-## Building
-
-You can build the project with:
-
-```bash
-yarn build
-```
-
-Please be sure that you can make a full production build before pushing code.
-
-## Testing
-
-More info on how to add new tests coming soon.
-
-### Running tests
-
-This will run and test all flows in multiple Chromium windows to verify that no critical flow breaks:
-
-```sh
-yarn test-e2e
-```
-
-## Linting
-
-To check the formatting of your code:
-
-```sh
-yarn lint
-```
-
-If you get errors, be sure to fix them before committing.
-
 ## Making a Pull Request
 
 - Be sure to [check the "Allow edits from maintainers" option](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork) while creating your PR.
 - If your PR refers to or fixes an issue, be sure to add `refs #XXX` or `fixes #XXX` to the PR description. Replacing `XXX` with the respective issue number. See more about [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue).
 - Be sure to fill the PR Template accordingly.
+
+Thank you for contributing to Godspeed! We look forward to your valuable contributions that help improve our project and community.
