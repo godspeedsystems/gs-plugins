@@ -155,36 +155,29 @@ tasks:
 | 5   | MongoDB                                      |      |                  |               |               |
 | 6   | Cassandra                                    |      |                  |               |               |
 | 7   | Redis                                        |      |                  |               |               |
-| 14  | Elasticsearch                                |      |                  |               |               |
-| 19  | Splunk                                       |      |                  |               |               |
-| 20  | Apache Kafka                                 |      |                  |               |               |
-| 21  | RabbitMQ                                     |      |                  |               |               ||
-| 33  | Amazon S3                                    |      |                  |               |               |
-| 34  | Dropbox Business                             |      |                  |               |               |
-| 35  | Box                                          |      |                  |               |               |
-| 36  | OneDrive for Business                        |      |                  |               |               |
-| 37  | Salesforce                                   |      |                  |               |               |
-| 38  | HubSpot                                      |      |                  |               |               |
-| 39  | Zendesk                                      |      |                  |               |               |
-| 40  | MailChimp                                    |      |                  |               |               |
-| 41  | Microsoft Access                             |      |                  |               |               |
-| 42  | SQLite                                       |      |                  |               |               |
-| 43  | Sybase                                       |      |                  |               |               |
-| 44  | DB2 (IBM Database)                           |      |                  |               |               |
-| 45  | Neo4j                                        |      |                  |               |               |
-| 53  | CockroachDB                                  |      |                  |               |               |
-| 54  | Amazon Aurora                                |      |                  |               |               |
-| 55  | MariaDB                                      |      |                  |               |               |
-| 77  | Google Cloud Pub/Sub                         |      |                  |               |               |
-| 78  | RabbitMQ                                     |      |                  |               |               |
-| 168 | GraphQL                                      |      |                  |               |               |
-| 170 | gRPC                                         |      |                  |               |               |
-| 174 | GraphQL                                      |      |                  |               |               |
-| 179 | JMeter                                       |      |                  |               |               |
-| 191 | JIRA Software                                |      |                  |               |               |
-| 194 | Jenkins                                      |      |                  |               |               |
-| 197 | GitLab CI/CD                                 |      |                  |               |               |
-| 199 | Azure DevOps                                 |      |                  |               |               |
-| 202 | Heroku                                       |      |                  |               |               |
-| 203 | Vercel                                       |      |                  |               |               |
-| 204 | Netlify                                      |      |                  |               |               |
+| 8  | Elasticsearch                                |      |                  |               |               |
+| 9  | Splunk                                       |      |                  |               |               |
+| 10  | Apache Kafka                                 |      |                  |               |               |
+| 11  | RabbitMQ                                     |      |                  |               |               ||
+| 12  | Amazon S3                                    |      |                  |               |               | 
+| 13  | Salesforce                                   |      |                  |               |               |
+| 14  | HubSpot                                      |      |                  |               |               |
+| 15  | MailChimp                                    |      |                  |               |               |
+| 16  | Microsoft Access                             |      |                  |               |               |
+| 17  | SQLite                                       |      |                  |               |               |
+| 18  | DB2 (IBM Database)                           |      |                  |               |               |
+| 19  | Neo4j                                        |      |                  |               |               |
+| 20  | CockroachDB                                  |      |                  |               |               |
+| 21  | MariaDB                                      |      |                  |               |               |
+| 22  | Google Cloud Pub/Sub                         |      |                  |               |               |
+| 23  | RabbitMQ                                     |      |                  |               |               |
+| 24 | GraphQL                                      |      |                  |               |               |
+| 25 | gRPC                                         |      |                  |               |               |
+| 26 | JMeter                                       |      |                  |               |               |
+| 27 | JIRA Software                                |      |                  |               |               |
+| 28 | Jenkins                                      |      |                  |               |               |
+| 29 | GitLab CI/CD                                 |      |                  |               |               |
+| 30 | Azure DevOps                                 |      |                  |               |               |
+| 31 | Heroku                                       |      |                  |               |               |
+| 32 | Vercel                                       |      |                  |               |               |
+| 33 | Netlify                                      |      |                  |               |               |
