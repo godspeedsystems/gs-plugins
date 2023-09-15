@@ -3,9 +3,9 @@ import axios, { Axios, AxiosInstance, AxiosResponse } from 'axios'
 
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
-    const { base_url } = this.config;
+    const { base_url, ...rest } = this.config;
 
-    const client = axios.create({ baseURL: base_url });
+    const client = axios.create({ baseURL: base_url, ...rest });
     return client;
 
   }
@@ -13,7 +13,7 @@ class DataSource extends GSDataSource {
     const { logger } = ctx;
     const {
       meta: { fnNameInWorkflow },
-      ...data
+      ...rest
     } = args as { meta: { entityType: string, method: string, fnNameInWorkflow: string }, rest: PlainObject };
 
     const [, , method, url] = fnNameInWorkflow.split('.');
@@ -24,10 +24,10 @@ class DataSource extends GSDataSource {
       const response = await client({
         method: method.toLowerCase(),
         url,
-        data: data
+        ...rest
       });
 
-      return response;
+      return new GSStatus(true, response.status, response.statusText, response.data, response.headers);
     } catch (error: any) {
       const { request, response } = error;
 
