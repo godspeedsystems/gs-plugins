@@ -1,0 +1,51 @@
+import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
+import { GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
+import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
+
+ class DataSource extends GSDataSource {
+  protected async initClient(): Promise<PlainObject> {
+    try {
+      
+       // initialize your client
+    } catch (error) {
+      throw error;
+    }
+
+  }
+
+  async execute(ctx: GSContext, args: PlainObject): Promise<any> {
+    try {
+      // execute methods
+      
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+class EventSource extends GSDataSourceAsEventSource {
+  async subscribeToEvent(
+    eventKey: string,
+    eventConfig: PlainObject,
+    processEvent: (
+      event: GSCloudEvent,
+      eventConfig: PlainObject
+    ) => Promise<GSStatus>
+  ): Promise<void> {
+
+    
+  }
+}
+const SourceType = 'BOTH';
+const Type = "<%= projectName %>"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "<%= projectName %>"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {};
+
+export {
+  DataSource,
+  EventSource,
+  SourceType,
+  Type,
+  CONFIG_FILE_NAME,
+  DEFAULT_CONFIG
+}
