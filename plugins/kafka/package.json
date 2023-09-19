@@ -1,0 +1,23 @@
+{
+  "name": "@godspeedsystems/plugins-kafka",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@godspeedsystems/core": "^2.0.0-beta.2",
+    "kafkajs": "^2.2.4",
+    "pino-pretty": "^10.2.0"
+  }
+}
