@@ -65,7 +65,7 @@ A brief description of how we write new plug-in in godspeed framework.
 
 ```
 
-## Plugin as Datasource : Example (axios-as-datasource plug-in ):
+## Plugin as Datasource : 
 
 #### Data Source :
 
@@ -81,7 +81,7 @@ Any kind of entity which provides read and write mechanism for data is considere
 
 5. Once your client is initialized, you can execute its methods using the `execute` function.
 
-
+### let's use the 'axios-as-datasource' plugin as an example
 #### axios config ( src/datasources/axios.yaml )
 ```yaml
 type: axios
@@ -127,7 +127,7 @@ tasks:
 
 ```
 
-## Plugin as Eventsource : Example ( cron-as-eventsource plug-in ):
+## Plugin as Eventsource : 
 
 #### Event Source :
 
@@ -143,6 +143,8 @@ An event source is any entity or technology responsible for generating events or
 
 5. Once your client is initialized, you can execute its subscription using the `subscribeToEvent` function.
 
+
+### let's use the 'cron-as-eventsource' plugin as an example
 
 #### cron config ( src/eventsources/cron.yaml )
 ```yaml
@@ -192,8 +194,7 @@ tasks:
 ```
 
 
-## Plugin as DatasourceAsEventsource : Example ( kafka plug-in ):
-
+## Plugin as DatasourceAsEventsource : 
 #### Datasource As EventSource :
 
 Any kind of entity which provides read and write mechanism for data and acts as an entity responsible for generating events or notifications when specific events or conditions occur. These events are consumed by event handlers.
@@ -209,6 +210,8 @@ Any kind of entity which provides read and write mechanism for data and acts as 
 4. Afterward, you can access the methods provided by `GSDataSource`. Initialize your client by calling the `initClient()` function.
 
 5. Once your client is initialized, you can execute its methods using the `execute` function.
+
+### let's use the 'kafka-datasource-as-eventsource' plugin as an example
 
 #### kafka config ( src/datasources/kafka.yaml )
 ```yaml
