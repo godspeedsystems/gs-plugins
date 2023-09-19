@@ -1,4 +1,5 @@
 import { GSContext, GSDataSource, PlainObject, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
+import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
 import { Kafka } from "kafkajs";
 
 class DataSource extends GSDataSource {

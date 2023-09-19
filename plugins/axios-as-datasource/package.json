@@ -22,7 +22,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@godspeedsystems/core": "^2.0.0-beta.3",
+    "@godspeedsystems/core": "latest",
     "axios": "^1.5.0",
     "axios-retry": "^3.7.0",
     "pino-pretty": "^10.2.0"
