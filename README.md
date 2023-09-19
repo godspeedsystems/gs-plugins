@@ -16,13 +16,13 @@
   </b>
   <p>
 
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CONTRIBUTIONS.md)   [![Website](https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2Fcal%2Fbounties%3Fstatus%3Dopen)](https://github.com/godspeedsystems/gs-plugins/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%92%8E+Bounty%22)   [![Discord](https://img.shields.io/badge/chat-discord-brightgreen.svg?logo=discord&style=flat)](https://discord.gg/ZGxjWAHA)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CONTRIBUTIONS.md)   [![Website](https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2Fcal%2Fbounties%3Fstatus%3Dopen)](https://github.com/godspeedsystems/plugins/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%92%8E+Bounty%22)   [![Discord](https://img.shields.io/badge/chat-discord-brightgreen.svg?logo=discord&style=flat)](https://discord.gg/ZGxjWAHA)
   </p>
 
 
- 
+
   <br />
- 
+
 </div>
 
 # Godspeed Plug-in 🔗
@@ -31,7 +31,7 @@
 
 
 
-A brief description of how we write new plug-in in godspeed framework. 
+A brief description of how we write new plug-in in godspeed framework.
 
 ### Steps to create new plug-in in our godspeed framework:
 
@@ -46,18 +46,18 @@ A brief description of how we write new plug-in in godspeed framework.
         │   ├── types
         │   |    └── plugin.ts
         |   |
-        │   └── plugin.yaml       
-        │ 
+        │   └── plugin.yaml
+        │
         ├── events
         |   |
-        │   └── helloworld.yaml 
-        |    
+        │   └── helloworld.yaml
+        |
         ├── eventsources
         │   ├── types
         │   |    └── plugin.ts
         |   |
-        │   └── plugin.yaml 
-        |  
+        │   └── plugin.yaml
+        |
         └── functions
             |
             └── helloworld.yaml
@@ -88,7 +88,7 @@ type: axios
 base_url: http://localhost:5440
 ```
 
-#### initializing client and execution ( src/datasources/types/axios.ts ) :   
+#### initializing client and execution ( src/datasources/types/axios.ts ) :
 
 ``` typeScript
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
@@ -101,7 +101,7 @@ class DataSource extends GSDataSource {
   }
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
-   
+
      // Execute methods here
   }
 }
@@ -123,7 +123,7 @@ id: helloworld
 tasks:
   id: fist_task
     fn: datasource.axios./helloworld
-    args: 
+    args:
 
 ```
 
@@ -149,7 +149,7 @@ An event source is any entity or technology responsible for generating events or
 type: cron
 ```
 
-#### initializing client and execution ( src/eventsources/types/cron.ts ) :   
+#### initializing client and execution ( src/eventsources/types/cron.ts ) :
 
 ```javascript
 import {GSEventSource, GSCloudEvent, GSStatus, GSActor,PlainObject } from "@godspeedsystems/core";
@@ -217,7 +217,7 @@ clientId: "kafka_proj"
 brokers: ["kafka:9092"]
 ```
 
-#### initializing client and execution ( src/datasources/types/Kafka.ts ) :   
+#### initializing client and execution ( src/datasources/types/Kafka.ts ) :
 
 ```javascript
 import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
@@ -227,7 +227,7 @@ export default class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     // initialize your client.
   }
-  
+
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     try {
       // execute methods here
@@ -293,7 +293,7 @@ type: kafka
 groupId: "kafka_proj"
 ```
 
-#### subscribeToEvent ( src/eventsources/types/Kafka.ts ) :   
+#### subscribeToEvent ( src/eventsources/types/Kafka.ts ) :
 
 ```javascript
 import { GSCloudEvent, GSStatus, GSActor, GSDataSourceAsEventSource, PlainObject} from "@godspeedsystems/core";
@@ -317,7 +317,7 @@ kafka.publish-producer1.kafka_proj:
   body:
     description: The body of the query
     content:
-      application/json: 
+      application/json:
         schema:
           type: string
 
@@ -333,7 +333,7 @@ tasks:
     - id: set_con
       fn: com.gs.return
       args: <% inputs %>
-        
+
 ```
 
 
@@ -343,18 +343,18 @@ tasks:
 
 | No  | Plugin Name                                  | Type | npm package link | Documentation | Maintained by |
 | --- | -------------------------------------------- | ---- | ---------------- | ------------- | ------------- |
-| 1   | Express|Eventsource|[plugins-express-as-http](https://www.npmjs.com/package/@godspeedsystems/plugins-express-as-http)|[Link](https://github.com/godspeedsystems/gs-plugins/blob/main/express-as-http/README.md)|Godspeed|
-| 2   | Prisma|Datasource|[plugins-prisma-as-datastore](https://www.npmjs.com/package/@godspeedsystems/plugins-prisma-as-datastore)|[Link](https://github.com/godspeedsystems/gs-plugins/blob/main/prisma-as-datastore/README.md)|  Godspeed|
-| 3   | MySQL                                        |      |                  |               |               |
-| 4   | PostgreSQL                                   |      |                  |               |               |
+| 1   | Express|Eventsource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-express-as-http)|[readme](./plugins/express-as-http/README.md)|Godspeed|
+| 2   | Prisma|Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-prisma-as-datastore)|[readme](./plugins/prisma-as-datastore/README.md)|  Godspeed|
+| 3  | Apache Kafka                                 |DS & ES|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-kafka)|[readme](./plugins/kafka/README.md)      |                Godspeed  |
+| 4   | CRON Eventsource                                   |  Eventsource    | [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-cron)|[readme](./plugins/cron-as-eventsource/README.md)                 |Godspeed               |
 | 5   | MongoDB                                      |      |                  |               |               |
 | 6   | Cassandra                                    |      |                  |               |               |
 | 7   | Redis                                        |      |                  |               |               |
 | 8  | Elasticsearch                                |      |                  |               |               |
 | 9  | Splunk                                       |      |                  |               |               |
-| 10  | Apache Kafka                                 |      |                  |               |               |
+| 10   | MySQL                                        |      |                  |               |               |
 | 11  | RabbitMQ                                     |      |                  |               |               ||
-| 12  | Amazon S3                                    |      |                  |               |               | 
+| 12  | Amazon S3                                    |      |                  |               |               |
 | 13  | Salesforce                                   |      |                  |               |               |
 | 14  | HubSpot                                      |      |                  |               |               |
 | 15  | MailChimp                                    |      |                  |               |               |
@@ -376,3 +376,4 @@ tasks:
 | 31 | Heroku                                       |      |                  |               |               |
 | 32 | Vercel                                       |      |                  |               |               |
 | 33 | Netlify                                      |      |                  |               |               |
+| 34   | PostgreSQL                                   |      |                  |               |               |
