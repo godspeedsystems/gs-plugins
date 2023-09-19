@@ -1,7 +1,7 @@
-import { GSDataSourceAsEventSource, GSContext, GSDataSource, PlainObject,GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
+import { GSContext, GSDataSource, PlainObject, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
 import { Kafka } from "kafkajs";
 
- class DataSource extends GSDataSource {
+class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     const kafka = new Kafka({
       clientId: this.config.clientId,
@@ -38,7 +38,7 @@ import { Kafka } from "kafkajs";
   }
 }
 
- class EventSource extends GSDataSourceAsEventSource {
+class EventSource extends GSDataSourceAsEventSource {
   async subscribeToEvent(
     eventKey: string,
     eventConfig: PlainObject,
