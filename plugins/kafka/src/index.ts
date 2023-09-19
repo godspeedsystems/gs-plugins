@@ -1,7 +1,5 @@
-import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
+import { GSDataSourceAsEventSource, GSContext, GSDataSource, PlainObject,GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
 import { Kafka } from "kafkajs";
-import { GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
-import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
 
  class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {

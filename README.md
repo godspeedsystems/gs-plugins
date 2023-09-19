@@ -25,16 +25,10 @@
  
 </div>
 
-# Godspeed Plugins
+# Godspeed Plug-in 🔗
 #### Godspeed Plugins are the way to extend the core godspeed framework. Currently we support adding Event Source and Data Source as plugin.
 
 
-
-
-
-
- 
- ## Plug-in 🔗
 
 
 A brief description of how we write new plug-in in godspeed framework. 
@@ -98,17 +92,17 @@ base_url: http://localhost:5440
 
 ``` typeScript
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import { PrismaClient } from "@prisma/client"
+
 
 
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<object> {
-    
+     // initialize client here
   }
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
    
-    
+     // Execute methods here
   }
 }
 
@@ -133,7 +127,7 @@ tasks:
 
 ```
 
-## Plugin as Eventsource : Example ( cron plug-in ):
+## Plugin as Eventsource : Example ( cron-as-eventsource plug-in ):
 
 #### Event Source :
 
@@ -150,7 +144,7 @@ An event source is any entity or technology responsible for generating events or
 5. Once your client is initialized, you can execute its subscription using the `subscribeToEvent` function.
 
 
-#### cron config ( src/datasources/cron.yaml )
+#### cron config ( src/eventsources/cron.yaml )
 ```yaml
 type: cron
 ```
@@ -161,7 +155,7 @@ type: cron
 import {GSEventSource, GSCloudEvent, GSStatus, GSActor,PlainObject } from "@godspeedsystems/core";
 import cron from "node-cron";
 
-export default class CronEventSource extends GSEventSource {
+export default class EventSource extends GSEventSource {
   protected initClient(): Promise<PlainObject> {
     // initialize client here
   }
@@ -229,7 +223,7 @@ brokers: ["kafka:9092"]
 import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
 import { Kafka } from "kafkajs"; // importing required npm module.
 
-export default class KafkaAsDataSource extends GSDataSource {
+export default class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     // initialize your client.
   }
@@ -302,11 +296,11 @@ groupId: "kafka_proj"
 #### subscribeToEvent ( src/eventsources/types/Kafka.ts ) :   
 
 ```javascript
-import { GSCloudEvent,  GSStatus,  GSActor,GSDataSourceAsEventSource,PlainObject} from "@godspeedsystems/core";
+import { GSCloudEvent, GSStatus, GSActor, GSDataSourceAsEventSource, PlainObject} from "@godspeedsystems/core";
 
 
 
-export default class KafkaDataSourceAsEventSource extends GSDataSourceAsEventSource { async subscribeToEvent(eventKey: string,  eventConfig: PlainObject, processEvent: (event: GSCloudEvent,  eventConfig: PlainObject) => Promise<GSStatus>): Promise<void> {
+export default class DataSourceAsEventSource extends GSDataSourceAsEventSource { async subscribeToEvent(eventKey: string,  eventConfig: PlainObject, processEvent: (event: GSCloudEvent,  eventConfig: PlainObject) => Promise<GSStatus>): Promise<void> {
 
 // Write your Subscribe method here.
 
