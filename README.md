@@ -81,7 +81,7 @@ Any kind of entity which provides read and write mechanism for data is considere
 
 5. Once your client is initialized, you can execute its methods using the `execute` function.
 
-### let's use the 'axios-as-datasource' plugin as an example
+### let's use the 'axios-as-datasource' plugin as an example :
 #### axios config ( src/datasources/axios.yaml )
 ```yaml
 type: axios
@@ -144,7 +144,7 @@ An event source is any entity or technology responsible for generating events or
 5. Once your client is initialized, you can execute its subscription using the `subscribeToEvent` function.
 
 
-### let's use the 'cron-as-eventsource' plugin as an example
+### let's use the 'cron-as-eventsource' plugin as an example :
 
 #### cron config ( src/eventsources/cron.yaml )
 ```yaml
@@ -211,7 +211,7 @@ Any kind of entity which provides read and write mechanism for data and acts as 
 
 5. Once your client is initialized, you can execute its methods using the `execute` function.
 
-### let's use the 'kafka-datasource-as-eventsource' plugin as an example
+### let's use the 'kafka-datasource-as-eventsource' plugin as an example :
 
 #### kafka config ( src/datasources/kafka.yaml )
 ```yaml
