@@ -28,13 +28,9 @@
 # Godspeed Plugins
 #### Godspeed Plugins are the way to extend the core godspeed framework. Currently we support adding Event Source and Data Source as plugin.
 
-## Event Source
 
-An event source is any entity or technology responsible for generating events or notifications when specific events or conditions occur. These events are consumed by event handlers or processors for real-time or near-real-time responses. Event sources can include Message Brokers, Webhooks etc.The settings for each datasource lies in src/eventsources directory.
 
-## Data Source
 
-Any kind of entity which provides read and write mechanism for data is considered a datasource. For example, an API, a SQL or NoSQL datastore which includes RDBMS or mongodb,postgresql, key value stores, document stores etc. The settings for each datasource lies in src/datasources directory.
 
 
  
@@ -77,6 +73,10 @@ A brief description of how we write new plug-in in godspeed framework.
 
 ## Plugin as Datasource : Example (axios-as-datasource plug-in ):
 
+#### Data Source :
+
+Any kind of entity which provides read and write mechanism for data is considered a datasource. For example, an API, a SQL or NoSQL datastore which includes RDBMS or mongodb,postgresql, key value stores, document stores etc. The settings for each datasource lies in src/datasources directory.
+
 1. Inside the `datasources` directory, create a `YAML` file with a specific name. In this YAML file, ensure you specify a `type` field, and there must be a corresponding `TypeScript` file in the `types` directory that shares the same name as the `type` you defined.
 
 2. Look for the `npm package` you wish to integrate with  Godspeed framework.
@@ -91,7 +91,7 @@ A brief description of how we write new plug-in in godspeed framework.
 #### axios config ( src/datasources/axios.yaml )
 ```yaml
 type: axios
-baseURL: http://localhost:5440
+base_url: http://localhost:5440
 ```
 
 #### initializing client and execution ( src/datasources/types/axios.ts ) :   
@@ -135,6 +135,10 @@ tasks:
 
 ## Plugin as Eventsource : Example ( cron plug-in ):
 
+#### Event Source :
+
+An event source is any entity or technology responsible for generating events or notifications when specific events or conditions occur. These events are consumed by event handlers or processors for real-time or near-real-time responses. Event sources can include Message Brokers, Webhooks etc.The settings for each datasource lies in src/eventsources directory.
+
 1. Inside the `eventsources` directory, create a `YAML` file with a specific name. In this YAML file, ensure you specify a `type` field, and there must be a corresponding `TypeScript` file in the `types` directory that shares the same name as the `type` you defined.
 
 2. Look for the `npm package` you wish to integrate with  Godspeed framework.
@@ -146,7 +150,7 @@ tasks:
 5. Once your client is initialized, you can execute its subscription using the `subscribeToEvent` function.
 
 
-#### cron config ( src/datasources/kafka.yaml )
+#### cron config ( src/datasources/cron.yaml )
 ```yaml
 type: cron
 ```
@@ -154,23 +158,14 @@ type: cron
 #### initializing client and execution ( src/eventsources/types/cron.ts ) :   
 
 ```javascript
-import { GSEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
-import { GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
-import { PlainObject } from "@godspeedsystems/core";
+import {GSEventSource, GSCloudEvent, GSStatus, GSActor,PlainObject } from "@godspeedsystems/core";
 import cron from "node-cron";
 
 export default class CronEventSource extends GSEventSource {
   protected initClient(): Promise<PlainObject> {
     // initialize client here
   }
-  subscribeToEvent(
-    eventKey: string,
-    eventConfig: PlainObject,
-    processEvent: (
-      event: GSCloudEvent,
-      eventConfig: PlainObject
-    ) => Promise<GSStatus>
-  ): Promise<void> {
+  subscribeToEvent( eventKey: string,eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus> ): Promise<void> {
     // write subscribe method here
   }
 }
@@ -204,6 +199,12 @@ tasks:
 
 
 ## Plugin as DatasourceAsEventsource : Example ( kafka plug-in ):
+
+#### Datasource As EventSource :
+
+Any kind of entity which provides read and write mechanism for data and acts as an entity responsible for generating events or notifications when specific events or conditions occur. These events are consumed by event handlers.
+
+
 1. Look for the `npm package` you wish to integrate with  Godspeed framework.
 
 2. Inside the `DataSources` directory, create a `YAML` file with a specific name. In this YAML file, ensure you specify a `type` field, and there must be a corresponding `TypeScript` file in the `types` directory that shares the same name as the `type` you defined.
@@ -301,9 +302,8 @@ groupId: "kafka_proj"
 #### subscribeToEvent ( src/eventsources/types/Kafka.ts ) :   
 
 ```javascript
-import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
-import { GSCloudEvent,  GSStatus,  GSActor} from "@godspeedsystems/core";
-import { PlainObject } from "@godspeedsystems/core";
+import { GSCloudEvent,  GSStatus,  GSActor,GSDataSourceAsEventSource,PlainObject} from "@godspeedsystems/core";
+
 
 
 export default class KafkaDataSourceAsEventSource extends GSDataSourceAsEventSource { async subscribeToEvent(eventKey: string,  eventConfig: PlainObject, processEvent: (event: GSCloudEvent,  eventConfig: PlainObject) => Promise<GSStatus>): Promise<void> {

@@ -15,14 +15,14 @@ A brief description of how to use Cron plug-in in  godspeed framework as Event S
 ```yaml
 type: cron
 ```
-
+event key prefix should be the `type` mensioned in the config `yaml` file.
 
 #### cron event  ( src/events/every_minute_task.yaml )
 
 ```yaml
 # event for Shedule a task for evrey minute.
 
-cron.* * * * *.Asia/Kolkata:
+cron.* * * * *.Asia/Kolkata: //event key
   fn: every_minute
 
 ```
