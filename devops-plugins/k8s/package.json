@@ -1,0 +1,36 @@
+{
+  "name": "@godspeedsystems/devops-plugins-k8s",
+  "version": "1.0.0",
+  "description": "Kubernetes devops plugin for Godspeed Framework to run helm CLI",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "author": {
+    "name": "Gurjot Kaur",
+    "email": "gurjot@godspeed.systems"
+  },
+  "keywords": [
+    "k8s",
+    "kubernetes",
+    "helm",
+    "godspeed"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.1.1",
+    "os": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.2",
+    "@types/yargs": "^17.0.24",
+    "typescript": "^5.2.2"
+  }
+}
