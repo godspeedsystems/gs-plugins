@@ -15,7 +15,6 @@ The plugin utilizes environment variables to securely pass AWS configuration:
 - **`AWS_ACCESS_KEY_ID`**: Your AWS access key.
 - **`AWS_SECRET_ACCESS_KEY`**: Your AWS secret access key.
 - **`AWS_REGION`**: AWS region of your S3 bucket, e.g., "us-west-1".
-- **`AWS_S3_BUCKET_NAME`**: The name of your S3 bucket.
 
 Ensure to add `.env` to your `.gitignore` to keep sensitive information out of version control. Here's an example of how to define these environment variables in a `.env` file:
 
@@ -23,13 +22,12 @@ Ensure to add `.env` to your `.gitignore` to keep sensitive information out of v
 AWS_ACCESS_KEY_ID=your_access_key_id
 AWS_SECRET_ACCESS_KEY=your_secret_access_key
 AWS_REGION=your_aws_region
-AWS_S3_BUCKET_NAME=your_bucket_name
 
 ```
 
 ## Here's how you can use the AWS S3 Plugin to perform various S3 operations:
 
-```
+```js
 // Import the AWS S3 Plugin and necessary classes
 import AWSS3DataSource from "./AWSS3DataSource";
 
@@ -38,7 +36,7 @@ const s3Plugin = new AWSS3DataSource({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
-}, process.env.AWS_S3_BUCKET_NAME);
+}, process.env."give-your-bucker-name");
 
 // Listing objects in the S3 bucket
 const list = await s3Plugin.execute({ operation: 'list' });
@@ -69,9 +67,10 @@ const deleteResponse = await s3Plugin.execute({
 
 Errors are returned as objects with a message key. Always check for errors when carrying out operations. For example:
 
-```try {
+```js
+try {
   const result = await s3Plugin.execute({
-    operation: 'list'
+    operation: "list",
   });
 
   if (result.message) {
