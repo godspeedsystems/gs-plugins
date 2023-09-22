@@ -5,8 +5,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d",
+  "main": "./dist/index.js",
+  "bin": {
+    "k8s": "./dist/index.js"
+  },  
+  "types": "./dist/index.d",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
@@ -24,8 +27,8 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "commander": "^11.0.0",
     "fs": "^0.0.1-security",
-    "fs-extra": "^11.1.1",
     "os": "^0.1.2"
   },
   "devDependencies": {
