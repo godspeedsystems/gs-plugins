@@ -1,14 +1,22 @@
-import { GSContext, GSDataSource, PlainObject, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
+import {
+  GSContext,
+  GSDataSource,
+  PlainObject,
+  GSCloudEvent,
+  GSStatus,
+  GSActor,
+} from "@godspeedsystems/core";
 import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
 
-const amqplib = require('amqplib');
-
+const amqplib = require("amqplib");
 
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
-    const conn = await amqplib.connect(this.config.rabbitMqURL, { clientProperties: { ...this.config.rabbitMqClientProperties } });
+    const conn = await amqplib.connect(this.config.rabbitMqURL, {
+      clientProperties: { ...JSON.parse(this.config.rabbitMqClientProperties) },
+    });
 
-    return conn
+    return conn;
   }
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
@@ -55,8 +63,7 @@ class EventSource extends GSDataSourceAsEventSource {
   ): Promise<void> {
     const client = this.client;
     const ds = eventKey.split(".")[0];
-    const queue = eventKey.split('.')[1];
-    const groupId = eventKey.split(".")[2];
+    const queue = eventKey.split(".")[1];
     interface mesresp {
       topic: string;
       partition: number;
@@ -66,35 +73,38 @@ class EventSource extends GSDataSourceAsEventSource {
     if (client) {
       const channel = await client.createChannel();
       await channel.assertQueue(queue, { durable: false });
-      await channel.consume(queue, async (message: any) => {
-        console.log(" [x] Received '%s'", message.content.toString());
-        let msgValue = message.content.toString();
-        let data = {
-          body: msgValue,
-        };
-        const event = new GSCloudEvent(
-          "id",
-          `${ds}.${queue}.${groupId}`,
-          new Date(message.timestamp),
-          "rabbit-mq",
-          "1.0",
-          data,
-          "messagebus",
-          new GSActor("user"),
-          ""
-        );
-        const res = await processEvent(event, eventConfig);
+      await channel.consume(
+        queue,
+        async (message: any) => {
+          console.log(" [x] Received '%s'", message.content.toString());
+          let msgValue = message.content.toString();
+          let data = {
+            body: msgValue,
+          };
+          const event = new GSCloudEvent(
+            "id",
+            `${ds}.${queue}`,
+            new Date(message.timestamp),
+            "rabbit-mq",
+            "1.0",
+            data,
+            "messagebus",
+            new GSActor("user"),
+            ""
+          );
+          const res = await processEvent(event, eventConfig);
 
-        return res;
-
-      }, { noAck: true });
+          return res;
+        },
+        { noAck: true }
+      );
     }
   }
 }
 
-const SourceType = 'BOTH';
-const Type = 'rabbit-mq'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
-const CONFIG_FILE_NAME = 'rabbit-mq'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const SourceType = "BOTH";
+const Type = "rabbit-mq"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "rabbit-mq"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {};
 
 export {
@@ -103,5 +113,5 @@ export {
   SourceType,
   Type,
   CONFIG_FILE_NAME,
-  DEFAULT_CONFIG
+  DEFAULT_CONFIG,
 };
