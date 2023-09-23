@@ -72,14 +72,14 @@ tasks:
 To use Consumer we need to follow the below event key format.
 
 ```
- RabbitMQ.{Topic}
+ rabbit-mq.{Topic}
 ```
 
 The consumer event is triggered whenever a new message arrives on the specified topic. Upon triggering, it retrieves the incoming message and forwards it to the `rabbit-mq-consume` function. Inside this function, the incoming message is processed, and the result is then returned.
 
 ```yaml
 # event for consume data from Queue
-RabbitMQ.publish-producer1: // event key
+rabbit-mq.publish-producer1: // event key
   id: rabbit-mq-consumer
   fn: rabbit-mq-consume
   body:
