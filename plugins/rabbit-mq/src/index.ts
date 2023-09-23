@@ -12,9 +12,22 @@ const amqplib = require("amqplib");
 
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
-    const conn = await amqplib.connect(this.config.rabbitMqURL, {
-      clientProperties: { ...JSON.parse(this.config.rabbitMqClientProperties) },
-    });
+    let conn;
+    for (let i = 0; i < this.config.rabbitMqConnectionRetries; i++) {
+      try {
+        conn = await amqplib.connect(this.config.rabbitMqURL, {
+          clientProperties: {
+            ...JSON.parse(this.config.rabbitMqClientProperties),
+          },
+        });
+        break;
+      } catch (error) {
+        if (i == this.config.rabbitMqConnectionRetries - 1) {
+          throw error;
+        }
+        setTimeout(() => {}, 5000);
+      }
+    }
 
     return conn;
   }

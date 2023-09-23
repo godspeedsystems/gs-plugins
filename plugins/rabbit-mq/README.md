@@ -16,6 +16,7 @@ A brief description of how to use Rabbit MQ plug-in in our godspeed framework as
 type: rabbit-mq
 rabbitMqURL: "amqp://localhost"
 rabbitMqClientProperties: "{connection_name: 'myFriendlyName'}"
+rabbitMqConnectionRetries: 3
 ```
 
 Rabbit MQ url docs : https://www.rabbitmq.com/uri-spec.html
