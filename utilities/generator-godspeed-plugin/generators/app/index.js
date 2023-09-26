@@ -18,7 +18,7 @@ module.exports = class extends Generator {
         choices: [
           'DataSource',
           'EventSource',
-          'DataSourceAsEventSource',
+          'DataSource-As-EventSource',
         ],
         filter: (input) => {
           return input.toLowerCase(); // Convert the choice to lowercase
@@ -74,7 +74,7 @@ module.exports = class extends Generator {
           { projectName }
         );
         break;
-      case 'datasourceaseventsource':
+      case 'datasource-as-eventsource':
         this.fs.copyTpl(
           this.templatePath('DatasourceAsEventsource.txt'),
           this.destinationPath(`${projectName}-as-${datasourceType}/src/index.ts`),
