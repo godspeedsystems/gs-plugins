@@ -1,0 +1,23 @@
+{
+        "name": "@godspeedsystems/plugin-<%= projectName %>-as-<%= datasourceType %>",
+        "version": "1.0.0",
+        "description": "<%= projectName %> as <%= datasourceType %> plugin for Godspeed Framework",
+        "publishConfig": {
+          "access": "public"
+        },
+        "main" : "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+          "dev": "tsc --watch",
+          "build": "tsc",
+          "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "devDependencies": {
+          "typescript": "^4.9.5"
+        },
+        "dependencies": {
+          "@godspeedsystems/core": "latest",
+          "pino-pretty": "^10.2.0"
+        }
+      }

@@ -1,14 +1,11 @@
-import { GSContext, GSDataSource, PlainObject, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
-import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
+import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSCloudEvent, GSStatus, GSActor} from "@godspeedsystems/core";
 import { Kafka } from "kafkajs";
-
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     const kafka = new Kafka({
       clientId: this.config.clientId,
       brokers: this.config.brokers,
     });
-
     return kafka;
   }
 
@@ -48,6 +45,7 @@ class EventSource extends GSDataSourceAsEventSource {
       eventConfig: PlainObject
     ) => Promise<GSStatus>
   ): Promise<void> {
+
     const client = this.client;
     const ds = eventKey.split(".")[0];
     const groupId = eventKey.split(".")[2]
@@ -108,19 +106,20 @@ class EventSource extends GSDataSourceAsEventSource {
         },
       });
     }
+    
   }
 }
-
 const SourceType = 'BOTH';
-const Type = 'kafka'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
-const CONFIG_FILE_NAME = 'kafka'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const Type = "kafka"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "kafka"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {};
 
 export {
-  EventSource,
   DataSource,
+  EventSource,
   SourceType,
   Type,
   CONFIG_FILE_NAME,
   DEFAULT_CONFIG
-};
+}
+

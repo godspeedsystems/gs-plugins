@@ -1,7 +1,10 @@
 {
   "name": "generator-godspeed-plugin",
   "version": "1.0.0",
-  "description": "",
+  "description": "this is template generator for Godspeed Plugin",
+  "publishConfig": {
+          "access": "public"
+        },
   "files": [
     "generators"
   ],
