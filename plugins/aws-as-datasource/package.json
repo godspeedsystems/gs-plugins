@@ -13,6 +13,7 @@
           "prepublishOnly": "npm run build"
         },
         "license": "ISC",
+        "author": "Yaswanth <yaswanth@godspeed.systems>",
         "devDependencies": {
           
           "typescript": "^4.9.5"
