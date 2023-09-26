@@ -1,0 +1,26 @@
+{
+        "name": "@godspeedsystems/plugin-mailer-as-datasource",
+        "version": "1.0.0",
+        "description": "mailer as datasource plugin for Godspeed Framework",
+        "publishConfig": {
+          "access": "public"
+        },
+        "main" : "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+          "dev": "tsc --watch",
+          "build": "tsc",
+          "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "author": "Yaswanth <yaswanth@godspeed.systems>",
+        "devDependencies": {
+          "typescript": "^4.9.5",
+          "@types/nodemailer": "^6.4.10"
+        },
+        "dependencies": {
+          "@godspeedsystems/core": "latest",
+          "pino-pretty": "^10.2.0",
+          "nodemailer": "^6.9.5"
+        }
+      }

@@ -1,8 +1,6 @@
-import { GSContext, GSDataSource, PlainObject } from "@godspeedsystems/core";
-import { GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
-import { GSDataSourceAsEventSource } from "@godspeedsystems/core/dist/core/_interfaces/sources";
+import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSCloudEvent, GSStatus, GSActor} from "@godspeedsystems/core";
 
- class DataSource extends GSDataSource {
+class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     try {
       

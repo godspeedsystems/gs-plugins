@@ -1,0 +1,26 @@
+{
+        "name": "@godspeedsystems/plugin-aws-as-datasource",
+        "version": "1.0.0",
+        "description": "aws as datasource plugin for Godspeed Framework",
+        "publishConfig": {
+          "access": "public"
+        },
+        "main" : "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+          "dev": "tsc --watch",
+          "build": "tsc",
+          "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "author": "Yaswanth <yaswanth@godspeed.systems>",
+        "devDependencies": {
+          
+          "typescript": "^4.9.5"
+        },
+        "dependencies": {
+          "@godspeedsystems/core": "latest",
+          "@aws-sdk/client-s3": "^3.0.0",
+          "pino-pretty": "^10.2.0"
+        }
+      }
