@@ -9,34 +9,37 @@ import { Command } from "commander";
 const helmChartsName = "godspeedsystems"
 const helmChartsUrl = "https://godspeedsystems.github.io/helm-charts"
 
+// @ts-ignore
+let { name } = require(path.join(__dirname, '../package.json'));
+
 export async function create_config(
   componentName: string,
-  configDirPath?: string
+  options: PlainObject
 ) {
   try {
     const fileName = `${componentName}.yaml`
-    const pluginPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/@godspeedsystems/devops-plugin-k8s/`);
-    const srcPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/@godspeedsystems/devops-plugin-k8s/src/${componentName}/${fileName}`);
+    const pluginPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/${name}/`);
+    const srcPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/${name}/src/${componentName}/${fileName}`);
 
     // check if devops-plugin k8s is added or not.
     if (!fs.existsSync(pluginPath)) {
-      throw new Error(`devops-plugin-k8s is not added.`);
+      throw new Error(`k8s is not added.`);
     }    
 
     // check if devops-plugin k8s is added or not.
     if (!fs.existsSync(srcPath)) {
-      throw new Error(`${componentName} is not a devops-plugin-k8s component.`);
+      throw new Error(`${componentName} is not a k8s component.`);
     }
 
     // Copy the config file in current directory if path is not provided else copy it to the provided directory.
-    if (!configDirPath) {
+    if (!options.path) {
       fs.copyFileSync(
         srcPath,
         path.resolve(process.cwd(), fileName)
       );
     } else {
-      const isDirExist = fs.existsSync(configDirPath);
-      const destPath = path.resolve(configDirPath, fileName);
+      const isDirExist = fs.existsSync(options.path);
+      const destPath = path.resolve(options.path, fileName);
 
       // check if provided path exists or not. If it exists then copy the config file else create the directory then copy the config file.
       if (isDirExist) {
@@ -45,7 +48,7 @@ export async function create_config(
           destPath
         );  
       } else {
-        fs.mkdirSync(path.resolve(configDirPath), { recursive: true });
+        fs.mkdirSync(path.resolve(options.path), { recursive: true });
         fs.copyFileSync(
           srcPath,
           destPath
@@ -120,8 +123,12 @@ export async function remove(
   .command("create-config")
   .description("create configuration file for the specified component")
   .argument("<componentName>", "component name")
-  .action((componentName) => {
-    create_config(componentName);
+  .option(
+    "--path <path>",
+    "directory path to create config file"
+  )
+  .action(async (componentName, options) => {
+    create_config(componentName, options);
   });
 
   program
@@ -150,12 +157,6 @@ export async function remove(
   .action((componentName, configFilePath) => {
     remove(componentName, configFilePath);
   });   
-  
-  
-  //create_config("argo-cd");
-  //install("argo-cd", "./argo-cd.yaml");
-  //update("argo-cd", "./argo-cd.yaml");
-  //remove("argo-cd", "./argo-cd.yaml");
 
   program.parse();
 })();
