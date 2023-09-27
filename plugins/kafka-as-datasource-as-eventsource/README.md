@@ -84,7 +84,7 @@ The consumer event is triggered whenever a new message arrives on the specified 
 ``` yaml
 # event for consume data from Topic
 Kafka.publish-producer1.kafka_proj: // event key
-  id: kafka__consumer
+  id: kafka_consumer
   fn: kafka_consume
   body:
     description: The body of the query
@@ -96,7 +96,7 @@ Kafka.publish-producer1.kafka_proj: // event key
 #### kafka workflow for Consumer ( src/functions/kafka_consume.yaml )
 ```yaml
 # function for consume data
-id: kafka-conumer
+id: kafka-consumer
 summary: consumer
 tasks:
     - id: set_consume
