@@ -1,7 +1,7 @@
 {
-  "name": "@godspeedsystems/devops-plugins-k8s",
-  "version": "1.0.0",
-  "description": "Kubernetes devops plugin for Godspeed Framework to run helm CLI",
+  "name": "@godspeedsystems/k8s",
+  "version": "0.0.2",
+  "description": "devops-plugin/CLI to manage godspeedsystems components on Kubernetes",
   "publishConfig": {
     "access": "public"
   },
@@ -23,7 +23,8 @@
     "k8s",
     "kubernetes",
     "helm",
-    "godspeed"
+    "godspeed",
+    "@godspeedsystems/devops-plugin"
   ],
   "license": "ISC",
   "dependencies": {
@@ -32,8 +33,6 @@
     "os": "^0.1.2"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.2",
-    "@types/yargs": "^17.0.24",
     "typescript": "^5.2.2"
   }
 }

@@ -15,11 +15,17 @@ export async function create_config(
 ) {
   try {
     const fileName = `${componentName}.yaml`
-    const srcPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/k8s/${componentName}/${fileName}`);
-    
+    const pluginPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/@godspeedsystems/devops-plugin-k8s/`);
+    const srcPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/@godspeedsystems/devops-plugin-k8s/src/${componentName}/${fileName}`);
+
+    // check if devops-plugin k8s is added or not.
+    if (!fs.existsSync(pluginPath)) {
+      throw new Error(`devops-plugin-k8s is not added.`);
+    }    
+
     // check if devops-plugin k8s is added or not.
     if (!fs.existsSync(srcPath)) {
-      throw new Error(`${srcPath} does not exist`);
+      throw new Error(`${componentName} is not a devops-plugin-k8s component.`);
     }
 
     // Copy the config file in current directory if path is not provided else copy it to the provided directory.
@@ -106,6 +112,7 @@ export async function remove(
 (async function main() {
 
   const program = new Command();
+  program.description("k8s manages godspeed components on Kubernetes.");
   program.showHelpAfterError();
   program.showSuggestionAfterError(true);
 
