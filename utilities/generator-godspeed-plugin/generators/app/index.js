@@ -8,8 +8,8 @@ module.exports = class extends Generator {
       {
         type: 'input',
         name: 'projectName',
-        message: 'Enter your project name:',
-        default: 'my-plugin',
+        message: 'Enter your plugin name:',
+        default: 'your-plugin-name',
       },
       {
         type: 'list',
