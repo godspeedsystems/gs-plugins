@@ -5,18 +5,36 @@ import fs from "fs";
 import os from "os";
 import yaml from 'yaml';
 import { Command } from "commander";
+import { readdir } from 'fs/promises';
 
 const helmChartsName = "godspeedsystems"
 const helmChartsUrl = "https://godspeedsystems.github.io/helm-charts"
 
 // @ts-ignore
 let { name } = require(path.join(__dirname, '../package.json'));
+let program: Command;
 
-export async function create_config(
+function isHelmInstalled() {
+  try {
+    // Run the helm version command
+    spawnSync('helm version');
+    return true;
+  } catch (error) {
+    // If an error occurs, Helm is not installed
+    return false;
+  }
+}
+
+function createConfig(
   componentName: string,
   options: PlainObject
 ) {
   try {
+    if (!isHelmInstalled()) {
+      console.log("Helm is not installed. Please make sure helm binary is installed.");
+      return;
+    }
+
     const fileName = `${componentName}.yaml`
     const pluginPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/${name}/`);
     const srcPath = path.resolve(os.homedir(), `.godspeed/devops-plugins/node_modules/${name}/src/${componentName}/${fileName}`);
@@ -37,6 +55,7 @@ export async function create_config(
         srcPath,
         path.resolve(process.cwd(), fileName)
       );
+      console.log(`Configuration file is created in ${process.cwd()}`);
     } else {
       const isDirExist = fs.existsSync(options.path);
       const destPath = path.resolve(options.path, fileName);
@@ -54,18 +73,23 @@ export async function create_config(
           destPath
         );  
       }
+      console.log(`Configuration file is created in ${options.path}`);
     }
-
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function install(
+function install(
   componentName: string,
   configFilePath: string
 ) {
   try {
+    if (!isHelmInstalled()) {
+      console.log("Helm is not installed. Please make sure helm binary is installed.");
+      return;
+    }
+
     // check if configFilePath exists or not
     if (!fs.existsSync(configFilePath)) {
       throw new Error(`${configFilePath} does not exist`);
@@ -82,11 +106,16 @@ export async function install(
   }
 }
 
-export async function update(
+function update(
   componentName: string,
   configFilePath: string
 ) {
   try {
+    if (!isHelmInstalled()) {
+      console.log("Helm is not installed. Please make sure helm binary is installed.");
+      return;
+    }
+
     //console.log(`helm upgrade ${componentName} godspeedsystems/${componentName} -f ${configFilePath}`);
     spawnSync('helm', ['upgrade', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath], { stdio: 'inherit' })
   } catch (error: any) {
@@ -94,11 +123,16 @@ export async function update(
   }
 }
 
-export async function remove(
+function remove(
   componentName: string,
   configFilePath: string
 ) {
   try {
+    if (!isHelmInstalled()) {
+      console.log("Helm is not installed. Please make sure helm binary is installed.");
+      return;
+    }
+
     // check if configFilePath exists or not
     if (!fs.existsSync(configFilePath)) {
       throw new Error(`${configFilePath} does not exist`);
@@ -112,12 +146,62 @@ export async function remove(
   }
 }
 
+function list() {
+  try {
+    if (!isHelmInstalled()) {
+      console.log("Helm is not installed. Please make sure helm binary is installed.");
+      return;
+    }
+
+    let componentList = [];
+    const k8sPath = path.resolve(path.dirname(__filename), `../src`);
+
+    fs.readdir(k8sPath, { withFileTypes: true }, (err, files) => {
+      if (err) {
+        console.error('Error reading directory:', err);
+        return;
+      }
+    
+      // Filter out only directories
+      const components = files.filter(file => file.isDirectory()).map(directory => directory.name);
+    
+      if (components.length > 0) {
+        console.log("List of k8s components:");
+        components.forEach(element => {
+          console.log(`-> ${element}`);
+        });
+    }
+    });
+
+    // for (const component of components) {
+    //   if (component.isDirectory()) {
+    //     componentList.push(component.name)
+    //   }
+    // }
+
+    // if (componentList.length > 0) {
+    //   console.log("List of k8s components:");
+    //   componentList.forEach(element => {
+    //     console.log(`-> ${element}`);
+    //   });
+    // }
+  } catch (error: any) {
+    throw error;
+  }
+}
+
 (async function main() {
 
-  const program = new Command();
+  program = new Command();
   program.description("k8s manages godspeed components on Kubernetes.");
   program.showHelpAfterError();
   program.showSuggestionAfterError(true);
+
+  program
+  .allowUnknownOption(true)
+  .action(() => {
+    program.help();
+  });
 
   program
   .command("create-config")
@@ -128,7 +212,7 @@ export async function remove(
     "directory path to create config file"
   )
   .action(async (componentName, options) => {
-    create_config(componentName, options);
+    createConfig(componentName, options);
   });
 
   program
@@ -156,7 +240,16 @@ export async function remove(
   .argument("<configFilePath>", "path to the configuration file")
   .action((componentName, configFilePath) => {
     remove(componentName, configFilePath);
-  });   
+  });  
+  
+  program
+  .command("list")
+  .description("list all the k8s components")
+  .action(() => {
+    list();
+  });    
 
-  program.parse();
+  program.parse(process.argv);
 })();
+
+export { program };
