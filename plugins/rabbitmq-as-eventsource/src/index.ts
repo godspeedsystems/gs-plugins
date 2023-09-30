@@ -1,4 +1,4 @@
-import { GSStatus, PlainObject, GSEventSource, GSCloudEvent } from "@godspeedsystems/core";
+import { GSStatus, PlainObject, GSEventSource, GSCloudEvent, GSActor } from "@godspeedsystems/core";
 import { connect, Channel, Connection } from 'amqplib'
 
 class EventSource extends GSEventSource {
@@ -26,7 +26,7 @@ class EventSource extends GSEventSource {
 
   async subscribeToEvent(eventKey: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>): Promise<void> {
     // eventKey of the form {type="rabbitmq"}.{exchange_name}.{queue_name}.{type=["producer" | "consumer"]}
-    const [, exchange_name = "gs_rabbitmq", queue_name = "messages", type] = eventKey.split(".");
+    const [ds, exchange_name = "gs_rabbitmq", queue_name = "messages", type] = eventKey.split(".");
     const message: string = eventConfig.message;
 
     const channel = this.client;
@@ -66,6 +66,25 @@ class EventSource extends GSEventSource {
         console.log(`something went wrong : ${error}`);
         throw error;
       }
+    }
+
+    try {
+      const event = new GSCloudEvent(
+        "id",
+        `${ds}.${exchange_name}.${queue_name}.${type}`,
+        new Date(),
+        "rabbitmq",
+        "1.0",
+        {},
+        "messagebus",
+        new GSActor("user"),
+        {}
+      )
+      await processEvent(event, eventConfig);
+      return Promise.resolve();
+    } catch (error) {
+      console.log(`something went wrong : ${error}`);
+      throw error;
     }
   }
 }
