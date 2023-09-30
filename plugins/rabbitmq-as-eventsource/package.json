@@ -1,5 +1,5 @@
 {
-  "name": "rabbitmq-as-eventsource",
+  "name": "@godspeedsystems/plugin-rabbitmq-as-eventsource",
   "version": "1.0.0",
   "description": "RabbitMQ plugin for Godspeed Framework.",
   "publishConfig": {
