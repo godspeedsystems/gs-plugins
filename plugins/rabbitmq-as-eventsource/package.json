@@ -1,0 +1,32 @@
+{
+  "name": "rabbitmq-as-eventsource",
+  "version": "1.0.0",
+  "description": "RabbitMQ plugin for Godspeed Framework.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "author": {
+    "name": "melsonic",
+    "email": "work.melsonic@gmail.com"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/amqplib": "^0.10.2",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.7.2",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@godspeedsystems/core": "^2.0.0-alpha.21",
+    "amqplib": "^0.10.3",
+    "lodash": "^4.17.21",
+    "pino-pretty": "^10.2.0"
+  }
+}
