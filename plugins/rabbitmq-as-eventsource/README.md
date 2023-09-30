@@ -16,14 +16,26 @@ A brief description of how to use RabbitMQ plug-in in  godspeed framework as Eve
 type: rabbitmq
 message: Hello World
 ```
-event key prefix should be the `type` mensioned in the config `yaml` file.
+#### event key prefix should be the `type` mensioned in the config `yaml` file.
+
+- `event key` is of the form {plugin_type}.{exchange_name}.{queue_name}.{operator_type}
+- `operator_type` can be either **producer** or **consumer**
 
 #### rabbitmq event  ( src/events/send_msg.yaml )
 
 ```yaml
 
-rabbitmq.gs_rabbitmq.messages: //event key
+rabbitmq.gs_rabbitmq.messages.producer: //event key
   fn: send_msg
+
+```
+
+#### rabbitmq event  ( src/events/receive_msg.yaml )
+
+```yaml
+
+rabbitmq.gs_rabbitmq.messages.consumer: //event key
+  fn: receive_msg
 
 ```
 
@@ -33,7 +45,18 @@ rabbitmq.gs_rabbitmq.messages: //event key
 ```yaml
 summary: this workflow will send a message
 tasks:
-  - id: print
-    description: print the message at consumer side of RabbitMQ
+  - id: send
+    description: Publish messages to RabbitMQ
+    fn: com.gs.return
+```
+
+#### rabbitmq workflow to schedule ( src/functions/receive_msg.yaml )
+
+
+```yaml
+summary: this workflow will consume/receive a message
+tasks:
+  - id: receive
+    description: Consume messages from RabbitMQ
     fn: com.gs.return
 ```
