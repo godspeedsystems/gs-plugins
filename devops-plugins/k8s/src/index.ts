@@ -97,10 +97,10 @@ function install(
 
     const configFileYaml = yaml.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
 
-    console.log(`helm install ${componentName} godspeedsystems/${componentName} -f ${configFilePath} --create-namespace -n ${configFileYaml.namespace}`);
+    // console.log(`helm install ${componentName} godspeedsystems/${componentName} -f ${configFilePath} --create-namespace -n ${configFileYaml.namespace}`);
     spawnSync('helm', ['repo', 'add', helmChartsName, helmChartsUrl], { stdio: 'inherit' })
     //spawnSync('helm', ['install', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath], { stdio: 'inherit' })
-    spawnSync('helm', ['install', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath, '--create-namespace', '-n', configFileYaml.namespace], { stdio: 'inherit' })
+    spawnSync('helm', ['install', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath, '--create-namespace', '-n', configFileYaml.namespace], { stdio: 'inherit' });
   } catch (error: any) {
     throw error;
   }
@@ -116,8 +116,16 @@ function update(
       return;
     }
 
+    // check if configFilePath exists or not
+    if (!fs.existsSync(configFilePath)) {
+      throw new Error(`${configFilePath} does not exist`);
+    }
+    
+    const configFileYaml = yaml.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
+    spawnSync('helm', ['upgrade', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath, '-n', configFileYaml.namespace], { stdio: 'inherit' });
+
     //console.log(`helm upgrade ${componentName} godspeedsystems/${componentName} -f ${configFilePath}`);
-    spawnSync('helm', ['upgrade', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath], { stdio: 'inherit' })
+    // spawnSync('helm', ['upgrade', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath], { stdio: 'inherit' })
   } catch (error: any) {
     throw error;
   }
