@@ -1,5 +1,5 @@
 {
-        "name": "@godspeedsystems/plugin-mailer-as-datasource",
+        "name": "@godspeedsystems/plugins-mailer-as-datasource",
         "version": "1.0.0",
         "description": "mailer as datasource plugin for Godspeed Framework",
         "publishConfig": {

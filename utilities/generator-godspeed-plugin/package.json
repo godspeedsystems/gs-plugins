@@ -1,21 +1,19 @@
 {
   "name": "generator-godspeed-plugin",
   "version": "1.0.0",
-  "description": "A Yeoman generator for creating Godspeed plugins.",
-  "keywords": [
-    "yeoman-generator",
-    "godspeed-plugin"
-  ],
+  "description": "this is template generator for Godspeed Plugin",
   "publishConfig": {
     "access": "public"
   },
   "files": [
     "generators"
   ],
-  "license": "ISC",
-  "author": "Yaswanth <yaswanth@godspeed.systems>",
+  "keywords": [
+    "yeoman-generator"
+  ],
   "dependencies": {
-    "mkdirp": "^3.0.1",
-    "yeoman-generator": "^1.1.1"
+    "download-git-repo": "^3.0.2",
+    "fs-extra": "^11.1.1",
+    "yeoman-generator": "^5.9.0"
   }
 }

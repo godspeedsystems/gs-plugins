@@ -1,4 +1,0 @@
-src/
-tconfig.json
-package-lock.json
-node-modules
