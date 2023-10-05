@@ -228,7 +228,7 @@ Certainly, here are the provided steps rephrased:
 | --- | -------------------------------------------- | ---- | ---------------- | ------------- | ------------- |
 | 1   | Express|Eventsource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-express-as-http)|[readme](./plugins/express-as-http/README.md)|Godspeed|
 | 2   | Prisma|Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-prisma-as-datastore)|[readme](./plugins/prisma-as-datastore/README.md)|  Godspeed|
-| 3  | Apache Kafka                                 |DS & ES|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-kafka)|[readme](./plugins/kafka/README.md)      |                Godspeed  |
+| 3  | Apache Kafka                                 |DS & ES|       |[readme](./plugins/kafka-as-datasource-as-eventsource/README.md)      |                Godspeed  |
 | 4   | CRON Eventsource                                   |  Eventsource    | [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-cron)|[readme](./plugins/cron-as-eventsource/README.md)                 |Godspeed               |
 | 5   | MongoDB                                      |      |                  |               |               |
 | 6   | Cassandra                                    |      |                  |               |               |
