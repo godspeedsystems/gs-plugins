@@ -1,5 +1,4 @@
-# Godspeed Mailer Plugin
-
+# godspeed-plugin-mailer-as-datasource
 Welcome to the Godspeed Mailer Plugin! 🚀
 
 

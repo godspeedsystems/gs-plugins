@@ -1,5 +1,5 @@
 
- # AWS Plug-in 🔗
+# godspeed-plugin-aws-as-datasource
 
 Welcome to the backbone of the cloud—the Amazon Web Services (AWS). Renowned for its unparalleled scalability and reliability, AWS stands as a juggernaut in cloud computing. Empowering businesses with a vast array of services, from storage to machine learning, AWS is the conduit for innovation in the digital realm. Dive into the future of computing with AWS as your steadfast and cutting-edge data source.
 
