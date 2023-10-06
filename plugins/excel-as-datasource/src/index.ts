@@ -2,13 +2,33 @@ import { GSContext,  GSDataSource, GSStatus, PlainObject,} from "@godspeedsystem
 import * as Excel from "xlsx";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import fs from 'fs';
 
 export default class DataSource extends GSDataSource {
 protected async initClient(): Promise<object> {
     return Excel;
 }
+private getFilePath(): string {
+  return this.config.filepath;
+}
+
+private async ensureFileExists(): Promise<void> {
+  const filePath = this.getFilePath();
+
+  // Check if the file exists
+  if (!fs.existsSync(filePath)) {
+    // If not, create the file
+    const sheet = Excel.utils.json_to_sheet([]);
+    const workbook = Excel.utils.book_new();
+    Excel.utils.book_append_sheet(workbook, sheet, "Sheet1");
+    Excel.writeFile(workbook, filePath);
+
+    console.log('File created successfully.');
+  }
+}
 
 async readData(Excel: typeof import("xlsx")) {
+  await this.ensureFileExists(); // Ensure file exists before reading
     const excelFile = path.join(this.config.filepath);
     const workbook = Excel.readFile(excelFile);
     const sheetName = workbook.SheetNames[0];
@@ -26,6 +46,7 @@ async readData(Excel: typeof import("xlsx")) {
   }
 
   async createData(data: any) {
+    await this.ensureFileExists(); // Ensure file exists before reading
     const _data = await this.readData(Excel);
     const newData = { id: uuidv4(), ...data };
     _data.push(newData);
