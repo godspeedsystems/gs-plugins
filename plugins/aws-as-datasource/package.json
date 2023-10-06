@@ -1,5 +1,5 @@
 {
-        "name": "@godspeedsystems/plugin-aws-as-datasource",
+        "name": "@godspeedsystems/plugins-aws-as-datasource",
         "version": "1.0.0",
         "description": "aws as datasource plugin for Godspeed Framework",
         "publishConfig": {

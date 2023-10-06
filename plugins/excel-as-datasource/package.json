@@ -1,5 +1,5 @@
 {
-        "name": "@godspeedsystems/plugin-excel-as-datasource",
+        "name": "@godspeedsystems/plugins-excel-as-datasource",
         "version": "1.0.0",
         "description": "excel as datasource plugin for Godspeed Framework",
         "publishConfig": {
