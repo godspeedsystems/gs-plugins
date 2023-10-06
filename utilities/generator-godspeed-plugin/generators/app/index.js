@@ -1,11 +1,12 @@
-const Generator = require('yeoman-generator');
-const fs = require('fs-extra');
-const path = require('path');
-const colors = require("colors");
-const AdmZip = require('adm-zip');
-const axios = require('axios');
+import Generator from 'yeoman-generator';
+import fs from 'fs-extra';
+import colors from 'colors';
+import path from 'path';
+import AdmZip from 'adm-zip';
+import axios from 'axios';
+import ora from 'ora';
 
-module.exports = class extends Generator {
+export default class extends Generator {
   initializing() {
     this.log("\n")
     this.log(colors.magenta("       ,_,   ") + colors.red.bold('-------------------------'));
@@ -121,14 +122,15 @@ module.exports = class extends Generator {
     fs.removeSync(tempPath);
   }
 
-  install() {
+  async install() {
     const { projectName, datasourceType } = this.answers;
     const projectPath = this.destinationPath(`${projectName}-as-${datasourceType}`);
 
-    // Run npm install without any console output
-    this.spawnCommandSync('npm', ['install', '--quiet', '--no-warnings', '--silent'], { cwd: projectPath });
+      // Install dependencies using npm or yarn
+      await  this.spawnCommandSync('npm', ['install', '--quiet', '--no-warnings', '--silent'], { cwd: projectPath });
+      
+    
+      this.log(colors.blue("All dependencies are installed. Happy coding with Godspeed "));
 
-    this.log('Packages loaded successfully!');
-    this.log(colors.cyan.bold('\n Happy coding with Godspeed! 🚀🎉\n'));
-  }
 };
+}
