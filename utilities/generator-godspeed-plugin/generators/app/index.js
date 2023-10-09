@@ -1,12 +1,3 @@
-// const Generator = require('yeoman-generator');
-// const fs = require('fs-extra');
-// const path = require('path');
-// const colors = require("colors");
-// const AdmZip = require('adm-zip');
-// const axios = require('axios');
-// const { execSync } = require('child_process');
-// const latestVersion = require('latest-version');
-
 import Generator from 'yeoman-generator';
 import fs from 'fs-extra';
 import path from 'path';
