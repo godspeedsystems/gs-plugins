@@ -1,11 +1,14 @@
-const Generator = require('yeoman-generator');
-const fs = require('fs-extra');
-const path = require('path');
-const colors = require("colors");
-const AdmZip = require('adm-zip');
-const axios = require('axios');
+import Generator from 'yeoman-generator';
+import fs from 'fs-extra';
+import path from 'path';
+import colors from 'colors';
+import AdmZip from 'adm-zip';
+import axios from 'axios';
+import { execSync } from 'child_process';
+import latestVersion from 'latest-version';
+import ora from 'ora';
 
-module.exports = class extends Generator {
+export default class extends Generator {
   initializing() {
     this.log("\n")
     this.log(colors.magenta("       ,_,   ") + colors.red.bold('-------------------------'));
@@ -121,14 +124,42 @@ module.exports = class extends Generator {
     fs.removeSync(tempPath);
   }
 
-  install() {
+  async install() {
     const { projectName, datasourceType } = this.answers;
     const projectPath = this.destinationPath(`${projectName}-as-${datasourceType}`);
+    const spinner = ora({
+      text: 'Installing packages... ',
+      spinner: {
+        frames: ['🌎', '🌍', '🌏'],
+        interval: 300, // Optional: Adjust the spinner speed
+      },
+    }).start();
 
-    // Run npm install without any console output
-    this.spawnCommandSync('npm', ['install', '--quiet', '--no-warnings', '--silent'], { cwd: projectPath });
-
-    this.log('Packages loaded successfully!');
-    this.log(colors.cyan.bold('\n Happy coding with Godspeed! 🚀🎉\n'));
+    try {
+      // Run npm install without any console output
+      this.spawnCommand('npm', ['install', '--quiet', '--no-warnings', '--silent', '--progress=false'], {
+        cwd: projectPath,
+        stdio: 'inherit', // Display output in the console
+      })
+      .on('close', () => {
+        spinner.stop(); // Stop the spinner when the installation is complete
+        this.log('\nPackages loaded successfully!');
+        this.log(colors.cyan.bold('\n Happy coding with Godspeed! 🚀🎉\n'));
+      });
+    } catch (error) {
+      spinner.stop(); // Stop the spinner in case of an error
+      console.error('Error during installation:', error.message);
+    }
+          // Check for updates after package installation
+          const currentVersion = execSync('npm list -g generator-godspeed-plugin --json').toString();
+          const parsedVersion = JSON.parse(currentVersion);
+          const generatorVersion = parsedVersion.dependencies["generator-godspeed-plugin"].version;
+          const latestGeneratorVersion = await latestVersion('generator-godspeed-plugin');
+    
+          if (generatorVersion !== latestGeneratorVersion) {
+            this.log(colors.yellow.bold(`\nWarning: A new version of the generator is available (${latestGeneratorVersion}). Update using:`));
+            this.log(colors.cyan.bold('  npm install -g generator-godspeed-plugin'));
+          }
   }
+  
 };

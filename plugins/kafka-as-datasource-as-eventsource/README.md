@@ -1,6 +1,6 @@
 
 
-# godspeed-plugin-mailer-as-datasource-as-eventsource
+# godspeed-plugin-kafka-as-datasource-as-eventsource
 
 Kafka is a versatile messaging system designed to securely transfer data between various systems. Its functionality can be tailored through configuration, allowing it to serve as a reliable conduit for real-time event tracking or even function as a replicated distributed database. While it's often colloquially labeled as a queue, it's more precisely described as a hybrid system that combines characteristics and trade-offs from both queue and database systems.
 
@@ -96,10 +96,10 @@ Kafka.publish-producer1.kafka_proj: // event key
 #### kafka workflow for Consumer ( src/functions/kafka_consume.yaml )
 ```yaml
 # function for consume data
-id: kafka-conumer
+id: kafka-consumer
 summary: consumer
 tasks:
-    - id: set_consume
+    - id: set_consumer
       fn: com.gs.return
       args: <% inputs %>
 ```
