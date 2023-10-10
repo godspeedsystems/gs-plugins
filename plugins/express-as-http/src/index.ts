@@ -23,11 +23,11 @@ class EventSource extends GSEventSource {
     const httpMethod: string = routeSplit[1];
     const endpoint = routeSplit[2].replace(/{(.*?)}/g, ':$1');
     const app: express.Express = this.client as express.Express;
-
+    
     //@ts-ignore
     app[httpMethod](endpoint, async (req: express.Request, res: express.Response) => {
       const gsEvent: GSCloudEvent = EventSource.createGSEvent(req, endpoint)
-      const status: GSStatus = await processEvent(gsEvent, eventConfig);
+      const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
       res
         .status(status.code || 200)
         // if data is a integer, it takes it as statusCode, so explicitly converting it to string
