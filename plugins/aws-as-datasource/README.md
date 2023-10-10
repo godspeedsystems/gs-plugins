@@ -37,7 +37,8 @@ In the event, we establish HTTP endpoint that accepts json objects in request bo
     type: object
   responses:
     200:
-      application/json:
+      content:
+         application/json:
 
 ```
 #### aws workflow for create a new user ( src/functions/aws_list.yaml )
