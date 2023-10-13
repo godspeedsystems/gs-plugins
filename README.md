@@ -228,16 +228,16 @@ Certainly, here are the provided steps rephrased:
 | --- | -------------------------------------------- | ---- | ---------------- | ------------- | ------------- |
 | 1   | Express|Eventsource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-express-as-http)|[readme](./plugins/express-as-http/README.md)|Godspeed|
 | 2   | Prisma|Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-prisma-as-datastore)|[readme](./plugins/prisma-as-datastore/README.md)|  Godspeed|
-| 3  | Apache Kafka                                 |DS & ES|       |[readme](./plugins/kafka-as-datasource-as-eventsource/README.md)      |                Godspeed  |
-| 4   | CRON Eventsource                                   |  Eventsource    | [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-cron)|[readme](./plugins/cron-as-eventsource/README.md)                 |Godspeed               |
-| 5   | MongoDB                                      |      |                  |               |               |
-| 6   | Cassandra                                    |      |                  |               |               |
-| 7   | Redis                                        |      |                  |               |               |
-| 8  | Elasticsearch                                |      |                  |               |               |
-| 9  | Splunk                                       |      |                  |               |               |
+| 3  | Apache Kafka                                 |DS & ES|   [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-kafka-as-datasource-as-eventsource)    |[readme](./plugins/kafka-as-datasource-as-eventsource/README.md)      |                Godspeed  |
+| 4   | CRON Eventsource                                   |  Eventsource    | [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-cron-as-eventsource)|[readme](./plugins/cron-as-eventsource/README.md)                 |Godspeed               |
+| 5   | Amazon S3   |Datasource     |[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-aws-as-datasource)    |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/aws-as-datasource/README.md)|Godspeed                          |      |                  |               |               |
+| 6   | Excel  |Datasource  |[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-excel-as-datasource) |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/excel-as-datasource/README.md)|Godspeed                                |      |                  |               |               |
+| 7   | Redis   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-redis-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/redis-as-datasource/README.md) |Godspeed                                    |      |                  |               |               |
+| 8  | Mailer   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-mailer-as-datasource)   |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/mailer-as-datasource/README.md)       |Godspeed                   |      |                  |               |               |
+| 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
 | 10   | MySQL                                        |      |                  |               |               |
 | 11  | RabbitMQ                                     |      |                  |               |               ||
-| 12  | Amazon S3                                    |      |                  |               |               |
+| 12  | MongoDB                                    |      |                  |               |               |
 | 13  | Salesforce                                   |      |                  |               |               |
 | 14  | HubSpot                                      |      |                  |               |               |
 | 15  | MailChimp                                    |      |                  |               |               |
@@ -259,4 +259,7 @@ Certainly, here are the provided steps rephrased:
 | 31 | Heroku                                       |      |                  |               |               |
 | 32 | Vercel                                       |      |                  |               |               |
 | 33 | Netlify                                      |      |                  |               |               |
-| 34   | PostgreSQL                                   |      |                  |               |               |
+| 34   | PostgreSQL                                   |      |                  |            
+| 35   |Cassandra                                   |      |                  |               |               |   |               |
+| 36   |Elasticsearch                                   |      |                  |               |               |   |               |
+| 36   |Splunk                                   |      |                  |               |               |   |               |
