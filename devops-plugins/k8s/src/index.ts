@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import path from "path";
-import { spawnSync } from "child_process";
+import { spawnSync, SpawnSyncOptionsWithStringEncoding } from "child_process";
 import fs from "fs";
 import os from "os";
 import yaml from 'yaml';
@@ -9,7 +9,10 @@ import { readdir } from 'fs/promises';
 
 const helmChartsName = "godspeedsystems"
 const helmChartsUrl = "https://godspeedsystems.github.io/helm-charts"
-
+const spawn_options:SpawnSyncOptionsWithStringEncoding = {
+  stdio: ['pipe', 'ignore', 'inherit'],
+  encoding: 'utf8'
+};
 // @ts-ignore
 let { name } = require(path.join(__dirname, '../package.json'));
 let program: Command;
@@ -95,10 +98,13 @@ function install(
       throw new Error(`${configFilePath} does not exist`);
     }
 
-    const configFileYaml = yaml.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
 
+    const configFileYaml = yaml.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
     // console.log(`helm install ${componentName} godspeedsystems/${componentName} -f ${configFilePath} --create-namespace -n ${configFileYaml.namespace}`);
-    spawnSync('helm', ['repo', 'add', helmChartsName, helmChartsUrl], { stdio: 'inherit' })
+    const result = spawnSync('helm', ['repo', 'add', helmChartsName, helmChartsUrl, '--force-update'], spawn_options)
+    if (result.error){
+      console.log(result.error)
+    }
     //spawnSync('helm', ['install', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath], { stdio: 'inherit' })
     spawnSync('helm', ['install', componentName, `godspeedsystems/${componentName}`, '-f', configFilePath, '--create-namespace', '-n', configFileYaml.namespace], { stdio: 'inherit' });
   } catch (error: any) {
