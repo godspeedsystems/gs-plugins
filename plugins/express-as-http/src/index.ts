@@ -2,6 +2,9 @@ import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, GSDataSour
 import express from "express";
 import bodyParser from 'body-parser';
 import _ from "lodash";
+import promClient from '@godspeedsystems/metrics';
+//@ts-ignore
+import promMid from '@mindgrep/express-prometheus-middleware';
 
 class EventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
@@ -15,6 +18,23 @@ class EventSource extends GSEventSource {
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
     app.use(bodyParser.json({ limit: file_size_limit }));
     app.listen(port);
+
+    if (process.env.OTEL_ENABLED == 'true') {
+      app.use(
+        promMid({
+          collectDefaultMetrics: true,
+          requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
+          requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
+          responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
+        })
+      );
+
+      app.get('/metrics', async (req, res) => {
+        let appMetrics = await promClient.register.metrics();
+        res.end(appMetrics);
+      });
+    } 
+
     return app;
   }
 
