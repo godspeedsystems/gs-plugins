@@ -28,11 +28,6 @@ class EventSource extends GSEventSource {
           responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
         })
       );
-
-      app.get('/metrics', async (req, res) => {
-        let appMetrics = await promClient.register.metrics();
-        res.end(appMetrics);
-      });
     } 
 
     return app;
