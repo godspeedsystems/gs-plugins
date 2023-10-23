@@ -22,6 +22,7 @@ class EventSource extends GSEventSource {
     if (process.env.OTEL_ENABLED == 'true') {
       app.use(
         promMid({
+          metricsPath: false,
           collectDefaultMetrics: true,
           requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
           requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
