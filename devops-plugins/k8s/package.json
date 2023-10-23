@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/k8s",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "devops-plugin/CLI to manage godspeedsystems components on Kubernetes",
   "publishConfig": {
     "access": "public"
