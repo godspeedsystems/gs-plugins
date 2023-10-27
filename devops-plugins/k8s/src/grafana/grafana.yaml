@@ -1,0 +1,61 @@
+namespace: monitoring
+replicas: 1
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPU: "60"
+  targetMemory: ""
+
+ingress:
+  enabled: false
+  # ingressClassName: nginx
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  path: /
+  pathType: Prefix
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+ limits:
+   cpu: 200m
+   memory: 512Mi
+
+# should be set to false if using database
+persistence:
+  type: pvc
+  enabled: false
+  # storageClassName: standard
+  size: 10Gi
+
+adminUser: admin
+
+grafana.ini:
+  paths:
+    data: /var/lib/grafana/
+    logs: /var/log/grafana
+    plugins: /var/lib/grafana/plugins
+    provisioning: /etc/grafana/provisioning
+
+  # database:
+  #   type: postgres
+  #   url: "postgres://grafana:password@localhost:5432/grafana"
+  # database:
+  #   type: mysql
+  #   url: "mysql://grafana:password@localhost:3306/grafana"
+  analytics:
+    check_for_updates: true
+  log:
+    mode: console
+  grafana_net:
+    url: https://grafana.net
+  server:
+    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"

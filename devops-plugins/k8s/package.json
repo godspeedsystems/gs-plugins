@@ -1,0 +1,40 @@
+{
+  "name": "@godspeedsystems/k8s",
+  "version": "0.0.8",
+  "description": "devops-plugin/CLI to manage godspeedsystems components on Kubernetes",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "bin": {
+    "k8s": "./dist/index.js"
+  },
+  "types": "./dist/index.d",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "author": {
+    "name": "Gurjot Kaur",
+    "email": "gurjot@godspeed.systems"
+  },
+  "keywords": [
+    "k8s",
+    "kubernetes",
+    "helm",
+    "godspeed",
+    "@godspeedsystems/devops-plugin"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "fs": "^0.0.1-security",
+    "os": "^0.1.2",
+    "yaml": "^2.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.4",
+    "typescript": "^5.2.2"
+  }
+}

@@ -1,0 +1,66 @@
+namespace: argo-cd
+## Argo Configs
+configs:
+  cm:
+    url: ""
+    exec.enabled: true
+
+    # Dex configuration
+    # dex.config: |
+    #   connectors:
+    #     # GitHub example
+    #     - type: github
+    #       id: github
+    #       name: GitHub
+    #       config:
+    #         clientID: aabbccddeeff00112233
+    #         clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
+    #         orgs:
+    #         - name: your-github-org
+    # oidc.config: |
+      # name: Keycloak
+      # issuer: https://keycloak.godspeed.systems/auth/realms/godspeed
+      # clientID: argocd
+      # clientSecret: $oidc.keycloak.clientSecret
+      # requestedScopes: ["openid", "profile", "email", "groups"]   
+
+  rbac:
+    create: true
+    policy.csv: ''
+    # policy.csv |
+    #   p, role:org-admin, applications, *, */*, allow
+    #   p, role:org-admin, clusters, get, *, allow
+    #   p, role:org-admin, repositories, *, *, allow
+    #   p, role:org-admin, logs, get, *, allow
+    #   p, role:org-admin, exec, create, */*, allow
+    #   g, your-github-org:your-team, role:org-admin
+      # p, role:admin, applications, *, */*, allow
+      # p, role:admin, certificates, *, *, allow
+      # p, role:admin, accounts, *, *, allow
+      # p, role:admin, gpgkeys, *, *, allow
+      # p, role:admin, projects, *, *, allow
+      # p, role:admin, clusters, *, *, allow
+      # p, role:admin, repositories, *, *, allow
+      # p, role:dev-access, applications, get, default/dev-app-deployment, allow
+      # p, role:dev-access, logs, get, dev-app-deployment, allow
+      # p, role:dev-access, projects, get, default, allow
+      # g, argo-admin, role:admin-chai
+      # g, argo-dev, role:dev-access
+    scopes: "[groups]"
+ 
+  ingress:
+    enabled: false
+    annotations: {}
+      # cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+      # nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    ingressClassName: ""
+    # ingressClassName: nginx
+    hosts: []
+      # - argocd.example.com
+    paths:
+      - /
+    pathType: Prefix
+    tls: []
+      # - secretName: your-certificate-name
+      #   hosts:
+      #     - argocd.example.com
