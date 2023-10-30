@@ -3,7 +3,7 @@ import axios, { Axios, AxiosInstance, AxiosResponse, AxiosError } from 'axios'
 import axiosRetry from 'axios-retry';
 class DataSource extends GSDataSource {
 
-  private AxiosRetryConfig(data: any): any {
+  private getAxiosRetryConfig(data: any): any {
     const { max_attempts, type, interval, min_interval, max_interval } = data;
     let retries = max_attempts;
     let retryDelay = function (
@@ -21,7 +21,7 @@ class DataSource extends GSDataSource {
 
         case 'exponential':
           const delay = 2 ** retryNumber * interval;
-          const randomSum = delay * 0.2 * Math.random(); 
+          const randomSum = delay * 0.2 * Math.random();
           return delay + randomSum;
       }
       return 0;
@@ -46,19 +46,17 @@ class DataSource extends GSDataSource {
 
     try {
       const client = this.client as AxiosInstance;
-
       if (args.retry) {
-        let Axios_conf = { ...this.config.retry, ...args.retry };
+        logger.info('Initializing axios client with retry logic.');
+        let info = this.getAxiosRetryConfig({ ...this.config.retry, ...args.retry })
+        axiosRetry(client, info);
+        logger.info('Returning retryDelay function with 0');
+      } else {
+        let conf = { ...this.config.retry };
         logger.info('retrying to connect again');
-        let info =  this.AxiosRetryConfig(Axios_conf)
-        axiosRetry(client,info);
-        console.info('Returning retryDelay function with 0');
-      }else{
-        let conf = { ...this.config.retry};
-      logger.info('retrying to connect again');
-      let info =  this.AxiosRetryConfig(conf)
-        axiosRetry(client, info );
-        console.info('Returning retryDelay function with 0');
+        let info = this.getAxiosRetryConfig(conf)
+        axiosRetry(client, info);
+        logger.info('Returning retryDelay function with 0');
       }
 
       const response = await client({
