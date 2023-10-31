@@ -1,14 +1,16 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import axios, { Axios, AxiosInstance, AxiosResponse } from 'axios'
+import axios, { Axios, AxiosInstance, AxiosResponse, AxiosError } from 'axios'
+import axiosRetry from 'axios-retry';
+import parseDuration from 'parse-duration';
 
 class DataSource extends GSDataSource {
+
   protected async initClient(): Promise<PlainObject> {
     const { base_url, ...rest } = this.config;
-
     const client = axios.create({ baseURL: base_url, ...rest });
     return client;
-
   }
+
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     const { logger } = ctx;
     const {
@@ -20,6 +22,89 @@ class DataSource extends GSDataSource {
 
     try {
       const client = this.client as AxiosInstance;
+
+      if (args.retry) {
+        const { max_attempts, type, interval, min_interval, max_interval } = args.retry;
+
+        axiosRetry(client, {
+          retries: max_attempts,
+          retryDelay:(
+            retryNumber: number,
+            error: AxiosError<any, any>,
+          )=> {
+            switch (type) {
+              case 'constant':
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                return interval;
+      
+              case 'random':
+                let min = Math.ceil(min_interval);
+                let max = Math.floor(max_interval);
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+
+                return Math.floor(Math.random() * (max + 1 - min) + min);
+      
+              case 'exponential':
+                const delay = 2 ** retryNumber * interval;
+                const randomSum = delay * 0.2 * Math.random();
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                return delay + randomSum;
+            }
+            return 0;
+          },
+          retryCondition: (error) => {
+            return true
+          },
+        });
+      
+      } else {
+        let conf = { ...this.config.retry };
+        if (conf.interval) {
+          conf.interval = parseDuration(conf.interval.replace(/^PT/i, ''));
+        }
+  
+        if (conf.min_interval) {
+          conf.min_interval = parseDuration(conf.min_interval.replace(/^PT/i, ''));
+        }
+  
+        if (conf.max_interval) {
+          conf.max_interval = parseDuration(conf.max_interval.replace(/^PT/i, ''));
+        }
+
+          const { max_attempts, type, interval, min_interval, max_interval } = conf;
+
+          axiosRetry(client, {
+            retries: max_attempts,
+            retryDelay:(
+              retryNumber: number,
+              error: AxiosError<any, any>,
+            )=> {
+              switch (type) {
+                case 'constant':
+                  logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                  return interval;
+        
+                case 'random':
+                  let min = Math.ceil(min_interval);
+                  let max = Math.floor(max_interval);
+                  logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+  
+                  return Math.floor(Math.random() * (max + 1 - min) + min);
+        
+                case 'exponential':
+                  const delay = 2 ** retryNumber * interval;
+                  const randomSum = delay * 0.2 * Math.random();
+                  logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                  return delay + randomSum;
+              }
+              return 0;
+            },
+            retryCondition: (error) => {
+              return true
+            },
+          });
+      }
+
 
       const response = await client({
         method: method.toLowerCase(),

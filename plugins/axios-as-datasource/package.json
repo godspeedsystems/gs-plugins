@@ -25,6 +25,7 @@
     "@godspeedsystems/core": "latest",
     "axios": "^1.5.0",
     "axios-retry": "^3.7.0",
+    "parse-duration": "^1.1.0",
     "pino-pretty": "^10.2.0"
   },
   "devDependencies": {
