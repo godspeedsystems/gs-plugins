@@ -1,4 +1,4 @@
-import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, GSDataSource, GSContext } from "@godspeedsystems/core";
+import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@godspeedsystems/core";
 import express from "express";
 import bodyParser from 'body-parser';
 import _ from "lodash";
