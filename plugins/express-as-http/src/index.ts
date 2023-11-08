@@ -116,7 +116,7 @@ class EventSource extends GSEventSource {
 const SourceType = 'ES';
 const Type = 'express'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = { port: 3000 };
+const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
 export {
   EventSource,
