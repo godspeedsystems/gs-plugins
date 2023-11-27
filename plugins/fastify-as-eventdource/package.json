@@ -1,0 +1,34 @@
+{
+        "name": "@godspeedsystems/plugins-fastify-as-eventsource",
+        "version": "1.0.0",
+        "description": "fastify as eventsource plugin for Godspeed Framework",
+        "publishConfig": {
+                "access": "public"
+        },
+        "main": "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "devDependencies": {
+                "@types/lodash": "^4.14.202",
+                "@types/qs": "^6.9.10",
+		"@types/fastify-jwt": "^0.8.1",
+                "lodash": "^4.17.21",
+                "qs": "^6.11.2",
+                "typescript": "^4.9.5"
+        },
+        "dependencies": {
+                "@fastify/cors": "^8.4.1",
+                "@fastify/express": "^2.3.0",
+                "@fastify/formbody": "^7.4.0",
+                "@fastify/jwt": "^7.2.4",
+                "@godspeedsystems/core": "^2.0.0-alpha.23",
+                "fastify": "^4.24.3",
+                "fastify-swagger-ui": "^1.0.1",
+                "pino-pretty": "^10.2.0"
+        }
+}
