@@ -22,12 +22,12 @@ class EventSource extends GSEventSource {
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
     app.use(bodyParser.json({ limit: file_size_limit }));
     app.use(
-    fileUpload({
-      useTempFiles: true,
-      //@ts-ignore
-      limits: { fileSize: file_size_limit },
-    })
-  );
+      fileUpload({
+        useTempFiles: true,
+        //@ts-ignore
+        limits: { fileSize: file_size_limit },
+      })
+    );
   
     if (jwtConfig) {
       app.use(passport.initialize());
