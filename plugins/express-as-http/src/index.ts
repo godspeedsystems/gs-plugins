@@ -6,6 +6,7 @@ import promClient from '@godspeedsystems/metrics';
 //@ts-ignore
 import promMid from '@mindgrep/express-prometheus-middleware';
 import passport from "passport";
+import fileUpload from "express-fileupload"
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 class EventSource extends GSEventSource {
@@ -20,7 +21,14 @@ class EventSource extends GSEventSource {
 
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
     app.use(bodyParser.json({ limit: file_size_limit }));
-    // passport jwt auth
+    app.use(
+      fileUpload({
+        useTempFiles: true,
+        //@ts-ignore
+        limits: { fileSize: file_size_limit },
+      })
+    );
+  
     if (jwtConfig) {
       app.use(passport.initialize());
       passport.use(
@@ -118,7 +126,7 @@ const Type = 'express'; // this is the loader file of the plugin, So the final l
 const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
-export {
+export = {
   EventSource,
   SourceType,
   Type,
