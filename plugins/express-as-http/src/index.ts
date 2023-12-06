@@ -9,7 +9,7 @@ import passport from "passport";
 import fileUpload from "express-fileupload"
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
-class EventSource extends GSEventSource {
+export default class EventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
     const app = express();
     const {
@@ -126,7 +126,7 @@ const Type = 'express'; // this is the loader file of the plugin, So the final l
 const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
-export = {
+export  {
   EventSource,
   SourceType,
   Type,
