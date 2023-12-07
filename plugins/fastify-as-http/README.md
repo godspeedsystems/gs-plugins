@@ -112,7 +112,7 @@ This plugin is designed to seamlessly integrate with the Godspeed framework, off
 
 ## Plugin Components
 
-The [plugin](/src/index.ts) consists of several key components:
+The [plugin](./src/index.ts) consists of several key components:
 
 ### 1. `EventSource` Class
 
