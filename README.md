@@ -235,31 +235,32 @@ Certainly, here are the provided steps rephrased:
 | 7   | Redis   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-redis-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/redis-as-datasource/README.md) |Godspeed                                    |      |                  |               |               |
 | 8  | Mailer   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-mailer-as-datasource)   |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/mailer-as-datasource/README.md)       |Godspeed                   |      |                  |               |               |
 | 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
-| 10   | MySQL                                        |      |                  |               |               |
-| 11  | RabbitMQ                                     |      |                  |               |               ||
-| 12  | MongoDB                                    |      |                  |               |               |
-| 13  | Salesforce                                   |      |                  |               |               |
-| 14  | HubSpot                                      |      |                  |               |               |
-| 15  | MailChimp                                    |      |                  |               |               |
-| 16  | Microsoft Access                             |      |                  |               |               |
-| 17  | SQLite                                       |      |                  |               |               |
-| 18  | DB2 (IBM Database)                           |      |                  |               |               |
-| 19  | Neo4j                                        |      |                  |               |               |
-| 20  | CockroachDB                                  |      |                  |               |               |
-| 21  | MariaDB                                      |      |                  |               |               |
-| 22  | Google Cloud Pub/Sub                         |      |                  |               |               |
-| 23  | RabbitMQ                                     |      |                  |               |               |
-| 24 | GraphQL                                      |      |                  |               |               |
-| 25 | gRPC                                         |      |                  |               |               |
-| 26 | JMeter                                       |      |                  |               |               |
-| 27 | JIRA Software                                |      |                  |               |               |
-| 28 | Jenkins                                      |      |                  |               |               |
-| 29 | GitLab CI/CD                                 |      |                  |               |               |
-| 30 | Azure DevOps                                 |      |                  |               |               |
-| 31 | Heroku                                       |      |                  |               |               |
-| 32 | Vercel                                       |      |                  |               |               |
-| 33 | Netlify                                      |      |                  |               |               |
-| 34   | PostgreSQL                                   |      |                  |            
-| 35   |Cassandra                                   |      |                  |               |               |   |               |
-| 36   |Elasticsearch                                   |      |                  |               |               |   |               |
-| 36   |Splunk                                   |      |                  |               |               |   |               |
+| 10   | Fastify  | Eventsource | npm |[readme](./plugins/fastify-as-http/README.md)|Godspeed|
+| 11   | MySQL                                        |      |                  |               |               |
+| 12  | RabbitMQ                                     |      |                  |               |               ||
+| 13  | MongoDB                                    |      |                  |               |               |
+| 14  | Salesforce                                   |      |                  |               |               |
+| 15  | HubSpot                                      |      |                  |               |               |
+| 16  | MailChimp                                    |      |                  |               |               |
+| 17  | Microsoft Access                             |      |                  |               |               |
+| 18  | SQLite                                       |      |                  |               |               |
+| 19  | DB2 (IBM Database)                           |      |                  |               |               |
+| 20  | Neo4j                                        |      |                  |               |               |
+| 21  | CockroachDB                                  |      |                  |               |               |
+| 22  | MariaDB                                      |      |                  |               |               |
+| 23  | Google Cloud Pub/Sub                         |      |                  |               |               |
+| 24  | RabbitMQ                                     |      |                  |               |               |
+| 25 | GraphQL                                      |      |                  |               |               |
+| 26 | gRPC                                         |      |                  |               |               |
+| 27 | JMeter                                       |      |                  |               |               |
+| 28 | JIRA Software                                |      |                  |               |               |
+| 29 | Jenkins                                      |      |                  |               |               |
+| 30 | GitLab CI/CD                                 |      |                  |               |               |
+| 31 | Azure DevOps                                 |      |                  |               |               |
+| 32 | Heroku                                       |      |                  |               |               |
+| 33 | Vercel                                       |      |                  |               |               |
+| 34 | Netlify                                      |      |                  |               |               |
+| 35   | PostgreSQL                                   |      |                  |            
+| 36   |Cassandra                                   |      |                  |               |               |   |               |
+| 37   |Elasticsearch                                   |      |                  |               |               |   |               |
+| 38   |Splunk                                   |      |                  |               |               |   |               |

@@ -14,10 +14,8 @@
         },
         "license": "ISC",
         "devDependencies": {
-                "@types/lodash": "^4.14.202",
                 "@types/qs": "^6.9.10",
 		"@types/fastify-jwt": "^0.8.1",
-                "lodash": "^4.17.21",
                 "qs": "^6.11.2",
                 "typescript": "^4.9.5"
         },
