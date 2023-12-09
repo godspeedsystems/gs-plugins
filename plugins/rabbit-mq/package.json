@@ -1,0 +1,22 @@
+{
+  "name": "@godspeedsystems/plugins-rabbit-mq",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@godspeedsystems/core": "^2.0.0-alpha.1",
+    "amqplib": "^0.10.3"
+  }
+}
