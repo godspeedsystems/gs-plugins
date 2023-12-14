@@ -1,34 +1,34 @@
 
-# godspeed-plugin-dynamodb-as-datasource
+# Godspeed-plugin-dynamodb-as-datasource
 
 Amazon DynamoDB is a fully managed NoSQL database service provided by Amazon Web Services (AWS). It is designed for high-performance applications that require seamless and predictable scalability. DynamoDB is known for its simplicity, low-latency performance, and automatic scaling of throughput capacity to handle varying workloads.
 
-A brief description of how to use dynamodb plug-in in our godspeed framework as Data Source. 
+A brief description of how to use the DynamoDB plugin in our Godspeed framework as a data source.
 
-## Steps to use dynamo plug-in in godspeed framework:
+Steps to use DynamoDB plugin in the Godspeed framework:
 
-
-Add plugin using CLI 
+Add the plugin using CLI.
+Example usage (listObjects):
+Update the configuration file based on your requirements in Datasource/dynamo.yaml.
 
 ### Example usage (listObjects):
 
 1. Update configuration file based on your requirements in `Datasource/dynamo.yaml`.
-#### dynamo config ( src/datasources/dynamo.yaml )
+#### Dynamodb config ( src/datasources/dynamo.yaml )
 ```yaml
-type: dynamo
-endpoint: http://localhost:8000
-region: "us-west-2"
-accessKeyId: "local"
-secretAccessKey: "local"
+type: dynamodb
+endpoint: <%config.endpoint%>
+region: <%config.region%>
+accessKeyId: <%config.accessKeyId%>
+secretAccessKey: <%config.secretAccessKey%>
 
 ```
 
-#### dynamodb event for create a new table  ( src/events/dynamodb_event.yaml )
+#### Dynamodb event for create a new table  ( src/events/dynamodbEvent.yaml )
 In the event, we establish HTTP endpoint that accepts json objects in request body. When this endpoint is invoked, it triggers the `create` workflow. This workflow, in turn, takes the  input arguments and performs the task of creating new table to the specified aws dynamodb instance.
 
 ```yaml
-# event for create
-
+# Event to create new table in DynamoDB
 http.post./dynamodb:
   summary: Create a new table
   description: Create new table in dynamodb
@@ -39,16 +39,53 @@ http.post./dynamodb:
         schema:
           type: object
           properties:
-            params:
-              type: object   
+            TableName:
+              type: string
+            KeySchema:
+              type: array
+              items:
+                type: object
+                properties:
+                  AttributeName:
+                    type: string
+                  KeyType:
+                    type: string
+            AttributeDefinitions:
+              type: array
+              items:
+                type: object
+                properties:
+                  AttributeName:
+                    type: string
+                  AttributeType:
+                    type: string
+            ProvisionedThroughput:
+              type: object
+              properties:
+                ReadCapacityUnits:
+                  type: integer
+                WriteCapacityUnits:
+                  type: integer
+            # Add more properties as needed
+          required:
+            - TableName
+            - KeySchema
+            - AttributeDefinitions
+            - ProvisionedThroughput
   responses:
-    content:
-      application/json:
-        schema:
-          type: object
+    '201':
+      description: Table created successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
 
 ```
-#### dynamodb workflow for create a new table ( src/functions/create.yaml )
+#### Dynamodb workflow for create a new table ( src/functions/create.yaml )
 
 In workflow we need to mension `datasource.dynamodb.${method}` as function (fn) to perform operations in this case `datasource.dynamodb.createTable`.
 
@@ -58,7 +95,7 @@ summary: Create table
 tasks:
   - id: create table in dynamodb
     fn: datasource.dynamo.createTable
-    args: <%inputs.body%>
+    args: <%inputs.body%> # args must carry exact same params as expected by @aws-sdk/client-dynamodb
 
 
 

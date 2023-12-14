@@ -9,7 +9,8 @@ export default class DataSource extends GSDataSource {
 			credentials: {
 				accessKeyId: this.config.accessKeyId,
 				secretAccessKey: this.config.secretAccessKey,
-			}
+			},
+			apiVersion: this.config?.apiVersion || 'latest'
 		});
 		return client;
 	}
@@ -18,13 +19,12 @@ export default class DataSource extends GSDataSource {
 	async execute(ctx: GSContext, args: PlainObject): Promise<any> {
 		try {
 			const {
-				meta: { fnNameInWorkflow },
+				meta: { fnNameInWorkflow },...rest
 			} = args;
 			const methodName = fnNameInWorkflow.split('.')[2];
-			const ds = fnNameInWorkflow.split('.')[1];
 			const client = this.client;
 			if (client && typeof client[methodName] === 'function') {
-				const response = await client[methodName](args.params);
+				const response = await client[methodName](args.rest);
 				return response;
 			} else {
 				throw new Error(`Invalid method name: ${methodName}`);
