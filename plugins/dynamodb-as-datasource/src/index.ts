@@ -21,8 +21,10 @@ export default class DataSource extends GSDataSource {
 			const {
 				meta: { fnNameInWorkflow },...rest
 			} = args;
-			const methodName = fnNameInWorkflow.split('.')[2];
-			const client = this.client;
+			const methodName = fnNameInWorkflow.substr(
+				fnNameInWorkflow.lastIndexOf('.') + 1
+			  );		
+			  const client = this.client;
 			if (client && typeof client[methodName] === 'function') {
 				const response = await client[methodName](args.rest);
 				return response;
