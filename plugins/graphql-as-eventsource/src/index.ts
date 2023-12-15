@@ -1,64 +1,113 @@
-import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, GSDataSource, GSContext } from "@godspeedsystems/core";
-import { ApolloServer, gql } from 'apollo-server';
+import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@godspeedsystems/core";
+import { ApolloServer, gql, AuthenticationError } from 'apollo-server';
 import path from 'path';
-import fs from 'fs-extra'
+import fs from 'fs-extra';
+import jwt from 'jsonwebtoken';
 
-class EventSource extends GSEventSource {
-
-  private allResolvers: any = {};
-
-  private allevents: any = {};
-
-  private timeOutTimer: any = null;
-
-protected initClient(): Promise<PlainObject> {
-    return Promise.resolve(ApolloServer);
+interface Resolver {
+  [key: string]: any;
 }
 
-async subscribeToEvent(eventKey: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event_info: PlainObject): Promise<void> {
-  this.allevents[eventKey] = event_info
-  let es = eventKey.split('.')[0];
-  let method = eventKey.split('.')[1]
-  let type_name = null
-  if (method === "get") {
-    type_name = "Query";
-  } else {
-    type_name = "Mutation";
+interface Event {
+  [key: string]: PlainObject;
+}
+
+class EventSource extends GSEventSource {
+  private allResolvers: Resolver = {};
+  private allEvents: Event = {};
+  private timeoutTimer: NodeJS.Timeout | null = null;
+
+  protected initClient(): Promise<PlainObject> {
+    return Promise.resolve(ApolloServer);
   }
-  let endpoint = eventKey.split('.')[2];
-  let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
-  modifiedString = modifiedString.replace(/\//g, '_');
-  let subquery = method + modifiedString
-  if (!this.allResolvers[type_name]) {
-    this.allResolvers[type_name] = {}
+
+  async subscribeToEvent(eventKey: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event_info: PlainObject): Promise<void> {
+    this.allEvents[eventKey] = event_info;
+    const [es, method, endpoint] = eventKey.split('.');
+    const typeName = this.getTypeName(method);
+    const modifiedString = this.getModifiedString(endpoint);
+    const subquery = `${method}${modifiedString}`;
+
+    if (!this.allResolvers[typeName]) {
+      this.allResolvers[typeName] = {};
+    }
+
+    this.allResolvers[typeName][subquery] = this.getResolver(method, processEvent, eventConfig, event_info);
+
+    const chosenPort = this.config.port || 4000;
+    if (this.timeoutTimer) {
+      clearTimeout(this.timeoutTimer);
+    }
+
+    this.timeoutTimer = setTimeout(() => this.startServer(es, chosenPort), 3000);
   }
-  this.allResolvers[type_name][subquery] = async (parent: any, args: any, contextValue: any, info: any) => {
-    const { body, ...rest } = args
-    const event = new GSCloudEvent(
-      "id",
-      eventKey,
-      new Date(),
-      "Apollo",
-      "1.0",
-      { body: body, params: rest },
-      "messagebus",
-      new GSActor("user"),
-      {}
-    );
-    let res = await processEvent(event, eventConfig);
-    return res.data;
-  };
-  const chosenPort = this.config.port || 4000;
-  if (this.timeOutTimer) {
-    clearTimeout(this.timeOutTimer)
+
+  private getTypeName(method: string): string {
+    return method === "get" ? "Query" : "Mutation";
   }
-  this.timeOutTimer = setTimeout(async () => {
+
+  private getModifiedString(endpoint: string): string {
+    let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
+    return modifiedString.replace(/\//g, '_');
+  }
+
+  private getResolver(method: string, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, eventConfig: PlainObject, event_info: PlainObject) {
+    return async (parent: any, args: any, contextValue: any, info: any) => {
+      const { body, ...rest } = args;
+      const event = new GSCloudEvent(
+        "id",
+        `${method}.${event_info}`,
+        new Date(),
+        "Apollo",
+        "1.0",
+        { body: body, params: rest },
+        "messagebus",
+        new GSActor("user"),
+        {}
+      );
+
+      if (this.config.jwt) {
+        if (event_info.authn === true || event_info.authn === undefined) {
+          if (contextValue.Authenticated) {
+            let res = await processEvent(event, eventConfig);
+            return res.data;
+          } else {
+            return 'UnAuthorized';
+          }
+        } else {
+          let res = await processEvent(event, eventConfig);
+          return res.data;
+        }
+      } else {
+        let res = await processEvent(event, eventConfig);
+        return res.data;
+      }
+    };
+  }
+
+  private async startServer(es: string, chosenPort: string | number) {
     const schemaFilePath = path.join(process.cwd(), `/src/eventsources/${es}.graphql`);
     const typeDefs = gql(fs.readFileSync(schemaFilePath, 'utf8'));
 
     const server = new ApolloServer({
       typeDefs: typeDefs,
       resolvers: this.allResolvers,
+      cors: this.config?.cors || false,
+      context: ({ req }) => {
+        if (this.config.jwt) {
+          const token = req.headers.authorization || '';
+          try {
+            const Authenticated: any = jwt.verify(token, this.config.jwt.secretOrKey);
+            if (Authenticated.iss === this.config.jwt.iss && Authenticated.aud === this.config.jwt.aud) {
+              return { Authenticated: true };
+            } else {
+              return { Authenticated: false };
+            }
+          } catch (error: any) {
+            throw new AuthenticationError(`INVALID_TOKEN`);
+          }
+        }
+      },
     });
 
     try {
@@ -68,9 +117,7 @@ async subscribeToEvent(eventKey: string, eventConfig: PlainObject, processEvent:
       console.error('Error starting the server:', error.message);
       process.exit(1);
     }
-  }, 3000
-  )
-}
+  }
 }
 
 const SourceType = 'ES';
@@ -85,4 +132,3 @@ export {
   CONFIG_FILE_NAME,
   DEFAULT_CONFIG
 }
-
