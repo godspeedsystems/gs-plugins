@@ -30,5 +30,13 @@
     "dotenv": "^16.0.3",
     "lodash": "^4.17.21",
     "pino-pretty": "^10.2.0"
-  }
+  },
+  "keywords": [
+    "godspeed",
+    "lowcode",
+    "microservice",
+    "prisma",
+    "datasource",
+    "godspeed plugins"
+  ]
 }

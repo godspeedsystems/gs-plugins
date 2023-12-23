@@ -1,5 +1,7 @@
 # Godspeed Express Plugin
 
+Welcome to the [Godspeed](https://www.godspeed.systems/) Express Plugin! 🚀
+
 ## Introduction
 
 The Godspeed Express Plugin is an integral part of the Godspeed framework, designed to facilitate the integration of event-driven and serverless functionalities into your projects. This plugin leverages the popular Express.js framework to handle HTTP events, making it easy to define event subscriptions and process incoming events.
@@ -13,7 +15,7 @@ godspeed plugin add
 
 ? Please select godspeed plugin to install. 
   @godspeedsystems/plugins-cron-as-eventsource 
-❯ @godspeedsystems/plugins-express-as-http 
+❯ @godspeedsystems/plugins-express-as-http  
   @godspeedsystems/plugins-prisma-as-datastore 
   @godspeedsystems/plugins-axios-as-datasource 
   @godspeedsystems/plugins-aws-as-datasource 
@@ -102,7 +104,7 @@ This plugin is designed to integrate with the Godspeed framework and provides fu
 
 ## Plugin Components
 
-The [plugin](/src/index.ts) consists of several key components:
+The plugin consists of several key components:
 
 ### 1. `EventSource` Class
 
@@ -135,7 +137,7 @@ We're excited to see what you'll create with the Express plugin, and we look for
 
 ### Get in Touch
 
-- [Discord](https://discord.gg/c4DcdBA9)
+- [Discord](https://discord.com/invite/mjBa3RvTP5)
 - [Plugin Repository](https://github.com/godspeedsystems/gs-plugins/tree/main/plugins/express-as-http)
 - [Issue Tracker](https://github.com/godspeedsystems/gs-plugins/issues)
 

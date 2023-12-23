@@ -1,5 +1,7 @@
 # godspeed-plugin-graphql-as-eventsource
 
+Welcome to the [Godspeed](https://www.godspeed.systems/) GraphQL Plugin! 🚀
+
 **Godspeed** leverages Apollo Server, a powerful and extensible open-source server built on GraphQL, to streamline the creation of GraphQL APIs. Apollo Server excels in automatic schema generation and seamless integration with diverse data sources, providing a robust foundation for scalable and high-performance GraphQL applications.
 
 This guide offers a concise overview of integrating the GraphQL plugin into the Godspeed framework as an Event Source.

@@ -21,5 +21,14 @@
                 "@godspeedsystems/core": "latest",
                 "@aws-sdk/client-s3": "^3.0.0",
                 "pino-pretty": "^10.2.0"
-        }
+        },
+        "keywords": [
+                "godspeed",
+                "meta-framework",
+                "aws",
+                "godspeed http server",
+                "microservice",
+                "lowcode",
+                "godspeed plugins"
+        ]
 }

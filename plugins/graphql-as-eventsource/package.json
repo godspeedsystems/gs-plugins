@@ -23,5 +23,13 @@
                 "apollo-server": "^3.13.0",
                 "fs-extra": "^11.2.0",
                 "pino-pretty": "^10.2.0"
-        }
+        },
+        "keywords": [
+                "godspeed",
+                "lowcode",
+                "microservice",
+                "graphql",
+                "datasource",
+                "godspeed plugins"
+        ]
 }

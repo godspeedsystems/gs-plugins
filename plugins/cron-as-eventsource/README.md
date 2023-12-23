@@ -1,5 +1,6 @@
 # godspeed-plugin-cron-as-eventsource
 
+Welcome to the [Godspeed](https://www.godspeed.systems/) Cron Plugin! 🚀
 
 Cron jobs are a standard method of scheduling tasks to run on your server. Cron is a service running in the background that will execute commands (jobs) at a specified time, or at a regular interval. Jobs and their schedules are defined in a configuration file called a crontab.
 

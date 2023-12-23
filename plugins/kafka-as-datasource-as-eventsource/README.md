@@ -1,6 +1,6 @@
-
-
 # godspeed-plugin-kafka-as-datasource-as-eventsource
+
+Welcome to the [Godspeed](https://www.godspeed.systems/) Kafka Plugin! 🚀
 
 Kafka is a versatile messaging system designed to securely transfer data between various systems. Its functionality can be tailored through configuration, allowing it to serve as a reliable conduit for real-time event tracking or even function as a replicated distributed database. While it's often colloquially labeled as a queue, it's more precisely described as a hybrid system that combines characteristics and trade-offs from both queue and database systems.
 

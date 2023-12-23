@@ -234,8 +234,8 @@ Certainly, here are the provided steps rephrased:
 | 6   | Excel  |Datasource  |[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-excel-as-datasource) |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/excel-as-datasource/README.md)|Godspeed                                |      |                  |               |               |
 | 7   | Redis   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-redis-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/redis-as-datasource/README.md) |Godspeed                                    |      |                  |               |               |
 | 8  | Mailer   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-mailer-as-datasource)   |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/mailer-as-datasource/README.md)       |Godspeed                   |      |                  |               |               |
-| 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
-| 10   | MySQL                                        |      |                  |               |               |
+| 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                |      |                  |               |               |
+| 10   | GraphQL                                |Eventsource      |  [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-graphql-as-eventsource)                 |               |Godspeed               |
 | 11  | RabbitMQ                                     |      |                  |               |               ||
 | 12  | MongoDB                                    |      |                  |               |               |
 | 13  | Salesforce                                   |      |                  |               |               |
@@ -249,7 +249,7 @@ Certainly, here are the provided steps rephrased:
 | 21  | MariaDB                                      |      |                  |               |               |
 | 22  | Google Cloud Pub/Sub                         |      |                  |               |               |
 | 23  | RabbitMQ                                     |      |                  |               |               |
-| 24 | GraphQL                                      |      |                  |               |               |
+| 24 | MySQL                                      |      |                  |               |               |
 | 25 | gRPC                                         |      |                  |               |               |
 | 26 | JMeter                                       |      |                  |               |               |
 | 27 | JIRA Software                                |      |                  |               |               |
