@@ -2,6 +2,7 @@ import {
   GSContext,
   GSDataSource,
   PlainObject,
+  GSStatus,
 } from "@godspeedsystems/core";
 import { createClient } from "redis";
 
@@ -26,17 +27,25 @@ export default class DataSource extends GSDataSource {
 
       if (client) {
         if (methodName === "set") {
-          const res = await client.set(args.key, args.value);
-          return res;
+          try{
+            const res = await client.set(args.key, args.value);
+            return new GSStatus(true, 200, 'Set operation successful', res, undefined);
+          }catch(err){
+            return new GSStatus(false, 500, 'Set operation failed', err, undefined);
+          }
         } else if (methodName === "get") {
+          try{
           const res = client.get(args.key);
-          return res;
+          return new GSStatus(true, 200, 'Get operation successful', res, undefined);
+        }catch(err){
+          return new GSStatus(false, 500, 'Get operation failed', err, undefined);
         }
       }
-    } catch (error) {
-      throw error;
     }
+  }catch (error) {
+    return new GSStatus(false, 500, 'Internal server error', error , undefined)
   }
+}
 }
 const SourceType = "DS";
 const Type = "redis"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
