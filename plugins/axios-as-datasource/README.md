@@ -1,6 +1,6 @@
 ## godspeed-Plugin-axios-as-datasource
 
-Welcome to the [Godspeed](https://www.godspeed.systems/) Elasticgraph Plugin! 🚀
+Welcome to the [Godspeed](https://www.godspeed.systems/) Axios Plugin! 🚀
 
 
 The Godspeed Axios Plugin provides seamless integration with the Axios library for making HTTP requests within the Godspeed framework. It simplifies the process of defining and executing HTTP requests, making it easy to interact with external APIs.
