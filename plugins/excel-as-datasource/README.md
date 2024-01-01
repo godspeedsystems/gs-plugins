@@ -22,6 +22,31 @@ this plugin allows you this below operations
 
 1. Update configuration file based on your requirements in `Datasource/excel.yaml`.
 #### excel config ( src/datasources/excel.yaml )
+
+## How to Use
+- Create a godspeed project from the CLI and by default the Express plugin is integrated into your project if not, add the plugin from the CLI and select the `@godspeedsystems/plugins-excel-as-datasource` to integrate the plugin.
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│    │ Name                              │ Description                                                     │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ express-as-http                   │ Godspeed event source plugin for express as http server         │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ aws-as-datasource                 │ aws as datasource plugin for Godspeed Framework                 │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ mailer-as-datasource              │ mailer as datasource plugin for Godspeed Framework              │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ ❯◯ │ excel-as-datasource               │ excel as datasource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
+└────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+```
+
 ```yaml
 type: excel
 filepath: "/home/laptop/Desktop/test.ods"
@@ -64,3 +89,5 @@ tasks:
       data: <% inputs.body %>
 
 ```
+
+## Thank You For Using Godspeed 

@@ -8,6 +8,31 @@ A brief description of how to use Kafka plug-in in our godspeed framework as Dat
 
 ## Steps to use kafka plug-in in godspeed framework:
 
+## How to Use
+- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-kafka-as-datasource-as-eventsource` to integrate the plugin.
+
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌──────┬────────────────────────────────────┬────────────────────────────────────────────────────────────────────┐
+│      │ Name                               │ Description                                                        │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ prisma-as-datastore                │ Prisma as a datasource plugin for Godspeed Framework.              │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ aws-as-datasource                  │ aws as datasource plugin for Godspeed Framework                    │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ excel-as-datasource                │ excel as datasource plugin for Godspeed Framework                  │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ mailer-as-datasource               │ mailer as datasource plugin for Godspeed Framework                 │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│ ❯◯   │ kafka-as-datasource-as-eventsource │ kafka as datasource-as-eventsource plugin for Godspeed Framework   │
+└──────┴────────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
+```
+
 ### Example usage Datasource (Producer):
 
 1. Update configuration file based on your requirements in `Datasource/kafka.yaml`.
@@ -103,3 +128,5 @@ tasks:
       fn: com.gs.return
       args: <% inputs %>
 ```
+
+## Thank You For Using Godspeed 

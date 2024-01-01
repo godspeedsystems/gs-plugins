@@ -1,6 +1,6 @@
 # godspeed-plugin-elasticgraph-as-datasource
 
-Welcome to the Godspeed Elasticgraph Plugin! 🚀
+Welcome to the [Godspeed](https://www.godspeed.systems/) Elasticgraph Plugin! 🚀
 
 **"Elasticgraph: Relationship aware node.js ORM over elasticsearch, with agility, quality and joy of development."**
 
@@ -14,7 +14,7 @@ The node module internally uses **intelligent query batching and in memory cachi
 
 - Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-elasticgraph-as-datastore` to integrate the plugin.
 
-```bash
+```
 $ godspeed plugin add
 
 
@@ -161,3 +161,5 @@ Run godspeed dev to start the development server.
 ```bash
 godspeed dev
 ```
+
+## Thank You For Using Godspeed 

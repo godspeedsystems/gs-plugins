@@ -12,7 +12,33 @@ A brief description of how to use Cron plug-in in  godspeed framework as Event S
 ### Example usage :
 
 1. Update configuration file based on your requirements in `eventsource/cron.yaml`.
-#### cron config ( src/eventsources/cron.yaml )
+#### cron config ( src/eventsources/cron.yaml )3
+
+## How to Use
+- Create a godspeed project from the CLI and by default the Express plugin is integrated into your project if not, add the plugin from the CLI and select the `@godspeedsystems/plugins-cron-as-eventsource` to integrate the plugin.
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│    │ Name                              │ Description                                                     │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ express-as-http                   │ Godspeed event source plugin for express as http server         │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ aws-as-datasource                 │ aws as datasource plugin for Godspeed Framework                 │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ mailer-as-datasource              │ mailer as datasource plugin for Godspeed Framework              │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ ❯◯ │ cron-as-eventsource               │ Cron as eventsource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
+└────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+```
+
+
 ```yaml
 type: cron
 ```
@@ -41,3 +67,4 @@ tasks:
     args:
       data: HELLO from CRON
 ```
+## Thank You For Using Godspeed 

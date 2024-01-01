@@ -157,4 +157,5 @@ Run godspeed dev to start the development server.
 godspeed dev
 ```
 
+## Thank You For Using Godspeed 
 

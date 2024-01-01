@@ -14,6 +14,33 @@ This guide offers a concise overview of integrating the GraphQL plugin into the 
 
 2. Tailor the configuration file according to your needs in `eventsource/graphql.yaml`.
 
+## How to Use
+- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-graphql-as-eventsource` to integrate the plugin.
+
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│    │ Name                              │ Description                                                     │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ ❯◯ │ graphql-as-eventsource            │ graphql as eventsource plugin for Godspeed Framework            │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ aws-as-datasource                 │ aws as datasource plugin for Godspeed Framework                 │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ mailer-as-datasource              │ mailer as datasource plugin for Godspeed Framework              │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ excel-as-datasource               │ excel as datasource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
+└────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+```
+
+
+
 #### GraphQL Configuration (src/eventsources/Apollo.yaml)
 ```yaml
 type: graphql
