@@ -26,6 +26,7 @@ export default class EventSource extends GSEventSource {
         useTempFiles: true,
         //@ts-ignore
         limits: { fileSize: file_size_limit },
+        abortOnLimit:true,
       })
     );
   
