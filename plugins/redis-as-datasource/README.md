@@ -1,5 +1,6 @@
 # godspeed-plugin-Redis-as-datasource
 
+
 Welcome to the [Godspeed](https://www.godspeed.systems/) Redis Plugin! 🚀
 
 The Godspeed Redis Plugin provides integration with Redis, allowing developers to seamlessly interact with Redis databases within the Godspeed framework. This plugin simplifies the process of working with Redis data, providing a standardized way to perform common Redis operations.
@@ -7,6 +8,7 @@ The Godspeed Redis Plugin provides integration with Redis, allowing developers t
 
 ## How to add Redis plugin in your project:
 - Create a godspeed project from the CLI and add the Redis plugin the plugin from the CLI and select the `@godspeedsystems/plugins-redis-as-datasource` to integrate the plugin.
+
 ```
 macbookpro@MacbookPros-MBP gs-test-project % godspeed plugin add   
 
@@ -31,6 +33,7 @@ macbookpro@MacbookPros-MBP gs-test-project % godspeed plugin add
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
 │  ◯ │ axios-as-datasource               │ Axios as datasource plugin for Godspeed Framework               │
 └────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+
 ```
 - You will find the files in your project related to the Redis plugin at `src/datasources/types/redis.ts` and `src/datasources/redis.yaml`.
 
@@ -104,6 +107,7 @@ The Godspeed Redis Plugin is a valuable addition to the Godspeed framework, prov
 We value your feedback and contributions. If you have any questions, suggestions, or encounter issues while using the plugin, please reach out to us. Your insights and ideas help us enhance and improve this plugin for the entire Godspeed community.
 
 We're excited to see how you leverage the Godspeed Redis Plugin in your projects and look forward to collaborating with you to make your applications even more powerful. Happy coding!
+
 
 
 ## Thank You For Using Godspeed 

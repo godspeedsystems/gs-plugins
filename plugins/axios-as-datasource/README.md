@@ -1,12 +1,12 @@
 ## godspeed-Plugin-axios-as-datasource
 
+
 Welcome to the [Godspeed](https://www.godspeed.systems/) Axios Plugin! 🚀
-
-
 The Godspeed Axios Plugin provides seamless integration with the Axios library for making HTTP requests within the Godspeed framework. It simplifies the process of defining and executing HTTP requests, making it easy to interact with external APIs.
 
 ## How to Use
 - Create a godspeed project from the CLI and by default the axios plugin is integrated into your project if not, add the plugin from the CLI and select the `@godspeedsystems/plugins-axios-as-datasource` to integrate the plugin.
+
 ```
 godspeed plugin add   
 
@@ -56,38 +56,22 @@ tasks:
   - id: first_task
     fn: datasource.api.get./api/items
     args:
+      headers:
+      data:
+      timeout:
+      params:
 ```
 The axios request configuration options, such as headers, params, data, and timeout, can be directly passed as arguments (args).
 
 ```
 args:
     headers:
-    'X-Requested-With': 'XMLHttpRequest'
+      'X-Requested-With': 'XMLHttpRequest'
     params:
-    ID: 12345
+      ID: 12345
     data:
-    firstName: 'Fred'
+      firstName: 'Fred'
     timeout: 1000
-    withCredentials: false
-    auth:
-    username: 'janedoe'
-    password: 's00pers3cret'
-    responseType: 'json'
-    responseEncoding: 'utf8'
-    xsrfCookieName: 'XSRF-TOKEN'
-    xsrfHeaderName: 'X-XSRF-TOKEN'
-    maxContentLength: 2000
-    maxBodyLength: 2000
-    maxRedirects: 5
-    socketPath: null
-    proxy:
-    protocol: 'https'
-    host: '127.0.0.1'
-    port: 9000
-    auth:
-        username: 'mikeymike'
-        password: 'rapunz3l'
-    decompress: true
 ```
  To get more clarity checkout about [Axios configuration]( https://axios-http.com/docs/req_config)
 
@@ -134,7 +118,7 @@ The Godspeed Axios Plugin is a valuable addition to the Godspeed framework, prov
 
 We welcome your feedback and contributions. If you have any questions, suggestions, or encounter issues while using the plugin, please reach out to us. Your insights and ideas help us enhance and improve this plugin for the entire Godspeed community.
 
-We're excited to see how you leverage the Godspeed Axios Plugin in your projects and look forward to collaborating with you to make your applications even more powerful. Happy coding!
 
+We're excited to see how you leverage the Godspeed Axios Plugin in your projects and look forward to collaborating with you to make your applications even more powerful. Happy coding!
 
 ## Thank You For Using Godspeed 
