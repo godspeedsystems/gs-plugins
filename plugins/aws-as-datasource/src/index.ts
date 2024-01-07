@@ -1,5 +1,14 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-// import { DynamoDB } from "@aws-sdk/client-dynamodb";
+//Some example client mappings. Developer should set the mappings of all 
+//service types she needs in their datasource's instance's yaml file. 
+//If she sets even one mapping. that is used, and this one is ignored.
+const SERVICE_CLIENT_MAPPINGS: PlainObject = {
+  dynamodb: 'DynamoDB',
+  s3: 'S3',
+  lambda: 'Lambda',
+  ssm: 'SSM',
+  sqs: 'SQS'
+};
 
 export default class AWSDataSource extends GSDataSource {
   async initClient(): Promise<PlainObject> {
@@ -24,14 +33,17 @@ export default class AWSDataSource extends GSDataSource {
    *    type: dynamodb
    * ```
    */
-  async initializeClients(): PlainObject {
+
+
+  async initializeClients(): Promise<PlainObject> {
     const dsConfig: PlainObject = (this as GSDataSource).config;
     const serviceModules: PlainObject = {};
     const clients: PlainObject = {};
     if (!dsConfig.services) {
       throw new Error(`The AWS datasource config in ${dsConfig.name}.yaml does not have any services declared under the key 'services'`);
     }
-    for (let serviceName in Object.keys(dsConfig.services)) {
+    const serviceClientMappings: PlainObject = (this as GSDataSource).config.types || SERVICE_CLIENT_MAPPINGS;
+    for (let serviceName of Object.keys(dsConfig.services)) {
       const serviceConfig = dsConfig.services[serviceName];
       const serviceType = serviceConfig.type;
       if (!serviceType) {
@@ -39,10 +51,11 @@ export default class AWSDataSource extends GSDataSource {
       }
       let serviceModule = serviceModules[serviceType];
       if (!serviceModule) {
-        serviceModule = await import(`@aws-sdk/client-${serviceType}`);
+        const clientLibrary = await import(`@aws-sdk/client-${serviceType}`);
+        serviceModule = clientLibrary[serviceClientMappings[serviceType]];
         serviceModules[serviceType] = serviceModule;
       }
-      const Constructor = serviceModule.default;
+      const Constructor = serviceModule;
       const serviceClient = new Constructor(serviceConfig.config || dsConfig.default_client_config);
       clients[serviceName] = serviceClient;
     }
@@ -59,56 +72,73 @@ export default class AWSDataSource extends GSDataSource {
    */
   async execute(ctx: GSContext, args: PlainObject): Promise<GSStatus> {
     const {
-      meta: { fnNameInWorkflow },
+
+      meta: { entityType: serviceName, method },
       ...rest
     } = args;
     try {
-      
       // fn validity checks
-      const fnParts = this.isFnValid(fnNameInWorkflow, ctx);
-      if (!fnParts) {
-        throw new Error();
+      // const fnParts = this.isFnValid(fnNameInWorkflow, ctx);
+      // if (!fnParts) {
+      //   throw new Error();
+      // }
+      if (!serviceName) {
+        ctx.childLogger.error("Invalid aws datasource fn. Service name not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
+        return new GSStatus(false, 500, undefined, { message: "Internal server error" });
       }
+      if (!method) {
+        ctx.childLogger.error("Invalid aws datasource fn. Method's name Not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
+        return new GSStatus(false, 500, undefined, { message: "Internal server error" });
+      }
+      // let [, , serviceName, method] = fnParts;
+      //@ts-ignore
+      const serviceClient = this.client && this.client[serviceName];
 
-      let [, , serviceName, method] = fnParts;
-      const serviceClient = (this as GSDataSource).client[serviceName];
+      if (!serviceClient) {
+        ctx.childLogger.error(`Invalid AWS service name '${serviceName}'`);
+        return new GSStatus(false, 500, undefined, { message: "Internal server error" });
+      }
 
       if (typeof serviceClient[method] === 'function') {
+        //Invoke the method
         const response = await serviceClient[method](rest);
-        throw new Error();
+        return new GSStatus(true, 200, undefined, response);
       } else {
-        ctx.childLogger.error(`Invalid AWS method called for service ${serviceName}`);
-        throw new Error();
+
+        ctx.childLogger.error(`Invalid method '${method}' called for datasource.aws.${serviceName}`);
+        return new GSStatus(false, 500, undefined, { message: "Internal server error" });
       }
+
     } catch (error: any) {
-      ctx.childLogger.error(`Error encountered in executing ${fnNameInWorkflow}. ${error}`);
+      ctx.childLogger.error(`Error encountered in executing ${serviceName}.${method}. ${error}`);
       return new GSStatus(false, error.$metadata?.httpStatusCode || 500, undefined, { message: "Internal server error" });
     }
   }
 
-  isFnValid(fnNameInWorkflow: string, ctx: GSContext): string[] | undefined {
-    if (!fnNameInWorkflow) {
-      ctx.childLogger.error("fn can not be null or undefined");
-      return;
-    }
-    const fnParts: string[] = fnNameInWorkflow.split('.');
-    if (fnParts.length !== 4) {
-      ctx.childLogger.error("Invalid aws datasource fn. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
-      return;
-    }
-    let [, , serviceName, method] = fnParts;
-    if (!serviceName) {
-      ctx.childLogger.error("Invalid aws datasource fn. Service name not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
-      return;
-    }
-    if (!method) {
-      ctx.childLogger.error("Invalid aws datasource fn. Method's name Not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
-      return;
-    }
+  // isFnValid(fnNameInWorkflow: string, ctx: GSContext): string[] | undefined {
+  //   if (!fnNameInWorkflow) {
+  //     ctx.childLogger.error("fn can not be null or undefined");
+  //     return;
+  //   }
+  //   const fnParts: string[] = fnNameInWorkflow.split('.');
+  //   if (fnParts.length !== 4) {
+  //     ctx.childLogger.error("Invalid aws datasource fn. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
+  //     return;
+  //   }
+  //   let [, , serviceName, method] = fnParts;
+  //   if (!serviceName) {
+  //     ctx.childLogger.error("Invalid aws datasource fn. Service name not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
+  //     return;
+  //   }
+  //   if (!method) {
+  //     ctx.childLogger.error("Invalid aws datasource fn. Method's name Not found. fn is epxected to be of this format: datasource.<aws_instance_name>.<service_name>.<method_name>");
+  //     return;
+  //   }
 
-    return fnParts;
-  }
-  
+  //   return fnParts;
+  // }
+
+
 }
 
 export {

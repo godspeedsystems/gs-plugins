@@ -2,13 +2,13 @@
 
 Welcome to the [Godspeed](https://www.godspeed.systems/) AWS Plugin! 🚀
 
-Welcome to the backbone of the cloud—the Amazon Web Services (AWS). Renowned for its unparalleled scalability and reliability, AWS stands as a juggernaut in cloud computing. Empowering businesses with a vast array of services, from storage to machine learning, AWS is the conduit for innovation in the digital realm. Dive into the future of computing with AWS as your steadfast and cutting-edge data source.
+Dive into computing with AWS as your steadfast and cutting-edge data source.
 
-A brief description of how to use aws plug-in in our godspeed framework as Data Source as Event Source. 
+A brief description of how to use aws plug-in in our godspeed framework as Data Source.
 
 ## Steps to use aws plug-in in godspeed framework:
 
-## How to Use
+### How to install
 - Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-aws-as-datasource` to integrate the plugin.
 
 ```
@@ -33,24 +33,56 @@ A brief description of how to use aws plug-in in our godspeed framework as Data 
 └──────┴────────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
 ```
 
-### Example usage (listObjects):
+### Configuration
 
-1. Update configuration file based on your requirements in `Datasource/aws.yaml`.
-#### aws config ( src/datasources/aws.yaml )
+In your <aws_ds_name>.yaml file, you will need to configure
+- type: aws (type of the datasource)
+- default_client_config (optional) for initializing your clients, as per the aws config specs
+- Client type to client name mappings via the `types` key
+- `services` contains settings for the services you want to invoke via this datasource. 
+  - Each service has a type like s3, lamdba etc.
+  - They can have their own config overriding the default under the `config` key
+  - Note: There can be multiple services configured for the same type. Check `s3` and `s3_1` below
+
 ```yaml
 type: aws
-region: "ap-south-1"
-bucket_name: "godspeed-test"
-accessKeyId: "AKIC4KQJJFGY3NDQ2TPY"
-secretAccessKey: "lXxTDaVZyv+dwMn2PepJ9gyd1IotfX/voBmggu6E"
-
-
+default_client_config: #any aws specific configurations
+  credentials:
+    accessKeyId: <%config.accessKeyId%>
+    secretAccessKey: <%config.secretAccessKey%>
+# service type is the name of the npm module for ex. @aws-sqk/client-dynamodb or @aws-sqk/client-s3 etc
+# The `types` key can have service type to sdk's client names mappings when coding
+types: #mappings
+  dynamodb: DynamoDB
+  s3: S3
+  lambda: Lambda
+  ssm: SSM
+  sqs: SQS
+services:
+  s3:
+    type: s3
+    config:
+      region: <%config.anotherAccessKeyId%>
+      credentials:
+        accessKeyId: <%config.anotherAccessKeyId%>
+        secretAccessKey: <%config.anotherSecretAccessKey%>
+  s3_1: #uses default config
+    type: s3
+  dynamodb:
+    type: dynamodb
+  sqs:
+    type: sqs
+  ssm:
+    type: ssm
+  lamdba:
+    type: lambda
 ```
 
+### Example usage
 
+In an event, we establish HTTP endpoint that accepts json objects in request body. When this endpoint is invoked, it triggers the `aws_list` function with the args coming from request body.
 
-#### aws event for list Objects  ( src/events/aws_event.yaml )
-In the event, we establish HTTP endpoint that accepts json objects in request body. When this endpoint is invoked, it triggers the `aws_list` function. This function, in turn, takes the  input arguments and performs the task of creating new objects to the specified aws file.
+#### Example event schema
 ```yaml
 # event for create
 
@@ -64,18 +96,36 @@ In the event, we establish HTTP endpoint that accepts json objects in request bo
          application/json:
 
 ```
-#### aws workflow for create a new user ( src/functions/aws_list.yaml )
 
-In workflow we need to mension `datasource.aws.${method}` as function (fn) to perform operations in this case `datasource.aws.listObjects`.
+#### Example YAML workflow
+
+In workflow we need to mention `datasource.aws.${serviceName}.${method}` as function (fn) to perform operations in this case `datasource.aws.s3.listObjects`.
 
 ```yaml
-id: aws
+id: aws_workflow
 tasks:
   - id: aws_list
-    fn: datasource.aws.listObjects
-    args:
-      params: <% inputs.body.params %>
-
+    fn: datasource.aws.s3.listObjects
+    args: <% inputs.body %>
 ```
+#### Example TS workflow
+```ts
+import { GSContext, GSDataSource, GSStatus } from "@godspeedsystems/core";
 
+export default async function (ctx: GSContext, args: any) {
+    const ds: GSDataSource = ctx.datasources.aws;
+    const response = await ds.execute(ctx, {
+         //Pass exactly same args as this aws service's method takes
+        ...args,
+        //Along with args, pass meta object
+        // meta can contain {entityName, method}
+        meta: {entityName: 's3', method: 'listBuckets'},
+        //Or meta can contain {fnNameInWorkflow} which is same as 
+        //the 'fn' that we write when invoking datasource from yaml workflow
+        //For example, this will also work
+        //meta: {fnNameInWorkflow: 'datasource.aws.s3.listBuckets'}
+    });
+    return response;
+}
+```
 ## Thank You For Using Godspeed 
