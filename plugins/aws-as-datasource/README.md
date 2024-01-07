@@ -62,7 +62,11 @@ services:
   s3:
     type: s3
     config:
-  s3_1:
+      region: <%config.anotherAccessKeyId%>
+      credentials:
+        accessKeyId: <%config.anotherAccessKeyId%>
+        secretAccessKey: <%config.anotherSecretAccessKey%>
+  s3_1: #uses default config
     type: s3
   dynamodb:
     type: dynamodb
