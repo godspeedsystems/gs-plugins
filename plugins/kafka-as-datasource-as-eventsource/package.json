@@ -21,5 +21,13 @@
                 "@godspeedsystems/core": "latest",
                 "kafkajs": "^2.2.4",
                 "pino-pretty": "^10.2.0"
-        }
+        },
+        "keywords": [
+                "godspeed",
+                "meta-framework",
+                "kafka",
+                "microservice",
+                "lowcode",
+                "godspeed plugins"
+        ]
 }

@@ -1,25 +1,39 @@
 # godspeed-plugin-Redis-as-datasource
 
+
+Welcome to the [Godspeed](https://www.godspeed.systems/) Redis Plugin! 🚀
+
 The Godspeed Redis Plugin provides integration with Redis, allowing developers to seamlessly interact with Redis databases within the Godspeed framework. This plugin simplifies the process of working with Redis data, providing a standardized way to perform common Redis operations.
 
 
 ## How to add Redis plugin in your project:
 - Create a godspeed project from the CLI and add the Redis plugin the plugin from the CLI and select the `@godspeedsystems/plugins-redis-as-datasource` to integrate the plugin.
-```bash
-godspeed plugin add
 
-~~~~~~ Godspeed CLI ~~~~~~
+```
+macbookpro@MacbookPros-MBP gs-test-project % godspeed plugin add   
 
-? Please select godspeed plugin to install. 
-  @godspeedsystems/plugins-cron-as-eventsource 
-  @godspeedsystems/plugins-express-as-http 
-  @godspeedsystems/plugins-prisma-as-datastore 
-  @godspeedsystems/plugins-axios-as-datasource 
-❯ @godspeedsystems/plugins-redis-as-datasource 
-  @godspeedsystems/plugins-aws-as-datasource 
-  @godspeedsystems/plugins-mailer-as-datasource 
-  @godspeedsystems/plugins-excel-as-datasource 
-(Move up and down to reveal more choices)
+
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+
+
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│    │ Name                              │ Description                                                     │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ cron-as-eventsource               │ Cron as eventsource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ ❯◯ │ redis-as-datasource               │ redis as datasource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ elasticgraph-as-datasource        │ elasticgraph as datasource plugin for Godspeed Framework        │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ axios-as-datasource               │ Axios as datasource plugin for Godspeed Framework               │
+└────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+
 ```
 - You will find the files in your project related to the Redis plugin at `src/datasources/types/redis.ts` and `src/datasources/redis.yaml`.
 
@@ -95,3 +109,5 @@ We value your feedback and contributions. If you have any questions, suggestions
 We're excited to see how you leverage the Godspeed Redis Plugin in your projects and look forward to collaborating with you to make your applications even more powerful. Happy coding!
 
 
+
+## Thank You For Using Godspeed 

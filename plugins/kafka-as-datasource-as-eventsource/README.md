@@ -1,12 +1,37 @@
-
-
 # godspeed-plugin-kafka-as-datasource-as-eventsource
+
+Welcome to the [Godspeed](https://www.godspeed.systems/) Kafka Plugin! 🚀
 
 Kafka is a versatile messaging system designed to securely transfer data between various systems. Its functionality can be tailored through configuration, allowing it to serve as a reliable conduit for real-time event tracking or even function as a replicated distributed database. While it's often colloquially labeled as a queue, it's more precisely described as a hybrid system that combines characteristics and trade-offs from both queue and database systems.
 
 A brief description of how to use Kafka plug-in in our godspeed framework as Data Source as Event Source. 
 
 ## Steps to use kafka plug-in in godspeed framework:
+
+## How to Use
+- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-kafka-as-datasource-as-eventsource` to integrate the plugin.
+
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌──────┬────────────────────────────────────┬────────────────────────────────────────────────────────────────────┐
+│      │ Name                               │ Description                                                        │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ prisma-as-datastore                │ Prisma as a datasource plugin for Godspeed Framework.              │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ aws-as-datasource                  │ aws as datasource plugin for Godspeed Framework                    │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ excel-as-datasource                │ excel as datasource plugin for Godspeed Framework                  │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│  ◯   │ mailer-as-datasource               │ mailer as datasource plugin for Godspeed Framework                 │
+├──────┼────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+│ ❯◯   │ kafka-as-datasource-as-eventsource │ kafka as datasource-as-eventsource plugin for Godspeed Framework   │
+└──────┴────────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
+```
 
 ### Example usage Datasource (Producer):
 
@@ -103,3 +128,5 @@ tasks:
       fn: com.gs.return
       args: <% inputs %>
 ```
+
+## Thank You For Using Godspeed 

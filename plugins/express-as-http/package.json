@@ -8,7 +8,10 @@
     "godspeed",
     "meta-framework",
     "express",
-    "godspeed http server"
+    "godspeed http server",
+    "microservice",
+    "lowcode",
+    "godspeed plugins"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.js",

@@ -22,5 +22,13 @@
                 "@godspeedsystems/core": "latest",
                 "pino-pretty": "^10.2.0",
                 "nodemailer": "^6.9.5"
-        }
+        },
+        "keywords": [
+                "godspeed",
+                "lowcode",
+                "microservice",
+                "mailer",
+                "datasource",
+                "godspeed plugins"
+        ]
 }

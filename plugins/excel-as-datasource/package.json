@@ -23,5 +23,14 @@
                 "pino-pretty": "^10.2.0",
                 "uuid": "^9.0.1",
                 "xlsx": "^0.18.5"
-        }
+        },
+        "keywords": [
+                "godspeed",
+                "meta-framework",
+                "excel",
+                "godspeed http server",
+                "microservice",
+                "lowcode",
+                "godspeed plugins"
+        ]
 }
