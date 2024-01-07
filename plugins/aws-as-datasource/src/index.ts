@@ -1,5 +1,4 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-
 //Some example client mappings. Developer should set the mappings of all 
 //service types she needs in their datasource's instance's yaml file. 
 //If she sets even one mapping. that is used, and this one is ignored.
@@ -10,6 +9,7 @@ const SERVICE_CLIENT_MAPPINGS: PlainObject = {
   ssm: 'SSM',
   sqs: 'SQS'
 };
+
 export default class AWSDataSource extends GSDataSource {
   async initClient(): Promise<PlainObject> {
     const client = await this.initializeClients();
@@ -33,6 +33,7 @@ export default class AWSDataSource extends GSDataSource {
    *    type: dynamodb
    * ```
    */
+
 
   async initializeClients(): Promise<PlainObject> {
     const dsConfig: PlainObject = (this as GSDataSource).config;
@@ -71,6 +72,7 @@ export default class AWSDataSource extends GSDataSource {
    */
   async execute(ctx: GSContext, args: PlainObject): Promise<GSStatus> {
     const {
+
       meta: { entityType: serviceName, method },
       ...rest
     } = args;
@@ -135,6 +137,7 @@ export default class AWSDataSource extends GSDataSource {
 
   //   return fnParts;
   // }
+
 
 }
 
