@@ -236,7 +236,7 @@ Certainly, here are the provided steps rephrased:
 | 8  | Mailer   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-mailer-as-datasource)   |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/mailer-as-datasource/README.md)       |Godspeed                   |      |                  |               |               |
 | 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
 | 10   | Fastify  | Eventsource | npm |[readme](./plugins/fastify-as-http/README.md)|Godspeed|
-| 11   | MySQL                                        |      |                  |               |               |
+| 11   | GraphQL                                |Eventsource      |  [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-graphql-as-eventsource)                 |               |Godspeed               |
 | 12  | RabbitMQ                                     |      |                  |               |               ||
 | 13  | MongoDB                                    |      |                  |               |               |
 | 14  | Salesforce                                   |      |                  |               |               |
@@ -252,15 +252,14 @@ Certainly, here are the provided steps rephrased:
 | 24  | RabbitMQ                                     |      |                  |               |               |
 | 25 | GraphQL                                      |      |                  |               |               |
 | 26 | gRPC                                         |      |                  |               |               |
-| 27 | JMeter                                       |      |                  |               |               |
-| 28 | JIRA Software                                |      |                  |               |               |
-| 29 | Jenkins                                      |      |                  |               |               |
-| 30 | GitLab CI/CD                                 |      |                  |               |               |
-| 31 | Azure DevOps                                 |      |                  |               |               |
-| 32 | Heroku                                       |      |                  |               |               |
-| 33 | Vercel                                       |      |                  |               |               |
-| 34 | Netlify                                      |      |                  |               |               |
-| 35   | PostgreSQL                                   |      |                  |            
-| 36   |Cassandra                                   |      |                  |               |               |   |               |
-| 37   |Elasticsearch                                   |      |                  |               |               |   |               |
-| 38   |Splunk                                   |      |                  |               |               |   |               |
+| 27 | JIRA Software                                |      |                  |               |               |
+| 28 | Jenkins                                      |      |                  |               |               |
+| 39 | GitLab CI/CD                                 |      |                  |               |               |
+| 30 | Azure DevOps                                 |      |                  |               |               |
+| 31 | Heroku                                       |      |                  |               |               |
+| 32 | Vercel                                       |      |                  |               |               |
+| 33 | Netlify                                      |      |                  |               |               |
+| 34   | PostgreSQL                                   |      |                  |            
+| 35   |Cassandra                                   |      |                  |               |               |   |               |
+| 36   |Elasticsearch                                   |      |                  |               |               |   |               |
+| 37   |Splunk                                   |      |                  |               |               |   |               |

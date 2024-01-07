@@ -1,0 +1,25 @@
+{
+        "name": "@godspeedsystems/plugins-salesforce-as-datasource-as-eventsource",
+        "version": "1.0.0",
+        "description": "salesforce as datasource-as-eventsource plugin for Godspeed Framework",
+        "publishConfig": {
+                "access": "public"
+        },
+        "main": "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "devDependencies": {
+                "@types/jsforce": "^1.11.5",
+                "typescript": "^4.9.5"
+        },
+        "dependencies": {
+                "@godspeedsystems/core": "^2.0.0-alpha.23",
+                "jsforce": "^1.11.1",
+                "pino-pretty": "^10.2.0"
+        }
+}

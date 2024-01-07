@@ -1,25 +1,33 @@
 # Godspeed Express Plugin
 
+Welcome to the [Godspeed](https://www.godspeed.systems/) Express Plugin! 🚀
+
 ## Introduction
 
 The Godspeed Express Plugin is an integral part of the Godspeed framework, designed to facilitate the integration of event-driven and serverless functionalities into your projects. This plugin leverages the popular Express.js framework to handle HTTP events, making it easy to define event subscriptions and process incoming events.
 
 ## How to Use
 - Create a godspeed project from the CLI and by default the Express plugin is integrated into your project if not, add the plugin from the CLI and select the `@godspeedsystems/plugins-express-as-http` to integrate the plugin.
-```bash
-godspeed plugin add
-
-~~~~~~ Godspeed CLI ~~~~~~
-
-? Please select godspeed plugin to install. 
-  @godspeedsystems/plugins-cron-as-eventsource 
-❯ @godspeedsystems/plugins-express-as-http 
-  @godspeedsystems/plugins-prisma-as-datastore 
-  @godspeedsystems/plugins-axios-as-datasource 
-  @godspeedsystems/plugins-aws-as-datasource 
-  @godspeedsystems/plugins-mailer-as-datasource 
-  @godspeedsystems/plugins-excel-as-datasource 
-(Move up and down to reveal more choices)
+```
+> godspeed plugin add
+       ,_,   ╔════════════════════════════════════╗
+      (o,o)  ║        Welcome to Godspeed         ║
+     ({___}) ║    World's First Meta Framework    ║
+       " "   ╚════════════════════════════════════╝
+? Please select godspeed plugin to install: (Press <space> to select, <Up and Down> to move rows)
+┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│    │ Name                              │ Description                                                     │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ ❯◯ │ express-as-http                   │ Godspeed event source plugin for express as http server         │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ aws-as-datasource                 │ aws as datasource plugin for Godspeed Framework                 │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ mailer-as-datasource              │ mailer as datasource plugin for Godspeed Framework              │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ excel-as-datasource               │ excel as datasource plugin for Godspeed Framework               │
+├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
+└────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
 ```
 - You will find the files in your project related to the Express plugin at `src/eventsources/types/express.ts` and `src/eventsources/http.yaml`.
 
@@ -102,7 +110,7 @@ This plugin is designed to integrate with the Godspeed framework and provides fu
 
 ## Plugin Components
 
-The [plugin](/src/index.ts) consists of several key components:
+The plugin consists of several key components:
 
 ### 1. `EventSource` Class
 
@@ -135,7 +143,8 @@ We're excited to see what you'll create with the Express plugin, and we look for
 
 ### Get in Touch
 
-- [Discord](https://discord.gg/c4DcdBA9)
+- [Discord](https://discord.com/invite/mjBa3RvTP5)
 - [Plugin Repository](https://github.com/godspeedsystems/gs-plugins/tree/main/plugins/express-as-http)
 - [Issue Tracker](https://github.com/godspeedsystems/gs-plugins/issues)
 
+## Thank You For Using Godspeed 

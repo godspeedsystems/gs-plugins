@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-express-as-http",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "publishConfig": {
     "access": "public"
   },
@@ -8,7 +8,10 @@
     "godspeed",
     "meta-framework",
     "express",
-    "godspeed http server"
+    "godspeed http server",
+    "microservice",
+    "lowcode",
+    "godspeed plugins"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.js",
@@ -22,8 +25,10 @@
   "description": "Godspeed event source plugin for express as http server",
   "devDependencies": {
     "@types/express": "^4.17.17",
+    "@types/express-fileupload": "^1.4.4",
     "@types/lodash": "^4.14.197",
     "@types/node": "^18.14.2",
+    "express-fileupload": "^1.4.3",
     "typescript": "^4.9.5"
   },
   "dependencies": {
@@ -33,7 +38,7 @@
     "@types/passport": "^1.0.14",
     "@types/passport-jwt": "^3.0.12",
     "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
+    "express-fileupload": "^1.4.3",
     "lodash": "^4.17.21",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

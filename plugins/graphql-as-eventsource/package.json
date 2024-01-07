@@ -1,7 +1,7 @@
 {
-        "name": "@godspeedsystems/plugins-kafka-as-datasource-as-eventsource",
-        "version": "1.0.1",
-        "description": "kafka as datasource-as-eventsource plugin for Godspeed Framework",
+        "name": "@godspeedsystems/plugins-graphql-as-eventsource",
+        "version": "1.0.0",
+        "description": "graphql as eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
         },
@@ -15,19 +15,23 @@
         "license": "ISC",
         "author": "Yaswanth <yaswanth@godspeed.systems>",
         "devDependencies": {
+                "@types/fs-extra": "^11.0.4",
+                "@types/jsonwebtoken": "^9.0.5",
                 "typescript": "^4.9.5"
         },
         "dependencies": {
-                "@godspeedsystems/core": "latest",
-                "kafkajs": "^2.2.4",
+                "@godspeedsystems/core": "^2.0.0-alpha.23",
+                "apollo-server": "^3.13.0",
+                "fs-extra": "^11.2.0",
+                "jsonwebtoken": "^9.0.2",
                 "pino-pretty": "^10.2.0"
         },
         "keywords": [
                 "godspeed",
-                "meta-framework",
-                "kafka",
-                "microservice",
                 "lowcode",
+                "microservice",
+                "graphql",
+                "datasource",
                 "godspeed plugins"
         ]
 }

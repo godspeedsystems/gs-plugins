@@ -1,21 +1,22 @@
-# godspeed-plugin-cron-as-eventsource
+# godspeed-plugin-graphql-as-eventsource
 
-Welcome to the [Godspeed](https://www.godspeed.systems/) Cron Plugin! 🚀
+Welcome to the [Godspeed](https://www.godspeed.systems/) GraphQL Plugin! 🚀
 
-Cron jobs are a standard method of scheduling tasks to run on your server. Cron is a service running in the background that will execute commands (jobs) at a specified time, or at a regular interval. Jobs and their schedules are defined in a configuration file called a crontab.
+**Godspeed** leverages Apollo Server, a powerful and extensible open-source server built on GraphQL, to streamline the creation of GraphQL APIs. Apollo Server excels in automatic schema generation and seamless integration with diverse data sources, providing a robust foundation for scalable and high-performance GraphQL applications.
 
+This guide offers a concise overview of integrating the GraphQL plugin into the Godspeed framework as an Event Source.
 
-A brief description of how to use Cron plug-in in  godspeed framework as Event Source. 
+## Steps to Utilize the GraphQL Plugin in the Godspeed Framework:
 
-## Steps to use cron plug-in in godspeed framework:
+### Example Usage:
 
-### Example usage :
+1. Add the GraphQL plugin to Godspeed-CLI with the `godspeed plugin add` command.
 
-1. Update configuration file based on your requirements in `eventsource/cron.yaml`.
-#### cron config ( src/eventsources/cron.yaml )3
+2. Tailor the configuration file according to your needs in `eventsource/graphql.yaml`.
 
 ## How to Use
-- Create a godspeed project from the CLI and by default the Express plugin is integrated into your project if not, add the plugin from the CLI and select the `@godspeedsystems/plugins-cron-as-eventsource` to integrate the plugin.
+- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode, select the `@godspeedsystems/plugins-graphql-as-eventsource` to integrate the plugin.
+
 ```
 > godspeed plugin add
        ,_,   ╔════════════════════════════════════╗
@@ -26,45 +27,63 @@ A brief description of how to use Cron plug-in in  godspeed framework as Event S
 ┌────┬───────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
 │    │ Name                              │ Description                                                     │
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
-│  ◯ │ express-as-http                   │ Godspeed event source plugin for express as http server         │
+│ ❯◯ │ graphql-as-eventsource            │ graphql as eventsource plugin for Godspeed Framework            │
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
 │  ◯ │ aws-as-datasource                 │ aws as datasource plugin for Godspeed Framework                 │
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
 │  ◯ │ mailer-as-datasource              │ mailer as datasource plugin for Godspeed Framework              │
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
-│ ❯◯ │ cron-as-eventsource               │ Cron as eventsource plugin for Godspeed Framework               │
+│  ◯ │ excel-as-datasource               │ excel as datasource plugin for Godspeed Framework               │
 ├────┼───────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
 │  ◯ │ kafka-as-datasource-as-eventsource│ kafka as datasource-as-eventsource plugin for Godspeed Framework│
 └────┴───────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
 ```
 
 
+
+#### GraphQL Configuration (src/eventsources/Apollo.yaml)
 ```yaml
-type: cron
+type: graphql
+port: 4000
 ```
-event key prefix should be the `type` mensioned in the config `yaml` file.
 
-#### cron event  ( src/events/every_minute_task.yaml )
+3. Ensure the event key prefix aligns with the name of the configuration YAML file. In this example, the prefix for the Event key is `Apollo`. The event schema follows REST standards, resembling HTTP events.
 
+#### GraphQL Event (src/events/create_category.yaml)
 ```yaml
-# event for Shedule a task for evrey minute.
-
-cron.* * * * *.Asia/Kolkata: //event key
-  fn: every_minute
-
+Apollo.post./mongo/category:
+  summary: Create a new Category
+  description: Create Category from the database
+  fn: create
+  body:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+  responses:
+    content:
+      application/json:
+        schema:
+          type: object
 ```
-For  cron expressions   `https://crontab.cronhub.io/`
 
-#### cron workflow to schedule ( src/functions/every_minute.yaml )
-
-
+#### GraphQL Workflow (src/functions/create.yaml)
 ```yaml
-summary: this workflow will be running every minute
+summary: Create Category
 tasks:
-  - id: print
-    description: print for every minute
-    fn: com.gs.return
+  - id: mongo_category_create
+    fn: datasource.mongo.Category.create
     args:
-      data: HELLO from CRON
+      data: <% inputs.body %>
 ```
-## Thank You For Using Godspeed 
+4. use `gosdspeed gen-graphql-schema` to auto generate graphql schema.
+
+5. use `godspeed dev `to start server. 
+
+This configuration emphasizes the simplicity of implementing GraphQL within the Godspeed framework, promoting efficiency and clarity in API development.
+
+Happy coding with Godspeed...🚀
+
