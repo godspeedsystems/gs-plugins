@@ -72,7 +72,7 @@ In the event, we establish an HTTP endpoint that accepts parameters such as the 
                 type: string
 
 ```
-#### kafka workflow for Producer ( src/functions/kafka_publish.yaml )
+#### kafka workflow for Producer ( src/functions/kafka-publish.yaml )
 
 In workflow we need to mension `datasource.kafka.producer` as function (fn) to Produce data.
 
