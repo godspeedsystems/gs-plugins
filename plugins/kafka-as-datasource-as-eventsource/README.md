@@ -102,13 +102,13 @@ groupId: "kafka_proj"
 To use Consumer we need to follow the below event key format.
 
 ```
- Kafka.{Topic}.{GroupId}
+ kafka.{Topic}.{GroupId}
 ```
 The consumer event is triggered whenever a new message arrives on the specified topic. Upon triggering, it retrieves the incoming message and forwards it to the `kafka_consume` function. Inside this function, the incoming message is processed, and the result is then returned.
 
 ``` yaml
 # event for consume data from Topic
-Kafka.publish-producer1.kafka_proj: // event key
+kafka.publish-producer1.kafka_proj: // event key
   id: kafka__consumer
   fn: kafka_consume
   body:
