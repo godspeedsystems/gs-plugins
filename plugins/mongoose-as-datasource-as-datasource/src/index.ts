@@ -66,7 +66,7 @@ export default class MongooseDataSource extends GSDataSource {
 			const code = this.successResponseCodes[method] || 200;
 			return new GSStatus(true, code, undefined, res);
 		} catch (err: any) {
-			ctx.childLogger.error(`Error in executing mongoose findOne command ${err} %o`, err);
+			ctx.childLogger.error(`Error in executing mongoose ${method} command ${err} %o`, err);
 			return new GSStatus(false, 500, undefined, { message: err.message, error: err });
 		}
 	}
