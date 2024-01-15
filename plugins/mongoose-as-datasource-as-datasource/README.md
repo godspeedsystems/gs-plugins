@@ -154,7 +154,18 @@ The arguments to any `Function_Name` are to be passed in two ways
           - 'name age' #The projection: second argument
           - {} # Options: the third argument
   ```
+- Calling from a TS/JS workflow works same as any other datasource
+```typescript
+import { GSContext, GSDataSource, GSStatus } from "@godspeedsystems/core";
 
+export default async function (ctx: GSContext, args: any) {
+    const ds: GSDataSource = ctx.datasources.mongoose1;
+    //Will need to set a meta object in the args to pass entitType and method
+    args.meta = {entityType: 'MyModel', method: 'findOne'};
+    const response = await ds.execute(ctx, args);
+    return response;
+}
+```
 ### Run the service
 - Set an environment variable `MONGO_URL` as your connection string to running mongodb instance.
   For example, setting via a unix shell.
