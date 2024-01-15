@@ -40,7 +40,7 @@ export default class MongooseDataSource extends GSDataSource {
 	async execute(ctx: GSContext, args: PlainObject): Promise<any> {
 		let {
 
-			meta: { entityType, method, fnNameInWorkflow },
+			meta: { entityType, method, authzPerms }, //Right now authzPerms are not implemented
 			...rest
 		} = args;
 		delete args.meta;
@@ -54,7 +54,7 @@ export default class MongooseDataSource extends GSDataSource {
 			//@ts-ignore
 			return await this.command(ctx, entityType, rest, method);
 		} catch (err: any) {
-			ctx.childLogger.error(`Error in executing datasource fn ${fnNameInWorkflow} with args ${args}. Error message: ${err.message}. Full Error: ${err}`)
+			ctx.childLogger.error(`Error in executing Mongoose datasource ${this.config.name}'s fn ${entityType}.${method} with args ${args}. Error message: ${err.message}. Full Error: ${err}`)
 			return new GSStatus(false, 500, undefined, {message: "Internal server error"})
 		}
 	}
