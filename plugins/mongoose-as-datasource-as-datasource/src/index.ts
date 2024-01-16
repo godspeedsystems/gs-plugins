@@ -3,7 +3,6 @@ import { glob } from "glob";
 import mongoose, { Aggregate } from "mongoose";
 import path from "path";
 
-
 export default class MongooseDataSource extends GSDataSource {
 	private successResponseCodes: PlainObject = {
 		create: 201,
@@ -27,7 +26,7 @@ export default class MongooseDataSource extends GSDataSource {
 	private async loadModels(): Promise<PlainObject> {
 		const modelsPath = __dirname.replace('/types', '');
 		const modules: string[] =
-			await glob(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
+            glob.sync(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
 		const models: PlainObject = {};
 		for (let file of modules) {
 			const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
