@@ -1,0 +1,8 @@
+type: mongoose
+successResponseCodes:
+  create: 201
+  find: 200
+  findOne: 200
+  aggregate: 200
+  findOneAndUpdate: 201
+  findOneAndDelete: 202
