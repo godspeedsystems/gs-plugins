@@ -76,5 +76,5 @@ const CONFIG_FILE_NAME = "mongoose"; // in case of event source, this also works
 const DEFAULT_CONFIG = {};
 
 export {
-	MongooseDataSource
+	MongooseDataSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG
 }
