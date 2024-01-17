@@ -3,7 +3,7 @@ import { glob } from "glob";
 import mongoose, { Aggregate } from "mongoose";
 import path from "path";
 
-export default class MongooseDataSource extends GSDataSource {
+export default class DataSource extends GSDataSource {
 	private successResponseCodes: PlainObject = {
 		create: 201,
 		find: 200,
@@ -76,5 +76,5 @@ const CONFIG_FILE_NAME = "mongoose"; // in case of event source, this also works
 const DEFAULT_CONFIG = {};
 
 export {
-	MongooseDataSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG
+	DataSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG
 }

@@ -1,5 +1,5 @@
 {
-        "name": "@godspeedsystems/plugins-mongoose-as-datasource",
+        "name": "@godspeedsystems/plugins-mongoose-as-datasource-test",
         "version": "1.0.3",
         "description": "mongoose-as-datasource as datasource plugin for Godspeed Framework",
         "publishConfig": {
