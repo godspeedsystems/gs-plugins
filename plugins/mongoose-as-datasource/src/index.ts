@@ -70,6 +70,11 @@ export default class MongooseDataSource extends GSDataSource {
 		}
 	}
 }
+const SourceType = "DS";
+const Type = "mongoose"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "mongoose"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {};
+
 export {
 	MongooseDataSource
 }
