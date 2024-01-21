@@ -24,14 +24,9 @@ export default class DataSource extends GSDataSource {
 		}
 	}
 	private async loadModels(): Promise<PlainObject> {
-		// const modelsPath = __dirname.replace('/types', '');
-		// console.log("*******1", modelsPath + `/${this.config.name}/models/*.{ts,js}`)
-		const modelsPath = path.join(__dirname, '..', this.config.name, 'models');
-		console.log("modelsPath::::", modelsPath);
+		const modelsPath = path.join(__dirname, '..', '..', '..', '..', 'dist', 'datasources', this.config.name, 'models');
 		const modules: string[] =
 			glob.sync(path.join(modelsPath, '*.{ts,js}'), { ignore: 'node_modules/**' })
-		// glob.sync(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
-		console.log("modules:::**", modules)
 		const models: PlainObject = {};
 		for (let file of modules) {
 			const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
