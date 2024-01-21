@@ -13,7 +13,7 @@ export default class DataSource extends GSDataSource {
 	protected async initClient(): Promise<PlainObject> {
 		this.successResponseCodes = this.config.successResponseCodes || this.successResponseCodes;
 		try {
-			
+
 			// Initialize your Mongoose client
 			await mongoose.connect(process.env.MONGO_URL!, {
 				// Mongoose connection options
@@ -24,9 +24,14 @@ export default class DataSource extends GSDataSource {
 		}
 	}
 	private async loadModels(): Promise<PlainObject> {
-		const modelsPath = __dirname.replace('/types', '');
+		// const modelsPath = __dirname.replace('/types', '');
+		// console.log("*******1", modelsPath + `/${this.config.name}/models/*.{ts,js}`)
+		const modelsPath = path.join(__dirname, '..', this.config.name, 'models');
+		console.log("modelsPath::::", modelsPath);
 		const modules: string[] =
-            glob.sync(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
+			glob.sync(path.join(modelsPath, '*.{ts,js}'), { ignore: 'node_modules/**' })
+		// glob.sync(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
+		console.log("modules:::**", modules)
 		const models: PlainObject = {};
 		for (let file of modules) {
 			const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
@@ -54,7 +59,7 @@ export default class DataSource extends GSDataSource {
 			return await this.command(ctx, entityType, rest, method);
 		} catch (err: any) {
 			ctx.childLogger.error(`Error in executing Mongoose datasource ${this.config.name}'s fn ${entityType}.${method} with args ${args}. Error message: ${err.message}. Full Error: ${err}`)
-			return new GSStatus(false, 500, undefined, {message: "Internal server error"})
+			return new GSStatus(false, 500, undefined, { message: "Internal server error" })
 		}
 	}
 
