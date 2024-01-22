@@ -16,7 +16,7 @@ export default class EventSource extends GSEventSource {
       port = 3000,
       request_body_limit = 50 * 1024 * 1024,
       file_size_limit = 50 * 1024 * 1024,
-      jwt: jwtConfig
+      jwt: jwtConfig,
     } = this.config;
 
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
@@ -31,6 +31,9 @@ export default class EventSource extends GSEventSource {
     );
   
     if (jwtConfig) {
+      if (!jwtConfig.secretOrKey || jwtConfig.audience || !jwtConfig.issuer) {
+        throw new Error('Check all three JWT values are set properly for Express HTTP event source: secretOrKey, audience or issuer. Exiting');
+      }
       app.use(passport.initialize());
       passport.use(
         new JwtStrategy(
@@ -80,7 +83,16 @@ export default class EventSource extends GSEventSource {
   subscribeToEvent(eventRoute: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event?: PlainObject): Promise<void> {
     const routeSplit = eventRoute.split('.');
     const httpMethod: string = routeSplit[1];
-    const endpoint = routeSplit[2].replace(/{(.*?)}/g, ':$1');
+    let endpoint = routeSplit[2].replace(/{(.*?)}/g, ':$1');
+    let base_url = this.config.base_url;
+    
+    if (base_url) {
+      endpoint = endpoint.replace(/^\//,''); //remove trailing ./
+      base_url = base_url.replace(/^\//,''); //remove starting /
+      base_url = base_url.replace(/^\//,''); //remove starting /
+      endpoint = "/" + base_url  + "/" + endpoint;
+    }
+    
     const app: express.Express = this.client as express.Express;
     //@ts-ignore
     app[httpMethod](endpoint, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
@@ -122,15 +134,15 @@ export default class EventSource extends GSEventSource {
   }
 }
 
-const SourceType = 'ES';
-const Type = 'express'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
-const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
+// const SourceType = 'ES';
+// const Type = 'express'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+// const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+// const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
-export  {
-  EventSource,
-  SourceType,
-  Type,
-  CONFIG_FILE_NAME,
-  DEFAULT_CONFIG
-};
+// export  {
+//   EventSource,
+//   SourceType,
+//   Type,
+//   CONFIG_FILE_NAME,
+//   DEFAULT_CONFIG
+// };
