@@ -6,6 +6,8 @@ Dive into computing with AWS as your steadfast and cutting-edge data source.
 
 A brief description of how to use aws plug-in in our godspeed framework as Data Source.
 
+Read [#106](https://github.com/godspeedsystems/gs-plugins/issues/106) for recent updates in aws plugin.
+
 ## Steps to use aws plug-in in godspeed framework:
 
 ### How to install
