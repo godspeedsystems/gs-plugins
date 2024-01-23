@@ -34,15 +34,15 @@ Welcome to the [Godspeed](https://www.godspeed.systems/) Mongoose Plugin! 🚀
 └──────┴────────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
 ```
 
-- You will find a file in your project related to the Prisma plugin at `src/datasources/types/mongoose.ts` 
+- This will create some files.
+  - You will find a file in your project related to the Prisma plugin at `src/datasources/types/mongoose.ts` 
 
-
-### Contents of types/mongoose.ts
-The file will read like
-```typescript
-import { DataSource } from '@godspeedsystems/plugins-prisma-as-datastore';
-export default DataSource;
-```
+    ### Contents of types/mongoose.ts
+    The file will look something like this
+    ```typescript
+    import { DataSource } from '@godspeedsystems/plugins-mongoose-as-datastore';
+    export default DataSource;
+    ```
 
 ### <mongoose_ds_name>.yaml file
   ![Alt text](assets/mongoose_folder_structure.png)
@@ -140,7 +140,7 @@ The arguments to any `Function_Name` are to be passed in two ways
     id: mongoose_workflow
     tasks:
       - id: first_task
-        fn: datasource.mongoose.Templates.findOne
+        fn: datasource.mongoose.SomeModel.findOne
         args: {"name": "mastersilv3r"} #Fun fact: YAML acceptes JSON as well. 
   ```
 - Most Mongoose functions accept multiple args. To pass all args to an API call, send an array of the acceptable args. This array is spread and passed to the API call
@@ -148,7 +148,7 @@ The arguments to any `Function_Name` are to be passed in two ways
     id: helloworld2_workflow
     tasks:
       - id: helloworld2_workflow_first_task
-        fn: datasource.mongoose.Templates.findOne
+        fn: datasource.mongoose.SomeModel.findOne
         args: #as an array
           - name: mastersilv3r #search clause: First argument
           - 'name age' #The projection: second argument
@@ -161,7 +161,7 @@ import { GSContext, GSDataSource, GSStatus } from "@godspeedsystems/core";
 export default async function (ctx: GSContext, args: any) {
     const ds: GSDataSource = ctx.datasources.mongoose1;
     //Will need to set a meta object in the args to pass entitType and method
-    args.meta = {entityType: 'MyModel', method: 'findOne'};
+    args.meta = {entityType: 'SomeModel', method: 'findOne'};
     const response = await ds.execute(ctx, args);
     return response;
 }

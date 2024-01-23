@@ -3,7 +3,7 @@ import { glob } from "glob";
 import mongoose, { Aggregate } from "mongoose";
 import path from "path";
 
-export default class MongooseDataSource extends GSDataSource {
+export default class DataSource extends GSDataSource {
 	private successResponseCodes: PlainObject = {
 		create: 201,
 		find: 200,
@@ -13,7 +13,7 @@ export default class MongooseDataSource extends GSDataSource {
 	protected async initClient(): Promise<PlainObject> {
 		this.successResponseCodes = this.config.successResponseCodes || this.successResponseCodes;
 		try {
-			
+
 			// Initialize your Mongoose client
 			await mongoose.connect(process.env.MONGO_URL!, {
 				// Mongoose connection options
@@ -26,7 +26,7 @@ export default class MongooseDataSource extends GSDataSource {
 	private async loadModels(): Promise<PlainObject> {
 		const modelsPath = __dirname.replace('/types', '');
 		const modules: string[] =
-            glob.sync(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
+			await glob(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
 		const models: PlainObject = {};
 		for (let file of modules) {
 			const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
@@ -54,7 +54,7 @@ export default class MongooseDataSource extends GSDataSource {
 			return await this.command(ctx, entityType, rest, method);
 		} catch (err: any) {
 			ctx.childLogger.error(`Error in executing Mongoose datasource ${this.config.name}'s fn ${entityType}.${method} with args ${args}. Error message: ${err.message}. Full Error: ${err}`)
-			return new GSStatus(false, 500, undefined, {message: "Internal server error"})
+			return new GSStatus(false, 500, undefined, { message: "Internal server error" })
 		}
 	}
 
@@ -70,6 +70,7 @@ export default class MongooseDataSource extends GSDataSource {
 		}
 	}
 }
+
 export {
-	MongooseDataSource
+	DataSource
 }
