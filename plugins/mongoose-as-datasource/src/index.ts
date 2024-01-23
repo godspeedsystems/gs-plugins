@@ -24,7 +24,8 @@ export default class DataSource extends GSDataSource {
 		}
 	}
 	private async loadModels(): Promise<PlainObject> {
-		const modelsPath = path.join(__dirname, '..', '..', '..', '..', 'dist', 'datasources', this.config.name, 'models');
+		//const modelsPath = path.join(__dirname, '..', '..', '..', '..', 'dist', 'datasources', this.config.name, 'models');
+		const modelsPath = __dirname.replace('/types', '');
 		const modules: string[] =
 
 			await glob(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
