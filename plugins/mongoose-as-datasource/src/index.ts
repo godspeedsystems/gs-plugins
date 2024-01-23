@@ -26,7 +26,8 @@ export default class DataSource extends GSDataSource {
 	private async loadModels(): Promise<PlainObject> {
 		const modelsPath = path.join(__dirname, '..', '..', '..', '..', 'dist', 'datasources', this.config.name, 'models');
 		const modules: string[] =
-			glob.sync(path.join(modelsPath, '*.{ts,js}'), { ignore: 'node_modules/**' })
+
+			await glob(modelsPath + `/${this.config.name}/models/*.{ts,js}`, { ignore: 'node_modules/**' });
 		const models: PlainObject = {};
 		for (let file of modules) {
 			const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
@@ -70,9 +71,10 @@ export default class DataSource extends GSDataSource {
 		}
 	}
 }
-const SourceType = "DS";
-const Type = "mongoose"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
-const CONFIG_FILE_NAME = "mongoose"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+//These four constants are only for plugin developers. But not needed if you copy paste this code locally.
+const SourceType = "DS"; 
+const Type = "mongoose"; // this is the default name of the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "mongoose"; // This is the default name of the generated yaml file. in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {};
 
 export {
