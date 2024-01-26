@@ -23,7 +23,7 @@ class DataSource extends GSDataSource {
           await producer.connect();
           let result = await producer.send({
             topic: topic,
-            messages: [{ value: message }],
+            messages: [{ value: JSON.stringify(message) }],
           });
           return result;
         } else {
