@@ -18,9 +18,6 @@
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CONTRIBUTIONS.md)   [![Open Bounties](https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2Fgodspeedsystems%2Fbounties%3Fstatus%3Dopen)](https://console.algora.io/org/godspeedsystems/bounties?status=open)  [![Discord](https://img.shields.io/badge/chat-discord-brightgreen.svg?logo=discord&style=flat)](https://discord.com/invite/MKjv3KdD7X)
   </p>
-
-
-
   <br />
 
 </div>
@@ -218,6 +215,15 @@ Certainly, here are the provided steps rephrased:
       [CRON](https://github.com/godspeedsystems/gs-plugins/tree/main/plugins/cron-as-eventsource/src/index.ts) (EventSource)
 
       [KAFKA](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/kafka-as-datasource-as-eventsource/src/index.ts) (DataSource-As-EventSource)
+
+8. Watch the below videos on 
+
+a. How to create plugins using Godspeed framework Part 1 | Godspeed
+[![part 1](https://img.youtube.com/vi/owQEuBO8_lk/maxresdefault.jpg)](https://www.youtube.com/watch?v=owQEuBO8_lk)
+
+b.Create and use plugins using Godspeed framework Part 2| Godspeed
+[![part 2](https://img.youtube.com/vi/YzvYjYujBMk/maxresdefault.jpg)](https://youtu.be/YzvYjYujBMk?si=EErVc1W9zZPZIOuO)
+
 
 
 ## List of Plugins
