@@ -33,6 +33,7 @@ class DataSource extends GSDataSource {
 
       const prisma = new PrismaClient();
       await prisma.$connect();
+      console.log("****** prisma client: ", prisma);
       return prisma;
     } catch (error) {
       throw error;
@@ -57,23 +58,23 @@ class DataSource extends GSDataSource {
 
         // @ts-ignore
         if (entityType && !client[entityType]) {
-          return Promise.reject(new GSStatus(false, 400, undefined, `Invalid entityType '${entityType}' in ${fnNameInWorkflow}.`));
+          return new GSStatus(false, 400, undefined, `Invalid entityType '${entityType}' in ${fnNameInWorkflow}.`);
         }
 
         // @ts-ignore
         prismaMethod = client[entityType][method];
 
         if (method && !prismaMethod) {
-          return Promise.reject(new GSStatus(false, 500, undefined, `Invalid CRUD method '${method}' in ${fnNameInWorkflow}`));
+          return new GSStatus(false, 500, undefined, `Invalid CRUD method '${method}' in ${fnNameInWorkflow}`);
         }
         // @ts-ignore
         const prismaResponse = await prismaMethod.bind(client)(rest);
 
-        return Promise.resolve(new GSStatus(true, responseCode(method), undefined, prismaResponse));
+        return new GSStatus(true, responseCode(method), undefined, prismaResponse);
       }
     } catch (error: any) {
       logger.error(error);
-      return Promise.reject(new GSStatus(false, 400, error.message, JSON.stringify(error.message)));
+      return new GSStatus(false, 400, error.message, JSON.stringify(error.message));
     }
   }
 }
