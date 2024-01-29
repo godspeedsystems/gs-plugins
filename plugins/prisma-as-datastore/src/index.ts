@@ -33,7 +33,6 @@ class DataSource extends GSDataSource {
 
       const prisma = new PrismaClient();
       await prisma.$connect();
-      console.log("****** prisma client: ", prisma);
       return prisma;
     } catch (error) {
       throw error;
