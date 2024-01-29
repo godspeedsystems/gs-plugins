@@ -242,30 +242,4 @@ b.Create and use plugins using Godspeed framework Part 2| Godspeed
 | 8  | Mailer   |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-mailer-as-datasource)   |[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/mailer-as-datasource/README.md)       |Godspeed                   |      |                  |               |               |
 | 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
 | 10   | Fastify  | Eventsource | npm |[readme](./plugins/fastify-as-http/README.md)|Godspeed|
-| 11   | GraphQL                                |Eventsource      |  [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-graphql-as-eventsource)                 |               |Godspeed               |
-| 12  | RabbitMQ                                     |      |                  |               |               ||
-| 13  | MongoDB                                    |      |                  |               |               |
-| 14  | Salesforce                                   |      |                  |               |               |
-| 15  | HubSpot                                      |      |                  |               |               |
-| 16  | MailChimp                                    |      |                  |               |               |
-| 17  | Microsoft Access                             |      |                  |               |               |
-| 18  | SQLite                                       |      |                  |               |               |
-| 19  | DB2 (IBM Database)                           |      |                  |               |               |
-| 20  | Neo4j                                        |      |                  |               |               |
-| 21  | CockroachDB                                  |      |                  |               |               |
-| 22  | MariaDB                                      |      |                  |               |               |
-| 23  | Google Cloud Pub/Sub                         |      |                  |               |               |
-| 24  | RabbitMQ                                     |      |                  |               |               |
-| 25 | GraphQL                                      |      |                  |               |               |
-| 26 | gRPC                                         |      |                  |               |               |
-| 27 | JIRA Software                                |      |                  |               |               |
-| 28 | Jenkins                                      |      |                  |               |               |
-| 39 | GitLab CI/CD                                 |      |                  |               |               |
-| 30 | Azure DevOps                                 |      |                  |               |               |
-| 31 | Heroku                                       |      |                  |               |               |
-| 32 | Vercel                                       |      |                  |               |               |
-| 33 | Netlify                                      |      |                  |               |               |
-| 34   | PostgreSQL                                   |      |                  |            
-| 35   |Cassandra                                   |      |                  |               |               |   |               |
-| 36   |Elasticsearch                                   |      |                  |               |               |   |               |
-| 37   |Splunk                                   |      |                  |               |               |   |               |
+| 11   | Apollo GraphQL                                |Eventsource      |  [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-graphql-as-eventsource) | [readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/graphql-as-eventsource/README.md)              |Godspeed               |
