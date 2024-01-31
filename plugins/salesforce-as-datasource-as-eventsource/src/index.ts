@@ -8,7 +8,7 @@ import {
   GSActor,
 } from "@godspeedsystems/core";
 import jsforce from "jsforce";
-
+let conn: any;
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<object> {
     const {
@@ -24,52 +24,42 @@ class DataSource extends GSDataSource {
       instanceUrl,
     } = this.config;
 
-    try {
-      // Initialize the Salesforce client with your authentication details
-      if (serverUrl && sessionId) {
-        const conn = new jsforce.Connection({
-          serverUrl: serverUrl,
-          sessionId: sessionId,
-        });
-      } else if (accessToken && instanceUrl) {
-        const conn = new jsforce.Connection({
-          accessToken: accessToken,
-          instanceUrl: instanceUrl,
-        });
-      } else if (oauth2) {
-        const conn = new jsforce.Connection({
-          oauth2: oauth2,
-          accessToken: accessToken,
-          instanceUrl: instanceUrl,
-          refreshToken: refreshToken,
-        });
-      }
-      const conn = new jsforce.Connection({
-        loginUrl: loginUrl,
-      });
-      await conn.login(
-        username,
-        password + securityToken,
-        function (err, userInfo) {
-          if (err) {
-            console.error(err);
-            process.exit(1);
 
+    try {
+      let connOptions: jsforce.ConnectionOptions = {};
+
+      if (serverUrl && sessionId) {
+        connOptions = { serverUrl, sessionId };
+      } else if (accessToken && instanceUrl) {
+        connOptions = { accessToken, instanceUrl };
+      } else if (oauth2) {
+        connOptions = { oauth2, accessToken, instanceUrl, refreshToken };
+      } else {
+        connOptions = { loginUrl };
+      }
+
+      conn = new jsforce.Connection(connOptions);
+
+      if (!(serverUrl && sessionId) && !(accessToken && instanceUrl)) {
+        await conn.login(
+          username,
+          password + securityToken,
+          (err: any, userInfo: any) => {
+            if (err) {
+              console.error(err);
+              process.exit(1);
+            }
+            // Handle login success
           }
-          // console.log(conn.accessToken);
-          // console.log(conn.instanceUrl);
-          // logged in user property
-          // console.log(conn);
-          // console.log(userInfo);
-          // console.log('Org ID: ' + userInfo.organizationId);
-        }
-      );
+        );
+      }
 
       return conn;
     } catch (error) {
       throw error;
     }
   }
+
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     const { logger } = ctx;
@@ -102,9 +92,7 @@ class DataSource extends GSDataSource {
             result,
             function (err: any, ret: any) {
               if (err) {
-                return console.error(err);
-              } else {
-                return ret;
+                logger.error(err);
               }
             }
           );
@@ -121,7 +109,6 @@ class DataSource extends GSDataSource {
               result,
               function (err: any, ret: any) {
                 if (err) {
-                  //TODO, take from ctx
                   logger.error(err);
                 }
               }
@@ -134,15 +121,12 @@ class DataSource extends GSDataSource {
             result,
             function (err: any, ret: any) {
               if (err) {
-                return new GSStatus(true, 500, undefined, sfresponse);
-                //
-                // return console.error(err);
-              } else {
-                return ret;
+                logger.error(err);
               }
             }
           );
           return new GSStatus(true, 200, undefined, sfresponse);
+
         }
         if (functionArray.length === 5) {
           const method = functionArray[4];
@@ -232,54 +216,45 @@ class EventSource extends GSDataSourceAsEventSource {
     const client = this.client;
     const ds = eventKey.split(".")[0];
     const topicName = eventKey.split(".")[1];
-    interface mesresp {
-      topic: string;
-      partition: number;
-      message: any;
-    }
-
     if (client) {
-      const consumer = client.streaming.topic(topicName);
+      const consumer = conn.streaming.topic(topicName);
 
-      await consumer.subscribe({
-        eachMessage: async (messagePayload: mesresp) => {
-          const { message } = messagePayload;
-          let data;
-          let msgValue;
-          try {
-            msgValue = message?.value?.toString();
-            data = {
-              body: msgValue,
-            };
-          } catch (ex) {
-
-            //TODO logger the error
-            return new GSStatus(
-              false,
-              500,
-              `Error in parsing salesforce event data ${msgValue}`,
-              ex
-            );
-          }
-          const event = new GSCloudEvent(
-            "id",
-            `${ds}.${topicName}`,
-            new Date(message.timestamp),
-            "salesforce",
-            "1.0",
-            data,
-            "messagebus",
-            new GSActor("user"),
-            ""
+      await consumer.subscribe(function (message: any) {
+        let status;
+        let data;
+        try {
+          data = {
+            body: message,
+          };
+          status = 200;
+        } catch (ex) {
+          status = 500;
+          return new GSStatus(
+            false,
+            500,
+            `Error in parsing salesforce event data ${message}`,
+            ex
           );
-          return await processEvent(event, eventConfig);
+        }
+        const event = new GSCloudEvent(
+          "id",
+          `${ds}.${topicName}`,
+          new Date(message.timestamp),
+          "salesforce",
+          "1.0",
+          data,
+          "messagebus",
+          new GSActor("user"),
+          ""
+        );
+        return processEvent(event, eventConfig);
 
-        },
+
       });
     }
   }
+
 }
-//TODO try/catch around process event
 const SourceType = "BOTH";
 const Type = "salesforce"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "salesforce"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
