@@ -52,7 +52,9 @@ class DataSource extends GSDataSource {
         password + securityToken,
         function (err, userInfo) {
           if (err) {
-            return console.error(err);
+            console.error(err);
+            process.exit(1);
+
           }
           // console.log(conn.accessToken);
           // console.log(conn.instanceUrl);
@@ -92,6 +94,7 @@ class DataSource extends GSDataSource {
       };
       let functionArray = fnNameInWorkflow.split(".");
       const result = Object.values(rest);
+      //TODO remove the statement
       if (this.client) {
         if (functionArray.length == 3) {
           const method = functionArray[2];
@@ -105,9 +108,8 @@ class DataSource extends GSDataSource {
               }
             }
           );
-          return Promise.resolve(
-            new GSStatus(true, 200, undefined, sfresponse)
-          );
+          return new GSStatus(true, 200, undefined, sfresponse)
+        
         }
         if (functionArray.length == 4) {
           const method = functionArray[3];
@@ -119,29 +121,28 @@ class DataSource extends GSDataSource {
               result,
               function (err: any, ret: any) {
                 if (err) {
-                  return console.error(err);
-                } else {
-                  return ret;
-                }
+                  //TODO, take from ctx
+                  logger.error(err);
+                } 
               }
             );
-            return Promise.resolve(
-              new GSStatus(true, 200, undefined, sfresponse)
-            );
+            return new GSStatus(true, 200, undefined, sfresponse)
+            
           }
+          //TODO reuse common code with try/catch
           let sfresponse = await this.client[api][method](
             result,
             function (err: any, ret: any) {
               if (err) {
-                return console.error(err);
+                return new GSStatus(true, 500, undefined, sfresponse);
+                //
+                // return console.error(err);
               } else {
                 return ret;
               }
             }
           );
-          return Promise.resolve(
-            new GSStatus(true, 200, undefined, sfresponse)
-          );
+          return new GSStatus(true, 200, undefined, sfresponse);
         }
         if (functionArray.length === 5) {
           const method = functionArray[4];
@@ -159,10 +160,9 @@ class DataSource extends GSDataSource {
                 }
               }
             );
-            return Promise.resolve(
-              new GSStatus(true, 201, undefined, sfresponse)
-            );
+            return new GSStatus(true, 201, undefined, sfresponse);
           }
+          //Add comments
           let sfresponse = await this.client[api](entityType)[method](
             result,
             start_date,
@@ -177,9 +177,8 @@ class DataSource extends GSDataSource {
               }
             }
           );
-          return Promise.resolve(
-            new GSStatus(true, 201, undefined, sfresponse)
-          );
+          //TODO remove Promise.resolve from everywhere
+          return new GSStatus(true, 201, undefined, sfresponse);
         }
         if (functionArray.length === 6) {
           const method2 = functionArray[5];
@@ -200,9 +199,7 @@ class DataSource extends GSDataSource {
                 }
               }
             );
-            return Promise.resolve(
-              new GSStatus(true, 201, undefined, sfresponse)
-            );
+            return new GSStatus(true, 201, undefined, sfresponse);
           }
           let sfresponse = await this.client[api][method1](method1Data)[
             method2
@@ -213,16 +210,12 @@ class DataSource extends GSDataSource {
               return ret;
             }
           });
-          return Promise.resolve(
-            new GSStatus(true, 201, undefined, sfresponse)
-          );
+          return new GSStatus(true, 201, undefined, sfresponse);
         }
       }
     } catch (error: any) {
       logger.error(error);
-      return Promise.reject(
-        new GSStatus(false, 400, error.message, JSON.stringify(error.message))
-      );
+      return new GSStatus(false, 500, error.message, {error});
     }
   }
 }
@@ -251,17 +244,16 @@ class EventSource extends GSDataSourceAsEventSource {
       await consumer.subscribe({
         eachMessage: async (messagePayload: mesresp) => {
           const { message } = messagePayload;
-          let msgValue;
-          let status;
           let data;
+          let msgValue;
           try {
             msgValue = message?.value?.toString();
             data = {
               body: msgValue,
             };
-            status = 200;
           } catch (ex) {
-            status = 500;
+
+            //TODO logger the error
             return new GSStatus(
               false,
               500,
@@ -280,19 +272,14 @@ class EventSource extends GSDataSourceAsEventSource {
             new GSActor("user"),
             ""
           );
-          const res = await processEvent(event, eventConfig);
-
-          if (!res) {
-            status = 500;
-          } else {
-            status = 200;
-          }
-          return res;
+          return await processEvent(event, eventConfig);
+          
         },
       });
     }
   }
 }
+//TODO try/catch around process event
 const SourceType = "BOTH";
 const Type = "salesforce"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "salesforce"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
