@@ -109,7 +109,7 @@ class DataSource extends GSDataSource {
             }
           );
           return new GSStatus(true, 200, undefined, sfresponse)
-        
+
         }
         if (functionArray.length == 4) {
           const method = functionArray[3];
@@ -123,11 +123,11 @@ class DataSource extends GSDataSource {
                 if (err) {
                   //TODO, take from ctx
                   logger.error(err);
-                } 
+                }
               }
             );
             return new GSStatus(true, 200, undefined, sfresponse)
-            
+
           }
           //TODO reuse common code with try/catch
           let sfresponse = await this.client[api][method](
@@ -215,7 +215,7 @@ class DataSource extends GSDataSource {
       }
     } catch (error: any) {
       logger.error(error);
-      return new GSStatus(false, 500, error.message, {error});
+      return new GSStatus(false, 500, error.message, { error });
     }
   }
 }
@@ -273,7 +273,7 @@ class EventSource extends GSDataSourceAsEventSource {
             ""
           );
           return await processEvent(event, eventConfig);
-          
+
         },
       });
     }
