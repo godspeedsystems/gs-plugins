@@ -2,16 +2,18 @@ import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@go
 import fastify, {FastifyReply, FastifyRequest, HTTPMethods} from "fastify";
 import fastifyFormBody from '@fastify/formbody';
 //@ts-ignore
+import promMid from '@mindgrep/express-prometheus-middleware';
+import promClient from '@godspeedsystems/metrics';
+//@ts-ignore
 import fastifySwaggerUI from "fastify-swagger-ui";
 import fastifyCors from '@fastify/cors';
 import fastifyExpress from "@fastify/express";
 //@ts-ignore
-import promMid from '@mindgrep/express-prometheus-middleware';
-import promClient from '@godspeedsystems/metrics';
+
 import fastifyJWT from "@fastify/jwt";
 import qs from "qs";
 
-class FastifyEventSource extends GSEventSource {
+export default class FastifyEventSource extends GSEventSource {
   // Create a new Fastify instance
   async initClient(): Promise<PlainObject> {
     const fastifyApp = fastify();
@@ -71,6 +73,7 @@ class FastifyEventSource extends GSEventSource {
     };
 
     if(process.env.OTEL_ENABLED === 'true'){
+  
       fastifyApp.express.use(promMid({
         metricsPath: false,
         collectDefaultMetrics: true,
