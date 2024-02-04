@@ -71,41 +71,51 @@ export default class EventSource extends GSEventSource {
   //googlestrategy
 
   if(googleConfig){
+    if (!(googleConfig.call_back_url && googleConfig.google_client_secret && googleConfig.google_client_id && googleConfig.session_secret && googleConfig.success_redirect && googleConfig.failure_redirect)) {
+      throw new Error(
+        'Check if all oauth config variables are set in http.yaml file: call_back_url, google_client_secret, google_client_id, session_secret, success_redirect, failure_redirect',
+      );
+    }
     {    
     app.use(passport.initialize());
-        app.use(cors())
+      app.use(cors())
 
-        app.use(session({
-            secret: process.env.SESSION_SECRET,
-            resave: false,
-          saveUninitialized: false
-          }));
-        
-        app.use(passport.initialize())
-        app.use(passport.session())
-        
-        app.get('/auth/google',
-        passport.authenticate('google', { scope: [ 'email', 'profile' ] }
+      app.use(session({
+          secret: googleConfig.session_secret,
+          resave: false,
+        saveUninitialized: false
+        }));
+    
+      app.use(passport.initialize())
+      app.use(passport.session())
+      
+      app.get('/auth/google',
+      passport.authenticate('google', { scope: [ 'email', 'profile' ] }
       ));
+      
+      app.get('/auth/fail',(req,res)=>{
+        res.send("Authentication failed. Please check and try again")
+      })
+
       app.get(
         '/google/callback',
         passport.authenticate('google', {
-          successRedirect: process.env.SUCCESS_REDIRECT,
-          failureRedirect: process.env.FAILURE_REDIRECT,
+          successRedirect: googleConfig.success_redirect,
+          failureRedirect: googleConfig.failure_redirect,
         }),
       );
-      debugger;
+ 
       passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-    
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.CALL_BACK_URL,
+        clientID: googleConfig.google_client_id,
+        clientSecret: googleConfig.google_client_secret,
+        callbackURL: googleConfig.call_back_url,
         passReqToCallback : true
       },
-
+    
       function(request, accessToken, refreshToken, profile, done) {
         return done(null, profile);
       }));
+     
     }
     passport.serializeUser(function(user, done) {
       done(null, user);
@@ -113,8 +123,7 @@ export default class EventSource extends GSEventSource {
     
     passport.deserializeUser(function(user, done) {
       done(null, user);
-    });
-  
+    });  
   }
 
     app.listen(port);
@@ -133,7 +142,7 @@ export default class EventSource extends GSEventSource {
 
     return app;
   }
-
+  
   private authnHOF(authn: boolean) {
     return (
       req: express.Request,
@@ -141,24 +150,20 @@ export default class EventSource extends GSEventSource {
       next: express.NextFunction,
     ) => {
       if (authn) {
-        // return passport.authenticate('jwt', { session: false })(req, res, next)
-        //   passport.authenticate("google", {
-        //     successRedirect: "https://www.godspeed.systems/",
-        //     failureRedirect: "/auth/fail",
-        //   });
-        if(true){
-          req.user? next(): res.sendStatus(401)
-          // console.log("this is in adfasfsaf lkjasdfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-           return passport.authenticate('google', { scope: ['email', 'profile'] });
-          // console.log(req.user)
-        }  
-     
+        if (this.config.jwt) {  
+          return passport.authenticate('jwt', { session: false })(req, res, next);
+        } else if (this.config.oauth) {
+          req.user ? next() : res.sendStatus(401);
+          debugger;
+        } else{
+          res.status(500)
+        }
       } else {
         next();
       }
     };
   }
-
+  
   subscribeToEvent(
     eventRoute: string,
     eventConfig: PlainObject,
@@ -236,3 +241,7 @@ const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as 
 const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
 export { EventSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG };
+
+
+
+
