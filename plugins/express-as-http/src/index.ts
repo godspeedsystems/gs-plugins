@@ -31,7 +31,7 @@ export default class EventSource extends GSEventSource {
     );
   
     if (jwtConfig) {
-      if (!jwtConfig.secretOrKey || jwtConfig.audience || !jwtConfig.issuer) {
+      if (!jwtConfig.secretOrKey || !jwtConfig.audience || !jwtConfig.issuer) {
         throw new Error('Check all three JWT values are set properly for Express HTTP event source: secretOrKey, audience or issuer. Exiting');
       }
       app.use(passport.initialize());
