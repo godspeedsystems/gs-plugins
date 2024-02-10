@@ -34,7 +34,7 @@ export default class DataSource extends GSDataSource {
     const client = axios.create({ baseURL: base_url, timeout, headers });
 
     if (this.config.curlifiedLogs) {
-      const curlirize = require('../curlize');
+      const curlirize = require('./curlize');
       curlirize(client);
     }
     //initialize token headers
