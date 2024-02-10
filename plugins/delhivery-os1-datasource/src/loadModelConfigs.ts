@@ -2,7 +2,7 @@
 import { yamlLoader } from '@godspeedsystems/core';
 import { PlainObject } from '@godspeedsystems/core';
 const mappings = yamlLoader(`${process.cwd()}/dist/mappings`).os1;
-function loadOS1Config() {
+export default function loadOS1Config() {
 	let model: PlainObject = yamlLoader(`${process.cwd()}/dist/datasources/os1/model/entity-types`);
 	
 	model = unflattenTheKeys(model);
