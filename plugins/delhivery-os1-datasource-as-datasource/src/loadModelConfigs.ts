@@ -1,22 +1,28 @@
+
 import { yamlLoader } from '@godspeedsystems/core';
 import { PlainObject } from '@godspeedsystems/core';
 const mappings = yamlLoader(`${process.cwd()}/dist/mappings`).os1;
-export default function loadOS1Config() {
+function loadOS1Config() {
 	let model: PlainObject = yamlLoader(`${process.cwd()}/dist/datasources/os1/model/entity-types`);
-	model = expandNestedValues(model);
+	
+	model = unflattenTheKeys(model);
+	//Do in memory enrichment and transformation of the loaded model
 	Object.keys(model).forEach((entityType) => {
-		prepareEntityModels(entityType, model[entityType]);
+		transformEntityModels(entityType, model[entityType]);
 	});
-    return model;
+	return model;
 }
 
-function prepareEntityModels(et:string, em: PlainObject) {
-	enrichEntityTypeSchemas(em);
-	enrichTemplateDefinitions(et, em);
-	generateStateMachineConfig(em);
+function transformEntityModels(et:string, em: PlainObject) {
+	transformEntityTypeSchemas(em);
+	transformTemplateDefinitions(et, em);
+	transformStateMachineConfig(em);
 }
-
-function enrichEntityTypeSchemas(em: PlainObject) {
+/**
+ * 
+ * @param em 
+ */
+function transformEntityTypeSchemas(em: PlainObject) {
 	const schema = em.schema;
 	schema.callback = mappings.callback;
 	if (schema.states) {
@@ -40,7 +46,7 @@ function enrichEntityTypeSchemas(em: PlainObject) {
  * Check the templates folder, with category subfolders and their subcat files
  * Transform that to template config for calling OS1 api to create or modify templates
  */
-function enrichTemplateDefinitions(et: string, em: PlainObject) {
+function transformTemplateDefinitions(et: string, em: PlainObject) {
 	Object.keys(em.templates)
 	.forEach((cat) => {
 		const subcatsConfigs = em.templates[cat];
@@ -62,7 +68,7 @@ function enrichTemplateDefinitions(et: string, em: PlainObject) {
  *  & events in {entity-type}/states.yaml of the project
  * Transform it to comply to OS1 state-machine PUT call
  */
-function generateStateMachineConfig(em: PlainObject) {
+function transformStateMachineConfig(em: PlainObject) {
 
 	const states = em.states;
 	const transformedStates: PlainObject[] = [];
@@ -97,23 +103,28 @@ function generateStateMachineConfig(em: PlainObject) {
 	};
 }
 
-function expandNestedValues(flatObject: PlainObject): PlainObject {
+function unflattenTheKeys(flatObject: PlainObject): PlainObject {
 	const keys = Object.keys(flatObject);
 	const o: PlainObject = {};
 	for (let key of keys) {
 		const nestedKeys = key.split('.');
-		let no = o;
+		let no = o; //nested object
 		for (let i = 0; i < nestedKeys.length; i++) {
 			const nk = nestedKeys[i];
 			
 			if (i < nestedKeys.length - 1) {
 				no[nk] = no[nk] || {};
 				no = no[nk];
-			} else {
+			} else { //set leaf value
 				no[nk] = flatObject[key];
 			}
 			
 		}
 	}
 	return o;
+}
+
+
+if (require.main === module) {
+	console.log(loadOS1Config());
 }
