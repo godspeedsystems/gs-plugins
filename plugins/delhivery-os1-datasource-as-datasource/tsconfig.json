@@ -8,6 +8,7 @@
           "declaration": true,
           "moduleResolution": "node",
           "sourceMap": true,
+          "allowJs": true,
           "esModuleInterop": true
         },
         "exclude":[
