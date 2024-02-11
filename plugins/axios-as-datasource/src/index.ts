@@ -48,9 +48,10 @@ export default class DataSource extends GSDataSource {
     let {
       meta: { fnNameInWorkflow },
       headers,
+      data,
       ...rest //the remaining arguments of the axios call
     } = args;
-
+    
     const [, , method, url] = fnNameInWorkflow.split('.');
 
     try {
@@ -69,6 +70,7 @@ export default class DataSource extends GSDataSource {
         url,
         baseURL,
         headers,
+        data:  JSON.stringify(data),
         ...rest
       };
       //For testing auth refresh in concurrenct scenarios
