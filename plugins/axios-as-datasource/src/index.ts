@@ -29,7 +29,8 @@ export default class DataSource extends GSDataSource {
       //initialize the authentication function
       const fnPath = this.config.authn.fn.replaceAll('\.', '/');
       this.config.authn.fn = require(`${process.cwd()}/dist/functions/${fnPath}`);
-
+      //initialize token headers
+      await this.setAuthHeaders();
     }
     const client = axios.create({ baseURL: base_url, timeout, headers });
 
@@ -37,8 +38,7 @@ export default class DataSource extends GSDataSource {
       const curlirize = require('./curlize');
       curlirize(client);
     }
-    //initialize token headers
-    await this.setAuthHeaders();
+    
     return client;
   };
 
