@@ -97,13 +97,11 @@ export default class DataSource extends GSDataSource {
         return new GSStatus(false, status, message, response.data, headers);
       }
 
-      //This instance of axios DS has authn enabled for the API
-      //Check if this is an authentication error. Handle both cases.
-
-      let authFailed: boolean = this.isAuthFailed(response);
+      //Check if this is an authentication error.
+      let handleAuthnFailure: boolean = this.config.authn && this.isAuthFailed(response);
       //If auth failed we need to refresh the token (if process not already initiated) 
       //and wait while it is being refreshed
-      if (authFailed) {
+      if (handleAuthnFailure) {
         if (!this.tokenRefreshPromise) {
           ++this.refreshCount
           this.startTokenRefresh(ctx);
