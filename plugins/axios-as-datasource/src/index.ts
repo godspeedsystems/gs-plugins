@@ -58,14 +58,12 @@ export default class DataSource extends GSDataSource {
         ++this.waitAndHitCount;
         await this.tokenRefreshPromise;
       }
-      
+
       const client = this.client as AxiosInstance;
 
       //Hit the API with headers
-      // ctx.childLogger.error('headers first %o %o', Object.keys(headers), Object.keys(this.config.headers))
+      headers = this.setHeaders(headers);
 
-      headers = headers ? Object.assign({}, this.config.headers, headers) : this.config.headers;
-      // ctx.childLogger.error('headers %o', Object.keys(headers))
       const query = {
         method: method.toLowerCase(),
         url,
@@ -80,7 +78,7 @@ export default class DataSource extends GSDataSource {
       //   delete this.config.headers['X-COREOS-ORIGIN-TOKEN'];
       //   ctx.childLogger.error('unset')
       // };
-      
+
       let response = await client(query);
       ++this.successCount;
       return new GSStatus(true, response.status, response.statusText, response.data, response.headers);
@@ -136,6 +134,23 @@ export default class DataSource extends GSDataSource {
 
     }
   }
+
+  setHeaders(headers: PlainObject): PlainObject {
+    if (!headers) {
+      return this.config.headers;
+    }
+
+    //Next remove null value header keys
+    Object.keys(headers).forEach((header) => {
+      if (!headers[header]) {
+        delete headers[header];
+      }
+    });
+    // Create and return final headers with default values from this.config.headers
+    return Object.assign({}, this.config.headers, headers);
+
+  }
+
   isAuthFailed(response: AxiosResponse) {
     const authn = this.config.authn;
 
