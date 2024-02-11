@@ -25,9 +25,7 @@ function transformEntityModels(et:string, em: PlainObject) {
 function transformEntityTypeSchemas(em: PlainObject) {
 	const schema = em.schema;
 	schema.callback = mappings.callback;
-	if (schema.states) {
-		schema.isStateMachineEnabled = true;
-	}
+	
 	const states = em.states;
 	let events: string[] = [];
 	Object.keys(states).forEach((state) => {
@@ -41,6 +39,9 @@ function transformEntityTypeSchemas(em: PlainObject) {
 		});
 	});
 	schema.events = events;
+	if (events && events.length) {
+		schema.isStateMachineEnabled = true;
+	}
 }
 /**
  * Check the templates folder, with category subfolders and their subcat files
@@ -54,7 +55,7 @@ function transformTemplateDefinitions(et: string, em: PlainObject) {
 		.forEach((subcat) => {
 			const subcatConfig = subcatsConfigs[subcat];
 			const enrichParams = {
-				name: cat + '-' + subcat,
+				name: cat + subcat,
 				subCategory: subcat,
 				callback: mappings.callback
 			};
