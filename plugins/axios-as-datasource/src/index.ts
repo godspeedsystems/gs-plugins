@@ -45,14 +45,15 @@ export default class DataSource extends GSDataSource {
   async execute(ctx: GSContext, args: PlainObject, retryCount = 0): Promise<any> {
     ++this.attemptsCount;
     const baseURL = this.config.base_url;
+    let headers = this.config.headers;
     let {
       meta: { fnNameInWorkflow },
-      headers,
       data,
       ...rest //the remaining arguments of the axios call
     } = args;
     
-    const [, , method, url] = fnNameInWorkflow.split('.');
+    const [, , method, ...urlParts] = fnNameInWorkflow.split('.');
+    const url = urlParts.join('.');
 
     try {
       if (this.tokenRefreshPromise) {
@@ -174,7 +175,7 @@ export default class DataSource extends GSDataSource {
     this.tokenRefreshPromise = new Promise(async (resolve, reject) => {
       //Get and set new access headers
       try {
-        await that.setAuthHeaders(ctx);
+        await that.setAuthHeaders();
         //set this to null so that next request can directly be executed with newly set auth headers
         that.tokenRefreshPromise = null;
         //resolve this promise so that those waiting can continue further
@@ -184,8 +185,8 @@ export default class DataSource extends GSDataSource {
       }
     });
   }
-  async setAuthHeaders(ctx?: GSContext) {
-    const authnHeaders: PlainObject = await this.config.authn.fn(ctx);
+  async setAuthHeaders() {
+    const authnHeaders: PlainObject = await this.config.authn.fn(this.config);
     Object.assign(this.config.headers, authnHeaders);
   }
 }
