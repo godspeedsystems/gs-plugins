@@ -1,14 +1,14 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 export default class DataSource extends GSDataSource {
-  rand = Math.random();
-  isSecondHit: boolean = false;
+  // rand = Math.random();
+  // isSecondHit: boolean = false;
   tokenRefreshPromise: Promise<any> | null = null;
-  refreshCount = 0;
-  refreshingCount = 0;
-  waitAndHitCount = 0;
-  successCount = 0;
-  attemptsCount = 0;
+  // refreshCount = 0;
+  // refreshingCount = 0;
+  // waitAndHitCount = 0;
+  // successCount = 0;
+  // attemptsCount = 0;
   protected async initClient(): Promise<PlainObject> {
     const { base_url, timeout, headers, authn } = this.config;
     //For token refresh logic, if authn key is present, configure the refresh logic
@@ -43,12 +43,12 @@ export default class DataSource extends GSDataSource {
   };
 
   async execute(ctx: GSContext, args: PlainObject, retryCount = 0): Promise<any> {
-    ++this.attemptsCount;
+    // ++this.attemptsCount;
     const baseURL = this.config.base_url;
-    let headers = this.config.headers;
     let {
       meta: { fnNameInWorkflow },
       data,
+      headers,
       ...rest //the remaining arguments of the axios call
     } = args;
     
@@ -57,7 +57,7 @@ export default class DataSource extends GSDataSource {
 
     try {
       if (this.tokenRefreshPromise) {
-        ++this.waitAndHitCount;
+        // ++this.waitAndHitCount;
         await this.tokenRefreshPromise;
       }
 
@@ -83,11 +83,11 @@ export default class DataSource extends GSDataSource {
       // };
 
       let response = await client(query);
-      ++this.successCount;
+      // ++this.successCount;
       return new GSStatus(true, response.status, response.statusText, response.data, response.headers);
     } catch (error: any) {
       let { response } = error;
-      ctx.childLogger.fatal('attempts %s success %s waitAndHit %s refresh %s refreshing %s', this.attemptsCount, this.successCount, this.waitAndHitCount, this.refreshCount, this.refreshingCount);
+      // ctx.childLogger.fatal('attempts %s success %s waitAndHit %s refresh %s refreshing %s', this.attemptsCount, this.successCount, this.waitAndHitCount, this.refreshCount, this.refreshingCount);
 
       if (!response) {
         //Some random error occured. Not axios error.
@@ -106,7 +106,7 @@ export default class DataSource extends GSDataSource {
       //and wait while it is being refreshed
       if (handleAuthnFailure) {
         if (!this.tokenRefreshPromise) {
-          ++this.refreshCount
+          // ++this.refreshCount
           this.startTokenRefresh(ctx);
           //Wait for auth token(s) to be refreshed
           try {
@@ -115,7 +115,7 @@ export default class DataSource extends GSDataSource {
             return new GSStatus(false, 500, error.message, 'Internal Server Error');
           }
         } else {
-          ++this.refreshingCount;
+          // ++this.refreshingCount;
           //Wait for auth token(s) to be refreshed
           try {
             await this.tokenRefreshPromise;
@@ -127,7 +127,7 @@ export default class DataSource extends GSDataSource {
         //Try the API call again now
         return await this.execute(ctx, args);
       } else {
-        ++this.successCount;
+        // ++this.successCount;
         //This is a non-auth axios error
         const { status, data: { message }, headers } = response as AxiosResponse;
         return new GSStatus(false, status, message, response.data, headers);
