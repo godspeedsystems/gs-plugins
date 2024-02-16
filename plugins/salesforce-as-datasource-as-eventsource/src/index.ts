@@ -43,7 +43,7 @@ class DataSource extends GSDataSource {
       if (!(serverUrl && sessionId) && !(accessToken && instanceUrl)) {
         await conn.login(
           username,
-          password + securityToken,
+          password,
           (err: any, userInfo: any) => {
             if (err) {
               console.error(err);
