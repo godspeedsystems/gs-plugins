@@ -33,20 +33,20 @@ class DataSource extends GSDataSource {
           )=> {
             switch (type) {
               case 'constant':
-                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & interval - ${interval}. Error: ${error.message}`);
                 return interval;
       
               case 'random':
                 let min = Math.ceil(min_interval);
                 let max = Math.floor(max_interval);
-                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & calculated interval - ${Math.floor(Math.random() * (max + 1 - min) + min)}.  Error: ${error.message}`);
 
                 return Math.floor(Math.random() * (max + 1 - min) + min);
       
               case 'exponential':
                 const delay = 2 ** retryNumber * interval;
                 const randomSum = delay * 0.2 * Math.random();
-                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay. Error: ${error.message}`);
+                logger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & interval - ${interval}. Error: ${error.message}`);
                 return delay + randomSum;
             }
             return 0;
@@ -58,7 +58,7 @@ class DataSource extends GSDataSource {
                 conditions.message = error.message;
               }
               if (args.retry.if.status) {
-                conditions.status = error.response.status;
+                conditions.status = error.response?.status;
               }
               if (args.retry.if.code) {
                 conditions.code = error.code;
