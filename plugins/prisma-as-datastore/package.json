@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-prisma-as-datastore",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publishConfig": {
     "access": "public"
   },
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@godspeedsystems/core": "^2.0.4",
+    "@mindgrep/prisma-deterministic-search-field-encryption": "^0.0.4",
     "@prisma/client": "^5.2.0",
     "dotenv": "^16.0.3",
     "lodash": "^4.17.21",
