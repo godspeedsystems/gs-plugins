@@ -1,5 +1,5 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import { fieldEncryptionMiddleware } from '@mindgrep/prisma-deterministic-search-field-encryption';
+import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic-search-field-encryption';
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
