@@ -1,7 +1,6 @@
 import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@godspeedsystems/core";
 import express from "express";
 import bodyParser from 'body-parser';
-import _ from "lodash";
 import promClient from '@godspeedsystems/metrics';
 //@ts-ignore
 import promMid from '@mindgrep/express-prometheus-middleware';
@@ -84,19 +83,24 @@ export default class EventSource extends GSEventSource {
     const routeSplit = eventRoute.split('.');
     const httpMethod: string = routeSplit[1];
     let endpoint = routeSplit[2].replace(/{(.*?)}/g, ':$1');
-    let base_url = this.config.base_url;
-    
-    if (base_url) {
-      endpoint = endpoint.replace(/^\//,''); //remove trailing ./
-      base_url = base_url.replace(/^\//,''); //remove starting /
-      base_url = base_url.replace(/^\//,''); //remove starting /
-      endpoint = "/" + base_url  + "/" + endpoint;
+    let baseUrl = this.config.base_url;
+    let fullUrl;
+    if (baseUrl) {
+      // if (endpoint[0] === '/') {
+      //   endpoint = endpoint.substring(1);
+      // }
+      // endpoint = endpoint.replace(/^\//,''); //remove trailing ./
+      // baseUrl = trimSlashes(baseUrl);
+      // baseUrl = baseUrl.replace(/^\//,''); //remove starting /
+      // baseUrl = baseUrl.replace(/^\//,''); //remove starting /
+      fullUrl = "/" + baseUrl  + "/" + endpoint;
+      fullUrl = fullUrl.replace(/\/\//g, '/');
     }
     
     const app: express.Express = this.client as express.Express;
     //@ts-ignore
-    app[httpMethod](endpoint, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
-      const gsEvent: GSCloudEvent = EventSource.createGSEvent(req, endpoint)
+    app[httpMethod](fullUrl, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
+      const gsEvent: GSCloudEvent = createGSEvent(req, endpoint)
       const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
       res
         .status(status.code || 200)
@@ -106,32 +110,58 @@ export default class EventSource extends GSEventSource {
     return Promise.resolve();
   }
 
-  static createGSEvent(req: express.Request, endpoint: string) {
-    const reqProp = _.omit(req, [
-      '_readableState',
-      'socket',
-      'client',
-      '_parsedUrl',
-      'res',
-      'app'
-    ]);
-    const reqHeaders = _.pick(req, ['headers']);
-    let data = { ...reqProp, ...reqHeaders };
-
-    const event: GSCloudEvent = new GSCloudEvent(
-      'id',
-      endpoint,
-      new Date(),
-      'http',
-      '1.0',
-      data,
-      'REST',
-      new GSActor('user'),
-      {}
-    );
-
-    return event;
+}
+// Remove leading and trailing / (slash) if present
+function trimSlashes(endpoint: string) {
+  if (endpoint[0] === '/') {
+    endpoint = endpoint.substring(1);
   }
+  if (endpoint[endpoint.length -1] === '/') {
+    endpoint = endpoint.substring(0, endpoint.length -1);
+  }
+  return endpoint;
+}
+function createGSEvent(req: express.Request, endpoint: string) {
+  const reqProp = omit(req, [
+    '_readableState',
+    'socket',
+    'client',
+    '_parsedUrl',
+    'res',
+    'app'
+  ]);
+  const reqHeaders = pick(req, ['headers']);
+  let data = { ...reqProp, ...reqHeaders };
+
+  const event: GSCloudEvent = new GSCloudEvent(
+    'id',
+    endpoint,
+    new Date(),
+    'http',
+    '1.0',
+    data,
+    'REST',
+    new GSActor('user'),
+    {}
+  );
+
+  return event;
+}
+
+function pick (o:PlainObject, keys:string[]): PlainObject {
+  let newObj:PlainObject = {};
+  for (let key of keys) {
+    newObj[key] = o[key];
+  }
+  return newObj; //return new copy
+}
+
+function omit (o:PlainObject, keys:string[]): PlainObject {
+  o = {...o}; //shallow clone
+  for (let key of keys) {
+    delete o[key];
+  }
+  return o; //return new copy
 }
 
 const SourceType = 'ES';
