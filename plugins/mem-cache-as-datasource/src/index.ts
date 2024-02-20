@@ -1,5 +1,4 @@
-// import { GSContext, GSDataSource, PlainObject, GSStatus } from "@godspeedsystems/core";
-import { GSContext, GSCachingDataSource, PlainObject } from "/home/gurjot/data/cli-test/gs-node-service";
+import { GSContext, PlainObject, GSCachingDataSource } from "@godspeedsystems/core";
 
 export default class DataSource extends GSCachingDataSource {
   protected async initClient(): Promise<PlainObject> {
