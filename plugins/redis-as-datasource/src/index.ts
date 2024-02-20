@@ -1,5 +1,4 @@
-// import { GSContext, GSDataSource, PlainObject, GSStatus } from "@godspeedsystems/core";
-import { GSContext, GSCachingDataSource, PlainObject, GSStatus, RedisOptions } from "/home/gurjot/data/cli-test/gs-node-service";
+import { GSContext, GSCachingDataSource, PlainObject, GSStatus, RedisOptions } from "@godspeedsystems/core";
 import { createClient } from "redis";
 
 export default class DataSource extends GSCachingDataSource {
