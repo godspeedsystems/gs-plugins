@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-axios-as-datasource",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Axios as datasource plugin for Godspeed Framework",
   "publishConfig": {
     "access": "public"
@@ -22,7 +22,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@godspeedsystems/core": "latest", 
+    "@godspeedsystems/core": "2.4.0", 
     "axios": "^1.5.0",
     "axios-retry": "^3.7.0",
     "pino-pretty": "^10.2.0"
