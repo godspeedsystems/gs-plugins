@@ -95,6 +95,8 @@ export default class EventSource extends GSEventSource {
       // baseUrl = baseUrl.replace(/^\//,''); //remove starting /
       fullUrl = "/" + baseUrl  + "/" + endpoint;
       fullUrl = fullUrl.replace(/\/\//g, '/');
+    } else {
+      fullUrl = endpoint;
     }
     
     const app: express.Express = this.client as express.Express;
