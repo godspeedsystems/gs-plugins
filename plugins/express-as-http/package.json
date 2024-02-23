@@ -31,7 +31,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@godspeedsystems/core": "^2.2.1",
+    "@godspeedsystems/core": "^2.4.2",
     "@godspeedsystems/metrics": "^0.0.3",
     "@mindgrep/express-prometheus-middleware": "^0.0.3",
     "@types/passport": "^1.0.14",
