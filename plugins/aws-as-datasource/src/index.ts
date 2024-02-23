@@ -141,6 +141,16 @@ export default class AWSDataSource extends GSDataSource {
 
 }
 
+
+const SourceType = 'DS';
+const Type = 'aws'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = 'aws'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {};
+
 export {
   AWSDataSource as DataSource,
-};
+  SourceType,
+  Type,
+  CONFIG_FILE_NAME,
+  DEFAULT_CONFIG
+}
