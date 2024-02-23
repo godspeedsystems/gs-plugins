@@ -15,8 +15,8 @@ export default class EventSource extends GSEventSource {
       port = 3000,
       request_body_limit = 50 * 1024 * 1024,
       file_size_limit = 50 * 1024 * 1024,
-      jwt: jwtConfig,
     } = this.config;
+    const jwtConfig = this.config.authn?.jwt || this.config.jwt;
 
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
     app.use(bodyParser.json({ limit: file_size_limit }));
@@ -53,7 +53,7 @@ export default class EventSource extends GSEventSource {
     };
 
     app.listen(port);
-
+    // logger.info('Started Express server at port %s', port);
     if (process.env.OTEL_ENABLED == 'true') {
       app.use(
         promMid({
@@ -71,7 +71,7 @@ export default class EventSource extends GSEventSource {
 
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      if (authn) {
+      if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
         return passport.authenticate('jwt', { session: false })(req, res, next)
       } else {
         next();
