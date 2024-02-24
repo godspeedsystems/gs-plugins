@@ -56,7 +56,7 @@ export default class DataSource extends GSDataSource {
     const url = urlParts.join('.');
 
     try {
-      if (this.tokenRefreshPromise) {
+      if (this.tokenRefreshPromise && !args.skipAuth) {
         // ++this.waitAndHitCount;
         await this.tokenRefreshPromise;
       }
