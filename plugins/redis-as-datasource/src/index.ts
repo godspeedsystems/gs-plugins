@@ -48,7 +48,7 @@ export default class DataSource extends GSCachingDataSource {
       if (client) {
         try{
           const res = await client.set(key, val, options);
-          return new GSStatus(true, 200, 'Set operation successful', res, undefined);
+          return new GSStatus(true, 201, 'Set operation successful', res, undefined);
         } catch(err){
           return new GSStatus(false, 500, 'Set operation failed', err, undefined);
         }
@@ -80,7 +80,7 @@ export default class DataSource extends GSCachingDataSource {
       if (client) {
         try{
           const res = await client.del(key);
-          return new GSStatus(true, 200, 'Del operation successful', res, undefined);
+          return new GSStatus(true, 202, 'Del operation successful', res, undefined);
         } catch(err){
           return new GSStatus(false, 500, 'Del operation failed', err, undefined);
         }
