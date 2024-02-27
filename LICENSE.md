@@ -1,4 +1,4 @@
-# Godspeed Source Available License 1.0
+# Godspeed License 1.0
 
 #### Acceptance
 
@@ -10,9 +10,10 @@ The licensor grants you a non-exclusive, worldwide, non-sublicensable, non-trans
 
 #### Limitations and conditions
 
-You may not move, change, disable, or circumvent the functionality of the software relating to 
-* The license key and subscription management
-* The monitoring & collection of the software usage data. 
+You may not move, change, disable, or circumvent the functionality of the software relating to
+
+- The license key and subscription management
+- The monitoring & collection of the software usage data.
 
 You may not remove or obscure any functionality in the software that is protected by the license key.
 
@@ -22,10 +23,11 @@ You may not make the functionality of the software or a modified version availab
 
 You may not use, modify or redistribute the software for initiating or instigating violence upon anyone.
 
-You may use any information in intangible form that you remember after accessing the software. However, whatever you create using this right, must not 
-* Infringe any of licensor's copyrights or patents.
-* Pose any threat to the licensor's activities or businesses.
-* Be used by you for violence related purposes.
+You may use any information in intangible form that you remember after accessing the software. However, whatever you create using this right, must not
+
+- Infringe any of licensor's copyrights or patents.
+- Pose any threat to the licensor's activities or businesses.
+- Be used by you for violence related purposes.
 
 #### Patents
 
@@ -35,10 +37,11 @@ The licensor grants you a license, under any patent claims the licensor can lice
 
 You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms.
 
-If you modify the software, you must 
-* Include in any modified copies of the software prominent notices stating that you have modified the software.
-* Include in any modified copies of the software a copy of these terms.
-* Make your changed copy available to the public under the same license terms.
+If you modify the software, you must
+
+- Include in any modified copies of the software prominent notices stating that you have modified the software.
+- Include in any modified copies of the software a copy of these terms.
+- Make your changed copy available to the public under the same license terms.
 
 #### No Other Rights
 
@@ -58,9 +61,9 @@ The **licensor** is the entity offering these terms, and the **software** is the
 
 **you** refers to the individual or entity agreeing to these terms.
 
-**your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization. 
+**your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization.
 
-**commercial purpose** refers to the intention to make financial gain, which includes activities including, without limitation, incorporation in a commercial product, use in a commercial service, or production of other artefacts for commercial purposes. 
+**commercial purpose** refers to the intention to make financial gain, which includes activities including, without limitation, incorporation in a commercial product, use in a commercial service, or production of other artefacts for commercial purposes.
 
 **non-commercial activites** refers to those activities which are not aimed to make financial gain directly or indirectly, with the exception of learning or upskilling for self-employment.
 

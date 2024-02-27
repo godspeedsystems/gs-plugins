@@ -20,7 +20,7 @@
     "axios",
     "godspeed"
   ],
-  "license": "ISC",
+  "license": "Godspeed License 1.0",
   "dependencies": {
     "@godspeedsystems/core": "^2.4.0", 
     "axios": "^1.5.0",

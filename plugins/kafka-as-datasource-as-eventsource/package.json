@@ -12,7 +12,7 @@
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
+        "license": "Godspeed License 1.0",
         "author": "Yaswanth <yaswanth@godspeed.systems>",
         "devDependencies": {
                 "typescript": "^4.9.5"

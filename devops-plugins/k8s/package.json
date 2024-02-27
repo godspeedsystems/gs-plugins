@@ -26,7 +26,7 @@
     "godspeed",
     "@godspeedsystems/devops-plugin"
   ],
-  "license": "ISC",
+  "license": "Godspeed License 1.0",
   "dependencies": {
     "commander": "^11.0.0",
     "fs": "^0.0.1-security",

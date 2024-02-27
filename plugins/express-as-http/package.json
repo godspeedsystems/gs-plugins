@@ -21,7 +21,7 @@
     "prepublishOnly": "npm run build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Godspeed License 1.0",
   "description": "Godspeed event source plugin for express as http server",
   "devDependencies": {
     "@types/express": "^4.17.17",
