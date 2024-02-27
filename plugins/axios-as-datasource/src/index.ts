@@ -52,6 +52,10 @@ class DataSource extends GSDataSource {
             return 0;
           },
           retryCondition: (error: any) => {
+            // Allow developer to set custom status and message for retry
+            // For example: 
+            // message: Request failed with status code 500
+            // status: 500
 
             if(!args.retry.if) {
               // There is no special condition to retry
@@ -59,21 +63,15 @@ class DataSource extends GSDataSource {
               return true;
             }
 
-            // Retry based on matching certain conditions in the axios error object.
-            // code, message, status
-            // For example: 
-            // message: Request failed with status code 500
-            // status: 500
-            // code: Axios error code
-
             const retryIf = args.retry.if;
-            // In order to retry, all retry conditions should match in the Axios error object
-            for (let key of Object.keys(retryIf)) {
-              if (retryIf[key] !== error[key]) {
-                return false;
-              }
+           
+            if (retryIf.status && retryIf.status !== error.response?.status) {
+              return false;
             }
-            // All conditions matched
+            if (retryIf.message && retryIf.message !== error.message) {
+              return false;
+            }
+            // All conditions matched, so let's retry
             return true;
           },
         });
