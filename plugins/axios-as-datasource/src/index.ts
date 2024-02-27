@@ -23,7 +23,7 @@ class DataSource extends GSDataSource {
       const client = this.client as AxiosInstance;
 
       if (args.retry) {
-        const { max_attempts, type, interval, min_interval, max_interval } = args.retry;
+        const { max_attempts = 1, type = 'constant', interval = 'PT10s', min_interval = 'PT5s', max_interval = 'PT15s'} = args.retry;
 
         axiosRetry(client, {
           retries: max_attempts,
@@ -52,29 +52,29 @@ class DataSource extends GSDataSource {
             return 0;
           },
           retryCondition: (error: any) => {
-            if(args.retry.if){
-              let conditions: PlainObject = {};
-              if (args.retry.if.message) {
-                conditions.message = error.message;
-              }
-              if (args.retry.if.status) {
-                conditions.status = error.response?.status;
-              }
-              if (args.retry.if.code) {
-                conditions.code = error.code;
-              }
-              const matches = (obj: PlainObject, source: PlainObject) =>
-                Object.keys(source).every(
-                  (key) => obj.hasOwnProperty(key) && obj[key] === source[key]
-                );
-              if (matches(args.retry.if, conditions)) {
-                return true;
-              } else {
+
+            if(!args.retry.if) {
+              // There is no special condition to retry
+              // Always retry upon error (500 status)
+              return true;
+            }
+
+            // Retry based on matching certain conditions in the axios error object.
+            // code, message, status
+            // For example: 
+            // message: Request failed with status code 500
+            // status: 500
+            // code: Axios error code
+
+            const retryIf = args.retry.if;
+            // In order to retry, all retry conditions should match in the Axios error object
+            for (let key of Object.keys(retryIf)) {
+              if (retryIf[key] !== error[key]) {
                 return false;
               }
-            }else{
-              return true
             }
+            // All conditions matched
+            return true;
           },
         });
       } 
