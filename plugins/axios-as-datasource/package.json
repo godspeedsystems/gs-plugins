@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-axios-as-datasource",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Axios as datasource plugin for Godspeed Framework",
   "publishConfig": {
     "access": "public"
@@ -13,14 +13,14 @@
     "prepublishOnly": "npm run build"
   },
   "author": {
-    "name": "Ashutosh Tripathi",
-    "email": "ashutosh@godspeed.systems"
+    "name": "Godspeed Systems",
+    "email": "admin@godspeed.systems"
   },
   "keywords": [
     "axios",
     "godspeed"
   ],
-  "license": "ISC",
+  "license": "Godspeed License 1.0",
   "dependencies": {
     "@godspeedsystems/core": "latest",
     "axios": "^1.5.0",
