@@ -29,8 +29,11 @@ export default class DataSource extends GSDataSource {
       //initialize the authentication function
       const fnPath = this.config.authn.fn.replaceAll('\.', '/');
       this.config.authn.fn = require(`${process.cwd()}/dist/functions/${fnPath}`);
+      
       //initialize token headers
-      await this.setAuthHeaders();
+      if (!authn.lazyAuth) {
+        await this.setAuthHeaders();
+      }
     }
     const client = axios.create({ baseURL: base_url, timeout, headers });
 
@@ -175,7 +178,7 @@ export default class DataSource extends GSDataSource {
     this.tokenRefreshPromise = new Promise(async (resolve, reject) => {
       //Get and set new access headers
       try {
-        await that.setAuthHeaders();
+        await that.setAuthHeaders(ctx);
         //set this to null so that next request can directly be executed with newly set auth headers
         that.tokenRefreshPromise = null;
         //resolve this promise so that those waiting can continue further
@@ -185,8 +188,8 @@ export default class DataSource extends GSDataSource {
       }
     });
   }
-  async setAuthHeaders() {
-    const authnHeaders: PlainObject = await this.config.authn.fn(this.config);
+  async setAuthHeaders(ctx: GSContext) {
+    const authnHeaders: PlainObject = await this.config.authn.fn(this.config, ctx);
     Object.assign(this.config.headers, authnHeaders);
   }
 }
