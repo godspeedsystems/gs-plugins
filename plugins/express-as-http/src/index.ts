@@ -1,4 +1,4 @@
-import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@godspeedsystems/core";
+import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, logger } from "@godspeedsystems/core";
 import express from "express";
 import bodyParser from 'body-parser';
 import promClient from '@godspeedsystems/metrics';
@@ -31,7 +31,12 @@ export default class EventSource extends GSEventSource {
   
     if (jwtConfig) {
       if (!jwtConfig.secretOrKey || !jwtConfig.audience || !jwtConfig.issuer) {
+<<<<<<< Updated upstream
         throw new Error('Check all three JWT values are set properly for Express HTTP event source: secretOrKey, audience or issuer. Exiting');
+=======
+        logger.fatal('JWT Setting error in http event source. Check all three JWT values are set properly for Express HTTP event source: secretOrKey, audience or issuer. Exiting');
+        process.exit(1);
+>>>>>>> Stashed changes
       }
       app.use(passport.initialize());
       passport.use(
