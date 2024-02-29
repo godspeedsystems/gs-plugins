@@ -1,5 +1,5 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 export default class DataSource extends GSDataSource {
   // rand = Math.random();
   // isSecondHit: boolean = false;
@@ -42,9 +42,66 @@ export default class DataSource extends GSDataSource {
     return client;
   };
 
+  private setRetry(client: AxiosInstance, retryConf: PlainObject, ctx: GSContext) {
+    const { max_attempts = 1, type = 'constant', interval = 'PT10s', min_interval = 'PT5s', max_interval = 'PT15s' } = retryConf;
+
+    axiosClientRetry(client, {
+      retries: max_attempts,
+      retryDelay: (
+        retryNumber: number,
+        error: AxiosError<any, any>,
+      ) => {
+        switch (type) {
+          case 'constant':
+            ctx.childLogger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & interval - ${interval}. Error: ${error.message}`);
+            return interval;
+
+          case 'random':
+            let min = Math.ceil(min_interval);
+            let max = Math.floor(max_interval);
+            ctx.childLogger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & calculated interval - ${Math.floor(Math.random() * (max + 1 - min) + min)}.  Error: ${error.message}`);
+
+            return Math.floor(Math.random() * (max + 1 - min) + min);
+
+          case 'exponential':
+            const delay = 2 ** retryNumber * interval;
+            const randomSum = delay * 0.2 * Math.random();
+            ctx.childLogger.info(`Attempt ${retryNumber}: Retrying request with ${type} retry delay & interval - ${interval}. Error: ${error.message}`);
+            return delay + randomSum;
+        }
+        return 0;
+      },
+      retryCondition: (error: any) => {
+        // Allow developer to set custom status and message for retry
+        // For example: 
+        // message: Request failed with status code 500
+        // status: 500
+
+        if (!retryConf.retry.when) {
+          // There is no special condition to retry
+          // Always retry upon error (500 status)
+          return true;
+        }
+
+        const retryCondition = retryConf.retry.when;
+        // Response status must be one of the retry statuses configured
+        if (retryCondition.status && !retryCondition.status.includes( error.response?.status)) {
+          return false;
+        }
+        // Error message if given must match the message in the condition
+        if (retryCondition.message && retryCondition.message !== error.message) {
+          return false;
+        }
+        // All conditions matched, so let's retry
+        return true;
+      },
+    });
+  }
+
   async execute(ctx: GSContext, args: PlainObject, retryCount = 0): Promise<any> {
     // ++this.attemptsCount;
     const baseURL = this.config.base_url;
+    let retryConf = {...this.config.retry,...args.retry}
     let {
       meta: { fnNameInWorkflow },
       data,
@@ -62,7 +119,10 @@ export default class DataSource extends GSDataSource {
       }
 
       const client = this.client as AxiosInstance;
-
+      
+      if(Object.keys(retryConf).length !== 0){
+        this.setRetry(client,retryConf,ctx);
+      }
       //Hit the API with headers
       headers = this.setHeaders(headers);
 
@@ -203,4 +263,8 @@ export {
   Type,
   CONFIG_FILE_NAME,
   DEFAULT_CONFIG
+}
+
+function axiosClientRetry(client: AxiosInstance, arg1: { retries: any; retryDelay: (retryNumber: number, error: AxiosError<any, any>) => any; retryCondition: (error: any) => boolean; }) {
+  throw new Error("Function not implemented.");
 }
