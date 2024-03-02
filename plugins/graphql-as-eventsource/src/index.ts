@@ -41,16 +41,15 @@ export default class EventSource extends GSEventSource {
 
   async subscribeToEvent(eventKey: string, eventConfig: PlainObject, eventHandler: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event_info: PlainObject): Promise<void> {
     this.allEvents[eventKey] = event_info;
-    const [es, method, endpoint] = eventKey.split('.');
+    const [es, method] = eventKey.split('.');
     const typeName = this.getTypeName(method);
-    const modifiedString = this.getModifiedString(endpoint);
-    const subquery = `${method}${modifiedString}`;
 
     if (!this.allResolvers[typeName]) {
       this.allResolvers[typeName] = {};
     }
-
-    this.allResolvers[typeName][subquery] = this.getResolver(method, eventHandler, eventConfig, event_info);
+    const operationId = this.getOperationId(eventKey, eventConfig);
+    const endpoint = eventKey.split('.')[2].replace(/{(.*?)}/g, ':$1');
+    this.allResolvers[typeName][operationId] = this.getResolver(method, endpoint, eventHandler, eventConfig, event_info);
 
     const chosenPort = this.config.port || 4000;
     if (this.timeoutTimer) {
@@ -59,28 +58,40 @@ export default class EventSource extends GSEventSource {
       clearTimeout(this.timeoutTimer);
     }
     // logger.info('setting tmeout to start')
-    this.timeoutTimer = setTimeout(() => this.startServer(es, chosenPort), 10000);
+    this.timeoutTimer = setTimeout(() => {
+      this.startServer(es, chosenPort);
+      logger.info('Graphql server started')
+      }, 5000);
   }
-
+  getOperationId (eventKey: string, eventConfig: PlainObject): string {
+  
+    let operationId = eventConfig.operationId || eventConfig.id || eventConfig.summary?.trim().replaceAll(/\s+/g, '_');
+    if (operationId) {
+      return operationId;
+    }
+    const [method, endpoint] = eventKey.split('.');
+    //Replace {} from around path params in the url
+    let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
+    //Replace / with _
+    modifiedString = modifiedString.replace(/\//g, '_');
+  
+    return `${method}${modifiedString}`;
+  
+  }
   private getTypeName(method: string): string {
     return method === "get" ? "Query" : "Mutation";
   }
 
-  private getModifiedString(endpoint: string): string {
-    let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
-    return modifiedString.replace(/\//g, '_');
-  }
-
-  private getResolver(method: string, eventHandler: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, eventConfig: PlainObject, eventInfo: PlainObject) {
+  private getResolver(method: string, endpoint: string, eventHandler: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, eventConfig: PlainObject, eventInfo: PlainObject) {
     return async (parent: any, args: any, contextValue: any, info: any) => {
       const { body, ...rest } = args;
       const event = new GSCloudEvent(
         "id",
-        `${method}.${eventInfo}`,
+        endpoint,
         new Date(),
         "Apollo",
         "1.0",
-        { body: body, params: rest, user: contextValue.user },
+        { body: body, params: rest,  query: rest, user: contextValue.user, headers: contextValue.headers },
         "REST",
         new GSActor("user"),
         {}
@@ -118,7 +129,7 @@ export default class EventSource extends GSEventSource {
 
         context: async ({ req, res }) => {
           if (!this.jwtAuth) {
-            return {user:null};
+            return {user:null, headers: req.headers};
           }
           // Note: This example uses the `req` argument to access headers,
           // but the arguments received by `context` vary by integration.
@@ -161,7 +172,7 @@ export default class EventSource extends GSEventSource {
           }
 
           // Add the user to the context
-          return { user: parsedJwt };
+          return { user: parsedJwt, headers: req.headers };
         },
         listen: {port: chosenPort },
 
