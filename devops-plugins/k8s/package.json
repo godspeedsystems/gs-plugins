@@ -16,8 +16,8 @@
     "prepublishOnly": "npm run build"
   },
   "author": {
-    "name": "Gurjot Kaur",
-    "email": "gurjot@godspeed.systems"
+    "name": "Godspeed Systems",
+    "email": "admin@godspeed.systems"
   },
   "keywords": [
     "k8s",

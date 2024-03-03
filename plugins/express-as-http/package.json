@@ -20,7 +20,7 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "author": "",
+  "author": "Godspeed Systems <admin@godspeed.systems>",
   "license": "Godspeed License 1.0",
   "description": "Godspeed event source plugin for express as http server",
   "devDependencies": {

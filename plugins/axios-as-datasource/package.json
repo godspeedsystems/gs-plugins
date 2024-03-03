@@ -13,8 +13,8 @@
     "prepublishOnly": "npm run build"
   },
   "author": {
-    "name": "Ayush Ghai",
-    "email": "ayush@godspeed.systems"
+    "name": "Godspeed Systems",
+    "email": "admin@godspeed.systems"
   },
   "keywords": [
     "axios",

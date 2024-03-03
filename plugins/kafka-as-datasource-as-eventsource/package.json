@@ -13,7 +13,7 @@
                 "prepublishOnly": "npm run build"
         },
         "license": "Godspeed License 1.0",
-        "author": "Yaswanth <yaswanth@godspeed.systems>",
+        "author": "Godspeed Systems <admin@godspeed.systems>",
         "devDependencies": {
                 "typescript": "^4.9.5"
         },
