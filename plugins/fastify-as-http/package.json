@@ -12,7 +12,7 @@
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
+        "license": "Godspeed License 1.0",
         "devDependencies": {
                 "@types/qs": "^6.9.10",
 		"@types/fastify-jwt": "^0.8.1",

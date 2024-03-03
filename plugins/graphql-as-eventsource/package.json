@@ -12,8 +12,8 @@
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
-        "author": "Ayush Ghai <ayush@godspeed.systems>",
+        "license": "Godspeed License 1.0",
+        "author": "Godspeed Systems <admin@godspeed.systems>",
         "devDependencies": {
                 "@types/fs-extra": "^11.0.4",
                 "@types/jsonwebtoken": "^9.0.5",

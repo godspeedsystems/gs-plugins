@@ -19,9 +19,9 @@
     "dev": "tsc --watch",
     "build": "tsc",
     "prepublishOnly": "npm run build"
-  },
-  "author": "",
-  "license": "Godspeed V1 License",
+  "author": "Godspeed Systems <admin@godspeed.systems>",
+  "license": "Godspeed License 1.0",
+
   "description": "Godspeed event source plugin for express as http server",
   "devDependencies": {
     "@types/express": "^4.17.17",

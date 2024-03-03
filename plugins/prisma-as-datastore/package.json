@@ -12,10 +12,10 @@
     "prepublishOnly": "npm run build"
   },
   "author": {
-    "name": "Ashutosh Tripathi",
-    "email": "ashutosh@godspeed.systems"
+    "name": "Godspeed Systems",
+    "email": "admin@godspeed.systems"
   },
-  "license": "ISC",
+  "license": "Godspeed License 1.0",
   "description": "Prisma as a datasource plugin for Godspeed Framework.",
   "devDependencies": {
     "@types/lodash": "^4.14.197",

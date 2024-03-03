@@ -12,8 +12,8 @@
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
-        "author": "Yaswanth <yaswanth@godspeed.systems>",
+        "license": "Godspeed License 1.0",
+        "author": "Godspeed Systems <admin@godspeed.systems>",
         "devDependencies": {
                 "typescript": "^4.9.5",
                 "@types/nodemailer": "^6.4.10"
