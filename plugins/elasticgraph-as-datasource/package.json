@@ -1,23 +1,25 @@
 {
         "name": "@godspeedsystems/plugins-elasticgraph-as-datasource",
-        "version": "1.0.0",
+        "version": "1.1.1",
         "description": "elasticgraph as datasource plugin for Godspeed Framework",
         "publishConfig": {
-          "access": "public"
+                "access": "public"
         },
-        "main" : "dist/index.js",
+        "main": "dist/index.js",
         "types": "dist/index.d.js",
         "scripts": {
-          "dev": "tsc --watch",
-          "build": "tsc",
-          "prepublishOnly": "npm run build"
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
         },
         "license": "Godspeed License 1.0",
         "devDependencies": {
-          "typescript": "^4.9.5"
+                "@types/glob": "^8.1.0",
+                "typescript": "^4.9.5"
         },
         "dependencies": {
-          "@godspeedsystems/core": "^2.0.0-alpha.23",
-          "pino-pretty": "^10.2.0"
+                "@godspeedsystems/core": "^2.4.3",
+                "@godspeedsystems/elasticgraph": "^2.0.1",
+                "pino-pretty": "^10.2.0"
         }
-      }
+}

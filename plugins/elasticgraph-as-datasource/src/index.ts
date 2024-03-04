@@ -3,14 +3,12 @@ import {
   GSDataSource,
   GSStatus,
   PlainObject,
+  logger
 } from "@godspeedsystems/core";
+import path from "path";
 const ElasticGraph = require("@godspeedsystems/elasticgraph");
 
-function responseCode(method: string): number {
-  return response_codes[method] || 200;
-}
-
-const response_codes: { [key: string]: number } = {
+const responseCodes: { [key: string]: number } = {
   index: 201,
   get: 200,
   update: 204,
@@ -22,10 +20,10 @@ const response_codes: { [key: string]: number } = {
 };
 export default class DataSource extends GSDataSource {
   protected async initClient(): Promise<object> {
-    const { schema_backend } = this.config;
+    const { name } = this.config;
     try {
-      const eg = new ElasticGraph(schema_backend);
-      return eg;
+      const configPath = path.join(process.cwd(), 'dist/datasources/', name, '/config');
+      return new ElasticGraph(configPath, logger);
     } catch (error) {
       throw error;
     }
@@ -35,46 +33,46 @@ export default class DataSource extends GSDataSource {
     const { logger } = ctx;
     try {
       const {
-        meta: { entityType, method, fnNameInWorkflow },
+        meta: {fnNameInWorkflow },
         data,
       } = args as {
         meta: { entityType: string; method: string; fnNameInWorkflow: string };
         data: PlainObject;
       };
 
+      const {entityType, method} = getEtAndMethod(fnNameInWorkflow);
+
       const { deep, collect } = this.config;
 
       if (this.client) {
-        let client: any;
+        let fn: any;
         if (deep === true) {
-          client = this.client.deep;
+          // In case this method has deep function use that else use native call
+          fn = this.client.deep[method] || this.client[method];
+        } else if (collect === true) {
+          // In case this method has collect function use that else use native call
+          fn = this.client[method]?.collect || this.client[method];
         } else {
-          client = this.client;
+          fn = this.client[method];
         }
-
-        if (collect === true && deep === false) {
-          let egResponse = await client[method].collect({
-            ...data,
-          });
-          return Promise.resolve(
-            new GSStatus(true, responseCode(method), undefined, egResponse)
-          );
-        } else {
-          let egResponse = await client[method]({
-            ...data,
-          });
-          return Promise.resolve(
-            new GSStatus(true, responseCode(method), undefined, egResponse)
-          );
-        }
+        let egResponse = await this.client[method].collect({
+          index: entityType,
+          type: '_doc',
+          ...data,
+        });
+        return new GSStatus(true, responseCodes[method], undefined, egResponse);
+      } else {
+        throw new Error('Elasticgraph client not initialized')
       }
     } catch (error: any) {
-      logger.error(error);
-      return Promise.reject(
-        new GSStatus(false, 400, error.message, JSON.stringify(error.message))
-      );
+      logger.error('Error in executing elasticgraph query \n args %o \n error %o', args, error);
+      return new GSStatus(false, 500, error.message, {error});
     }
   }
+}
+
+function getEtAndMethod(fnNameInWorkflow: string): PlainObject {
+  return {};
 }
 
 const SourceType = "DS";
