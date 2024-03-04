@@ -1,5 +1,6 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axiosRetry from 'axios-retry';
 export default class DataSource extends GSDataSource {
   // rand = Math.random();
   // isSecondHit: boolean = false;
@@ -45,7 +46,7 @@ export default class DataSource extends GSDataSource {
   private setRetry(client: AxiosInstance, retryConf: PlainObject, ctx: GSContext) {
     const { max_attempts = 1, type = 'constant', interval = 'PT10s', min_interval = 'PT5s', max_interval = 'PT15s' } = retryConf;
 
-    axiosClientRetry(client, {
+    axiosRetry(client, {
       retries: max_attempts,
       retryDelay: (
         retryNumber: number,
@@ -77,13 +78,13 @@ export default class DataSource extends GSDataSource {
         // message: Request failed with status code 500
         // status: 500
 
-        if (!retryConf.retry.when) {
+        if (!retryConf.when) {
           // There is no special condition to retry
           // Always retry upon error (500 status)
           return true;
         }
 
-        const retryCondition = retryConf.retry.when;
+        const retryCondition = retryConf.when;
         // Response status must be one of the retry statuses configured
         if (retryCondition.status && !retryCondition.status.includes( error.response?.status)) {
           return false;
@@ -265,6 +266,3 @@ export {
   DEFAULT_CONFIG
 }
 
-function axiosClientRetry(client: AxiosInstance, arg1: { retries: any; retryDelay: (retryNumber: number, error: AxiosError<any, any>) => any; retryCondition: (error: any) => boolean; }) {
-  throw new Error("Function not implemented.");
-}
