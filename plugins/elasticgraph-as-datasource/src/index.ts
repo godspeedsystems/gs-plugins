@@ -34,13 +34,12 @@ export default class DataSource extends GSDataSource {
     try {
       const {
         meta: {fnNameInWorkflow },
-        data,
+        ...rest
       } = args as {
         meta: { entityType: string; method: string; fnNameInWorkflow: string };
-        data: PlainObject;
       };
-
-      const {entityType, method} = getEtAndMethod(fnNameInWorkflow);
+      logger.fatal(rest);
+      const {index, method} = getEtAndMethod(fnNameInWorkflow);
 
       const { deep, collect } = this.config;
 
@@ -55,10 +54,10 @@ export default class DataSource extends GSDataSource {
         } else {
           fn = this.client[method];
         }
-        let egResponse = await this.client[method].collect({
-          index: entityType,
+        let egResponse = await fn({
+          index,
           type: '_doc',
-          ...data,
+          ...rest
         });
         return new GSStatus(true, responseCodes[method], undefined, egResponse);
       } else {
@@ -72,7 +71,12 @@ export default class DataSource extends GSDataSource {
 }
 
 function getEtAndMethod(fnNameInWorkflow: string): PlainObject {
-  return {};
+  const fnSplit = fnNameInWorkflow.split('.');
+
+  return {
+    index: fnSplit[2],
+    method: fnSplit[3]
+  };
 }
 
 const SourceType = "DS";
