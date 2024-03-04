@@ -11,17 +11,9 @@ import path from 'path';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
-interface Resolver {
-  [key: string]: any;
-}
-
-interface Event {
-  [key: string]: PlainObject;
-}
-
 export default class EventSource extends GSEventSource {
-  private allResolvers: Resolver = {};
-  private allEvents: Event = {};
+  private allResolvers: PlainObject = {};
+  private allEvents: PlainObject = {};
   private timeoutTimer: NodeJS.Timeout | null = null;
 
   private jwtAuth: boolean = false;
