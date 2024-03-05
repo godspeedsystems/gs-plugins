@@ -24,6 +24,14 @@ export default class DataSource extends GSDataSource {
     try {
       const configPath = path.join(process.cwd(), 'dist/datasources/', name, '/config');
       return new ElasticGraph(configPath, logger);
+      // elasticsearch client eg.
+      // return new Client({
+      //   apiVersion: '7.17.18',
+      //   maxConnections: 200,
+      //   node: 'http://localhost:9200/',
+      //   requestTimeout: 3000,
+      //   sniffOnStart: true
+      // });
     } catch (error) {
       throw error;
     }
@@ -56,7 +64,7 @@ export default class DataSource extends GSDataSource {
         }
         let egResponse = await fn({
           index,
-          type: '_doc',
+          // type: '_doc',
           ...rest
         });
         return new GSStatus(true, responseCodes[method], undefined, egResponse);
