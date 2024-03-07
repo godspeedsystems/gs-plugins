@@ -19,6 +19,7 @@
     "dev": "tsc --watch",
     "build": "tsc",
     "prepublishOnly": "npm run build"
+  },
   "author": "Godspeed Systems <admin@godspeed.systems>",
   "license": "Godspeed License 1.0",
 
