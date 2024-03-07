@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-aws-as-datasource",
-        "version": "1.1.3",
+        "version": "1.1.4",
         "description": "aws as datasource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
@@ -13,7 +13,7 @@
                 "prepublishOnly": "npm run build"
         },
         "license": "Godspeed License 1.0",
-        "author": "Ayush Ghai <admin@godspeed.systems>",
+        "author": "Godspeed Systems <admin@godspeed.systems>",
         "devDependencies": {
                 "typescript": "^4.9.5"
         },
