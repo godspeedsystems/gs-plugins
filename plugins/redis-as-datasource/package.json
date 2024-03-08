@@ -1,24 +1,24 @@
 {
         "name": "@godspeedsystems/plugins-redis-as-datasource",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "description": "redis as datasource plugin for Godspeed Framework",
         "publishConfig": {
-          "access": "public"
+                "access": "public"
         },
-        "main" : "dist/index.js",
+        "main": "dist/index.js",
         "types": "dist/index.d.js",
         "scripts": {
-          "dev": "tsc --watch",
-          "build": "tsc",
-          "prepublishOnly": "npm run build"
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
         },
         "license": "Godspeed License 1.0",
         "devDependencies": {
-          "typescript": "^4.9.5"
+                "typescript": "^4.9.5"
         },
         "dependencies": {
-          "@godspeedsystems/core": "^2.4.1",
-          "pino-pretty": "^10.2.0",
-          "redis": "^4.6.10"
+                "@godspeedsystems/core": "^2.4.8",
+                "pino-pretty": "^10.2.0",
+                "redis": "^4.6.10"
         }
-      }
+}
