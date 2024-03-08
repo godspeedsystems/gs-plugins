@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-graphql-as-eventsource",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "description": "graphql as eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
@@ -21,7 +21,7 @@
         },
         "dependencies": {
                 "@apollo/server": "^4.10.0",
-                "@godspeedsystems/core": "^2.4.2",
+                "@godspeedsystems/core": "^2.4.8",
                 "fs-extra": "^11.2.0",
                 "graphql": "^16.8.1",
                 "jsonwebtoken": "^9.0.2",
