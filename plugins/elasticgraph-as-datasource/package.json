@@ -19,7 +19,7 @@
         },
         "dependencies": {
                 "@godspeedsystems/core": "^2.4.8",
-                "@godspeedsystems/elasticgraph": "^2.0.2",
+                "@godspeedsystems/elasticgraph": "^2.0.3",
                 "pino-pretty": "^10.2.0"
         }
 }
