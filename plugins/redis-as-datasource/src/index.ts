@@ -2,15 +2,14 @@ import { GSContext, GSCachingDataSource, PlainObject, GSStatus, RedisOptions } f
 import { createClient } from "redis";
 
 export default class DataSource extends GSCachingDataSource {
-  protected async initClient(): Promise<object> {
-    const client = await createClient({
-      url: this.config.url
-    })
-      .on("error", (err:any) => console.log("Redis Client Error", err))
-      .connect();
-    return client;
-  }
-
+protected async initClient(): Promise<object> {
+  const client = await createClient({
+    url: this.config.url
+  }) as any; 
+  client.on("error", (err:any) => console.log("Redis Client Error", err)); 
+  await client.connect();
+  return client;
+}
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     try {
       const {
