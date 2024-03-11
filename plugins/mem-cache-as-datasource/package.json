@@ -1,6 +1,6 @@
 {
-        "name": "@godspeedsystems/mem-cache-as-datasource",
-        "version": "1.0.0",
+        "name": "@godspeedsystems/plugins-mem-cache-as-datasource",
+        "version": "1.0.1",
         "description": "mem-cache as datasource plugin for Godspeed Framework",
         "publishConfig": {
           "access": "public"
@@ -18,5 +18,15 @@
         },
         "dependencies": {
           "@godspeedsystems/core": "^2.4.1"
-        }
+        },
+        "keywords": [
+          "godspeed",
+          "lowcode",
+          "microservice",
+          "mem-cache",
+          "cache",
+          "in-memory",
+          "datasource",
+          "godspeed plugins"
+        ]
       }
