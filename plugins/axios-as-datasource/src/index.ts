@@ -38,7 +38,7 @@ export default class DataSource extends GSDataSource {
       const curlirize = require('./curlize');
       curlirize(client);
     }
-    
+
     return client;
   };
 
@@ -46,14 +46,21 @@ export default class DataSource extends GSDataSource {
     // ++this.attemptsCount;
     const baseURL = this.config.base_url;
     let {
-      meta: { fnNameInWorkflow },
+      meta: { fnNameInWorkflow, method, url },
       data,
       headers,
       ...rest //the remaining arguments of the axios call
     } = args;
-    
-    const [, , method, ...urlParts] = fnNameInWorkflow.split('.');
-    const url = urlParts.join('.');
+
+    if (fnNameInWorkflow) {
+      let urlParts;
+      [, , method, ...urlParts] = fnNameInWorkflow.split('.');
+      url = urlParts.join('.');
+    }
+    if (!method || !url) {
+      return new GSStatus(false, 400, 'method or url not found in axios call', fnNameInWorkflow || {method, url});
+    }
+
 
     try {
       if (this.tokenRefreshPromise && !args.skipAuth) {
@@ -71,7 +78,7 @@ export default class DataSource extends GSDataSource {
         url,
         baseURL,
         headers,
-        data:  JSON.stringify(data),
+        data: JSON.stringify(data),
         ...rest
       };
       //For testing auth refresh in concurrenct scenarios
