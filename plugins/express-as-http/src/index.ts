@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from 'body-parser';
 import promClient from '@godspeedsystems/metrics';
 //@ts-ignore
-import promMid from '@mindgrep/express-prometheus-middleware';
+import promMid from '@godspeedsystems/express-prometheus-middleware';
 import passport from "passport";
 import fileUpload from "express-fileupload"
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
