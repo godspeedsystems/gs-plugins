@@ -1,4 +1,4 @@
-import { GSContext, PlainObject, GSCachingDataSource } from "@godspeedsystems/core";
+import { GSContext, PlainObject, GSCachingDataSource, logger } from "@godspeedsystems/core";
 
 export default class DataSource extends GSCachingDataSource {
   protected async initClient(): Promise<PlainObject> {
@@ -7,8 +7,7 @@ export default class DataSource extends GSCachingDataSource {
   }  
 
   set(key: string, val: any, options: { EX?: number | undefined; PX?: number | undefined; EXAT?: number | undefined; NX?: boolean | undefined; XX?: boolean | undefined; KEEPTTL?: boolean | undefined; GET?: boolean | undefined; }) {
-    console.log('set key %s %o', key, this.client)
-
+    logger.debug('set key %s %o', key, this.client);
     // @ts-ignore
     this.client[key] = val;
   }

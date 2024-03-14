@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-mem-cache-as-datasource",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "description": "mem-cache as datasource plugin for Godspeed Framework",
         "publishConfig": {
           "access": "public"
