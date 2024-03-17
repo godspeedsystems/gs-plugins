@@ -3,7 +3,6 @@ import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic
 import { PrismaClient } from "@prisma/client";
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
-import { isPlainObject } from "lodash";
 
 const iv = Buffer.alloc(16);
 
