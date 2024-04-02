@@ -5,8 +5,6 @@ import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
 const iv = Buffer.alloc(16);
-
-
 type AuthzPerms = {
   can_access?: string[]
   no_access?: string[]
@@ -60,10 +58,21 @@ class DataSource extends GSDataSource {
 
   async loadPrismaClient(): Promise<PlainObject> {
     const pathString: string = `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
-    // console.log(this.config.name, pathString)
     const { Prisma, PrismaClient } = require(pathString);
     const prisma = new PrismaClient();
-    await prisma.$connect();
+    try {
+      await prisma.$connect();
+      // Try to connect by performing an operation that requires a connection
+      let result: string;
+      if (prisma._activeProvider != "mongodb") {
+        result = await prisma.$queryRaw`{ SELECT 1 }`;
+      } else {
+        result = await prisma.$runCommandRaw({ ping: 1 });
+      }
+    } catch (error: any) {
+      throw error;
+    }
+
     prisma.$use(
       fieldEncryptionMiddleware({
         encryptFn: (decrypted: any) => this.cipher(decrypted),
