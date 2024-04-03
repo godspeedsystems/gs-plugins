@@ -114,25 +114,23 @@ class DataSource extends GSDataSource {
     // Now authz checks are set in select fields and passed in where clause
     let prismaMethod: any;
     try {
-      if (this.client) {
         const client = this.client;
-
         // @ts-ignore
         if (entityType && !client[entityType]) {
-          return new GSStatus(false, 400, undefined, `Invalid entityType '${entityType}' in ${fnNameInWorkflow}.`);
+          logger.error('Invalid entityType %s in %s', entityType, fnNameInWorkflow);
+          return new GSStatus(false, 400, undefined, { error: `Invalid entityType ${entityType} in ${fnNameInWorkflow}`});
         }
 
         // @ts-ignore
         prismaMethod = client[entityType][method];
 
         if (method && !prismaMethod) {
-          return new GSStatus(false, 500, undefined, `Invalid CRUD method '${method}' in ${fnNameInWorkflow}`);
+          logger.error('Invalid CRUD method %s in %s', method, fnNameInWorkflow);
+          return new GSStatus(false, 500, undefined, { error: 'Internal Server Error'});
         }
         // @ts-ignore
         const prismaResponse = await prismaMethod.bind(client)(rest);
-
         return new GSStatus(true, responseCode(method), undefined, prismaResponse);
-      }
     } catch (error: any) {
       logger.error('Error in executing Prisma query for args %o \n Error: %o', args, error);
       return new GSStatus(false, 400, error.message, JSON.stringify(error.message));
