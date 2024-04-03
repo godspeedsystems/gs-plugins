@@ -5,8 +5,6 @@ import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
 const iv = Buffer.alloc(16);
-
-
 type AuthzPerms = {
   can_access?: string[]
   no_access?: string[]
@@ -60,10 +58,21 @@ class DataSource extends GSDataSource {
 
   async loadPrismaClient(): Promise<PlainObject> {
     const pathString: string = `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
-    // console.log(this.config.name, pathString)
     const { Prisma, PrismaClient } = require(pathString);
     const prisma = new PrismaClient();
-    await prisma.$connect();
+    try {
+      await prisma.$connect();
+      // Try to connect by performing an operation that requires a connection
+      let result: string;
+      if (prisma._activeProvider != "mongodb") {
+        result = await prisma.$queryRaw`{ SELECT 1 }`;
+      } else {
+        result = await prisma.$runCommandRaw({ ping: 1 });
+      }
+    } catch (error: any) {
+      throw error;
+    }
+
     prisma.$use(
       fieldEncryptionMiddleware({
         encryptFn: (decrypted: any) => this.cipher(decrypted),
@@ -105,25 +114,23 @@ class DataSource extends GSDataSource {
     // Now authz checks are set in select fields and passed in where clause
     let prismaMethod: any;
     try {
-      if (this.client) {
         const client = this.client;
-
         // @ts-ignore
         if (entityType && !client[entityType]) {
-          return new GSStatus(false, 400, undefined, `Invalid entityType '${entityType}' in ${fnNameInWorkflow}.`);
+          logger.error('Invalid entityType %s in %s', entityType, fnNameInWorkflow);
+          return new GSStatus(false, 400, undefined, { error: `Invalid entityType ${entityType} in ${fnNameInWorkflow}`});
         }
 
         // @ts-ignore
         prismaMethod = client[entityType][method];
 
         if (method && !prismaMethod) {
-          return new GSStatus(false, 500, undefined, `Invalid CRUD method '${method}' in ${fnNameInWorkflow}`);
+          logger.error('Invalid CRUD method %s in %s', method, fnNameInWorkflow);
+          return new GSStatus(false, 500, undefined, { error: 'Internal Server Error'});
         }
         // @ts-ignore
         const prismaResponse = await prismaMethod.bind(client)(rest);
-
         return new GSStatus(true, responseCode(method), undefined, prismaResponse);
-      }
     } catch (error: any) {
       logger.error('Error in executing Prisma query for args %o \n Error: %o', args, error);
       return new GSStatus(false, 400, error.message, JSON.stringify(error.message));
