@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-kafka-as-datasource-as-eventsource",
-        "version": "1.0.1",
+        "version": "1.0.3",
         "description": "kafka as datasource-as-eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
@@ -12,8 +12,8 @@
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
-        "author": "Yaswanth <yaswanth@godspeed.systems>",
+        "license": "Godspeed License 1.0",
+        "author": "Godspeed Systems <admin@godspeed.systems>",
         "devDependencies": {
                 "typescript": "^4.9.5"
         },

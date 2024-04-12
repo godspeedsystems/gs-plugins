@@ -69,13 +69,16 @@ Prisma supports a variety of data sources, allowing you to connect to and work w
 
 #### mongo.prisma
 ```prisma
+
 datasource db {
   provider = "mongodb"
   url      = env("MONGO_TEST_URL") //Connection string can be found in the .env folder. you can add your own database connection string
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  output          = "./prisma-clients/mongo"
+  previewFeatures = ["metrics"]
 }
 
 model User {
@@ -152,9 +155,9 @@ tasks:
         id: <% inputs.params.id %>
 ```
 
-Run godspeed dev to start the development server.
+Run godspeed serve to start the development server.
 ```bash
-godspeed dev
+godspeed serve
 ```
 
 ## Thank You For Using Godspeed 

@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-cron-as-eventsource",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Cron as eventsource plugin for Godspeed Framework",
   "publishConfig": {
     "access": "public"
@@ -13,13 +13,13 @@
     "prepublishOnly": "npm run build",
     "test": "mocha"
   },
-  "author": "Yaswanth <yaswanth@godspeed.systems>",
+  "author": "Godspeed Systems <admin@godspeed.systems>",
   "devDependencies": {
     "@types/node-cron": "^3.0.8",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@godspeedsystems/core": "latest"
+    "@godspeedsystems/core": "^2.4.8"
   },
   "keywords": [
     "godspeed",

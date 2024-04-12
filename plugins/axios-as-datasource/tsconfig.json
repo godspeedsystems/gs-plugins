@@ -4,11 +4,14 @@
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
+     "lib": ["es2016"],
     "strict": true,
+    "allowJs": true,
     "declaration": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "exclude": [
     "./node_modules",

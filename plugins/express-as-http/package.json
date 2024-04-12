@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-express-as-http",
-  "version": "1.0.10",
+  "version": "1.0.19",
   "publishConfig": {
     "access": "public"
   },
@@ -20,28 +20,25 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Godspeed Systems <admin@godspeed.systems>",
+  "license": "Godspeed License 1.0",
   "description": "Godspeed event source plugin for express as http server",
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/express-fileupload": "^1.4.4",
-    "@types/lodash": "^4.14.197",
     "@types/node": "^18.14.2",
-    "express-fileupload": "^1.4.3",
+    "@types/passport": "^1.0.14",
+    "@types/passport-jwt": "^3.0.12",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@godspeedsystems/core": "^2.2.1",
+    "@godspeedsystems/core": "^2.4.8",
     "@godspeedsystems/metrics": "^0.0.3",
-    "@mindgrep/express-prometheus-middleware": "^0.0.3",
-    "@types/passport": "^1.0.14",
-    "@types/passport-jwt": "^3.0.12",
+    "@godspeedsystems/express-prometheus-middleware": "^0.0.1",
+    "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.3",
-    "lodash": "^4.17.21",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.1",
-    "pino-pretty": "^10.2.0"
+    "passport-jwt": "^4.0.1"
   }
 }

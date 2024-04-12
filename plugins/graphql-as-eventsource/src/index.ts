@@ -1,120 +1,177 @@
-import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource } from "@godspeedsystems/core";
-import { ApolloServer, gql, AuthenticationError } from 'apollo-server';
+
+// import { EventSource } from '@godspeedsystems/plugins-graphql-as-eventsource';
+// export default EventSource;
+
+import { PlainObject, GSActor, GSCloudEvent, GSStatus, GSEventSource, logger } from "@godspeedsystems/core";
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { GraphQLError } from 'graphql';
 import path from 'path';
-import fs from 'fs-extra';
+// import fs from 'gs-extra';
+import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
-interface Resolver {
-  [key: string]: any;
-}
-
-interface Event {
-  [key: string]: PlainObject;
-}
-
-class EventSource extends GSEventSource {
-  private allResolvers: Resolver = {};
-  private allEvents: Event = {};
+export default class EventSource extends GSEventSource {
+  private allResolvers: PlainObject = {};
+  private allEvents: PlainObject = {};
   private timeoutTimer: NodeJS.Timeout | null = null;
 
+  private jwtAuth: boolean = false;
+
   protected initClient(): Promise<PlainObject> {
+
+    const jwtConfig = this.config.authn?.jwt || this.config.jwt;
+    if (jwtConfig) {
+      this.jwtAuth = true;
+      if (!jwtConfig.secretOrKey || !jwtConfig.audience || !jwtConfig.issuer) {
+        logger.fatal('Invalid jwt settings. Check JWT secretOrKey, audience and issuer keys are set properly in graphql event source yaml file. Exiting');
+        process.exit(1);
+      }
+    }
     return Promise.resolve(ApolloServer);
   }
 
-  async subscribeToEvent(eventKey: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event_info: PlainObject): Promise<void> {
+  async subscribeToEvent(eventKey: string, eventConfig: PlainObject, eventHandler: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event_info: PlainObject): Promise<void> {
     this.allEvents[eventKey] = event_info;
-    const [es, method, endpoint] = eventKey.split('.');
+    const [es, method] = eventKey.split('.');
     const typeName = this.getTypeName(method);
-    const modifiedString = this.getModifiedString(endpoint);
-    const subquery = `${method}${modifiedString}`;
 
     if (!this.allResolvers[typeName]) {
       this.allResolvers[typeName] = {};
     }
-
-    this.allResolvers[typeName][subquery] = this.getResolver(method, processEvent, eventConfig, event_info);
+    const operationId = this.getOperationId(eventKey, eventConfig);
+    const endpoint = eventKey.split('.')[2].replace(/{(.*?)}/g, ':$1');
+    this.allResolvers[typeName][operationId] = this.getResolver(method, endpoint, eventHandler, eventConfig, event_info);
 
     const chosenPort = this.config.port || 4000;
     if (this.timeoutTimer) {
+      // logger.info('clearing tmeout to start')
+
       clearTimeout(this.timeoutTimer);
     }
-
-    this.timeoutTimer = setTimeout(() => this.startServer(es, chosenPort), 3000);
+    // logger.info('setting tmeout to start')
+    this.timeoutTimer = setTimeout(() => {
+      this.startServer(es, chosenPort);
+      logger.info('Graphql server started')
+      }, 5000);
   }
-
+  getOperationId (eventKey: string, eventConfig: PlainObject): string {
+  
+    let operationId = eventConfig.operationId || eventConfig.id || eventConfig.summary?.trim().replaceAll(/\s+/g, '_');
+    if (operationId) {
+      return operationId;
+    }
+    const [method, endpoint] = eventKey.split('.');
+    //Replace {} from around path params in the url
+    let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
+    //Replace / with _
+    modifiedString = modifiedString.replace(/\//g, '_');
+  
+    return `${method}${modifiedString}`;
+  
+  }
   private getTypeName(method: string): string {
     return method === "get" ? "Query" : "Mutation";
   }
 
-  private getModifiedString(endpoint: string): string {
-    let modifiedString = endpoint.replace(/{(.*?)}/g, '$1');
-    return modifiedString.replace(/\//g, '_');
-  }
-
-  private getResolver(method: string, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, eventConfig: PlainObject, event_info: PlainObject) {
+  private getResolver(method: string, endpoint: string, eventHandler: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, eventConfig: PlainObject, eventInfo: PlainObject) {
     return async (parent: any, args: any, contextValue: any, info: any) => {
       const { body, ...rest } = args;
       const event = new GSCloudEvent(
         "id",
-        `${method}.${event_info}`,
+        endpoint,
         new Date(),
         "Apollo",
         "1.0",
-        { body: body, params: rest },
-        "messagebus",
+        { body: body, params: rest,  query: rest, user: contextValue.user, headers: contextValue.headers },
+        "REST",
         new GSActor("user"),
         {}
       );
 
-      if (this.config.jwt) {
-        if (event_info.authn === true || event_info.authn === undefined) {
-          if (contextValue.Authenticated) {
-            let res = await processEvent(event, eventConfig);
-            return res.data;
-          } else {
-            return 'UnAuthorized';
-          }
-        } else {
-          let res = await processEvent(event, eventConfig);
+      if (this.jwtAuth) {
+        // if (eventInfo.authn !== false && (this.config.authn?.jwt || this.config.authn)) {
+          let res = await eventHandler(event, eventConfig);
           return res.data;
-        }
+        // } else {
+        //   let res = await eventHandler(event, eventConfig);
+        //   return res.data;
+        // }
       } else {
-        let res = await processEvent(event, eventConfig);
+        let res = await eventHandler(event, eventConfig);
         return res.data;
       }
     };
   }
 
-  private async startServer(es: string, chosenPort: string | number) {
+  private async startServer(es: string, chosenPort: number = 4000) {
     const schemaFilePath = path.join(process.cwd(), `/src/eventsources/${es}.graphql`);
-    const typeDefs = gql(fs.readFileSync(schemaFilePath, 'utf8'));
-
+    const typeDefs = fs.readFileSync(schemaFilePath, 'utf8');
+    // const typeDefs = `scalar JSON type Query {
+    //     get_helloworld(name: String): JSON!
+    //   }`;
     const server = new ApolloServer({
       typeDefs: typeDefs,
       resolvers: this.allResolvers,
-      cors: this.config?.cors || false,
-      context: ({ req }) => {
-        if (this.config.jwt) {
-          const token = req.headers.authorization || '';
-          try {
-            const Authenticated: any = jwt.verify(token, this.config.jwt.secretOrKey);
-            if (Authenticated.iss === this.config.jwt.iss && Authenticated.aud === this.config.jwt.aud) {
-              return { Authenticated: true };
-            } else {
-              return { Authenticated: false };
-            }
-          } catch (error: any) {
-            throw new AuthenticationError(`INVALID_TOKEN`);
-          }
-        }
-      },
+      introspection: true,
     });
 
     try {
-      await server.listen({ port: chosenPort });
-      console.log(`Server listening at http://localhost:${chosenPort}`);
+      await startStandaloneServer(server, {
+
+        context: async ({ req, res }) => {
+          if (!this.jwtAuth) {
+            return {user:null, headers: req.headers};
+          }
+          // Note: This example uses the `req` argument to access headers,
+          // but the arguments received by `context` vary by integration.
+          // This means they vary for Express, Fastify, Lambda, etc.
+
+          // For `startStandaloneServer`, the `req` and `res` objects are
+          // `http.IncomingMessage` and `http.ServerResponse` types.
+
+          // Get the user token from the headers.
+          let token = req.headers.authorization || '';
+          //Parse and verify token. Fill the user.
+          let parsedJwt: any ;
+          const secret:String = this.config.authn?.jwt.secretOrKey || this.config.jwt.secretOrKey;
+          if (token.indexOf('Bearer ') === 0) {
+            token = token.substring(7);
+          }
+          try {
+            // logger.info('parsing jwt %s %s', req.url, req.headers.authorization)
+            parsedJwt = jwt.verify(token, secret as jwt.Secret);
+            // logger.info('parsed jwt');
+          } catch (error) {
+            throw new GraphQLError('Invalid token', {
+              extensions: {
+                code: 'UNAUTHENTICATED',
+                http: { status: 401 },
+              },
+            });
+          }
+          
+          const issuer = this.config.authn?.jwt.issuer || this.config.jwt.issuer;
+          const audience = this.config.authn?.jwt.audience || this.config.jwt.audience;
+          if (parsedJwt.iss !== issuer && parsedJwt.aud !== audience) {
+            // logger.info('iss or key did not match', parsedJwt);
+            throw new GraphQLError('Invalid token', {
+              extensions: {
+                code: 'UNAUTHENTICATED',
+                http: { status: 401 },
+              },
+            });
+          }
+
+          // Add the user to the context
+          return { user: parsedJwt, headers: req.headers };
+        },
+        listen: {port: chosenPort },
+
+      });
+      logger.info(`Server listening at http://localhost:${chosenPort}`);
     } catch (error: any) {
-      console.error('Error starting the server:', error.message);
+      logger.info('Error starting the server: %s %o', error.message, error);
       process.exit(1);
     }
   }
