@@ -50,6 +50,7 @@ export default class DataSource extends GSDataSource {
 const SourceType = "DS";
 const Type = "redis"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "redis"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {type: "redis",
+  url: "redisUrl:port"};
 
 export { DataSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG };
