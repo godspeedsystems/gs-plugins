@@ -6,6 +6,9 @@ Salesforce is a powerful cloud-based customer relationship management (CRM) plat
 
 A brief description of how to use Salesforce plug-in in our godspeed framework as Data Source as Event Source. 
 
+**Note:** This Salesforce plugin is both a datasource (via its API) and an eventsource (to listen on Salesforce events). Learn more about [datasource-as-eventsource type plugins](https://godspeed.systems/docs/microservices-framework/event-sources/create-custom-event-source#datasource-as-eventsource).
+
+As explained in the link shared just before, in order to use Salesforce as an eventsource, you will need to set up the datasource as well. This plugin uses the Salesforce [Node.js SDK](https://jsforce.github.io/). If you want to call Salesforce APIs via REST, then you should not use this plugin. For that, you can use the [Axios plugin](https://github.com/godspeedsystems/gs-plugins/tree/main/plugins/axios-as-datasource).
 ## Steps to use Salesforce plug-in in godspeed framework:
 
 ## How to Use
@@ -33,72 +36,6 @@ A brief description of how to use Salesforce plug-in in our godspeed framework a
 └──────┴────────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
 ```
 
-### Example usage Datasource (Producer):
-
-1. Update configuration file based on your requirements in `Datasource/salesforce.yaml`.
-#### salesforce config ( src/datasources/salesforce.yaml )
-```yaml
-type: salesforce
-loginUrl: 'https://dummy.salesforce.com'
-username: dummy.username.password@organizationname.com
-password: password@123
-```
-
-
-
-#### salesforce event for Producer ( src/events/salesforce_pub.yaml )
-In the event, we establish an HTTP endpoint that accepts parameters such as message content. When this endpoint is invoked, it triggers the `salesforce-publish` function. This function, in turn, takes the provided  message as input arguments and performs the task of publishing the message to the specified salesforce api end-point.
-```yaml
-# event for Publish
-
-'http.post./salesforce-pub':
-  fn: salesforce-publish
-  body:
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-          required: ['message']
-  responses:
-    200:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-
-```
-#### salesforce workflow for Producer ( src/functions/salesforce-publish.yaml )
-
-
-```yaml
-id: salesforce-publish
-summary: salesforce publish message
-tasks:
-  - id: push_data_into_salesforce
-    description: Push data into salesforce
-    fn: datasource.salesforce_api.post./data/v56.0/sobjects/dummy__e
-    args:   
-      data: <% inputs.body.message%>
-```
-salesforce_api is name of the salesforce datasource filename
-```yaml
-type: axios
-base_url: 'https://dummy.salesforce.com'
-headers:
-  Content-Type: application/json
-params: 
-    client_id: 3MVG9aWdXtdHRrI1oWIdN0b0scZcgxP4pyWs92pr3qCesNzorkco6Dxqlz
-    grant_type: password
-    password: password@123
-    username: dummy.username.password@organizationname.com
-    client_secret: 5DA75A27730D178DF33E4AAAASSSSSSSDDDDDDD9A90B940F9A88A3
-```
 
 ### Example usage EventSource (Consumer):
 
@@ -106,9 +43,9 @@ params:
 #### salesforce config ( salesforce.yaml )
 ```yaml
 type: salesforce
-loginUrl: 'https://dummy.salesforce.com'
-username: dummy.username.password@organizationname.com
-password: password@123
+loginUrl: <%config.salesforce.loginUrl%>
+username: <%config.salesforce.username%>
+password: <%config.salesforce.password%>
 ```
 
 #### salesforce event for consumer ( src/events/salesforce.yaml )
