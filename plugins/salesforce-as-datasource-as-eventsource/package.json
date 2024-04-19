@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-salesforce-as-datasource-as-eventsource",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "description": "salesforce as datasource-as-eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
