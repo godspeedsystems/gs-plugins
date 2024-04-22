@@ -112,7 +112,7 @@ class EventSource extends GSDataSourceAsEventSource {
 const SourceType = 'BOTH';
 const Type = "kafka"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "kafka"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {type: "kafka", clientId: "kafka_proj",brokers: ["kafka:9092"], log:{ attributes:{ eventsource_type: "kafka" }}};
 
 export {
   DataSource,

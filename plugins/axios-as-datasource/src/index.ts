@@ -263,7 +263,29 @@ export default class DataSource extends GSDataSource {
 const SourceType = 'DS';
 const Type = 'axios'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = 'api'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {
+  curlifiedLogs: true,
+  authn: {
+    fn: "authnWorkflow",
+    refreshOn: {
+      statusCode: [401]
+    }
+  },
+  headers: {
+    "Content-Type": "application/json",
+  },
+  retry: {
+    when: {
+      status: [500, 503],
+      message: "my custom expected message for retry"
+    }, 
+    max_attempts: 5,
+    type: "constant", // or random, exponential
+    interval: "PT15s"
+  },
+  auth_url: "",
+  some_config: ''
+};
 
 export {
   DataSource,

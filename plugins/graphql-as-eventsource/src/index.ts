@@ -180,7 +180,28 @@ export default class EventSource extends GSEventSource {
 const SourceType = 'ES';
 const Type = "graphql"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "graphql"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {
+  type: "graphql",
+  port: 4000,
+  authn:{
+    jwt:{
+      secretOrKey: "",
+      audience: "",
+      issuer: ""
+    }},
+  authz:[{
+    id: "",
+    fn: "",
+    args: ""
+  }],
+  on_request_validation_error:"",
+  on_response_validation_error: "",
+  log:{ 
+    attributes:{
+    eventsource_type: ""
+    }
+  }
+};
 
 export {
   EventSource,
