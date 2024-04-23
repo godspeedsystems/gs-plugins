@@ -264,27 +264,28 @@ const SourceType = 'DS';
 const Type = 'axios'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = 'api'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {
-  curlifiedLogs: true,
-  authn: {
-    fn: "authnWorkflow",
-    refreshOn: {
-      statusCode: [401]
+  '#comment note':'we have commented additional properties from the config, uncomment required properties to use for your project.',
+  '#curlifiedLogs': true,
+  '#authn': {
+    '#fn': "authnWorkflow",
+    '#refreshOn': {
+      '#statusCode': [401]
     }
   },
   headers: {
     "Content-Type": "application/json",
   },
-  retry: {
-    when: {
-      status: [500, 503],
-      message: "my custom expected message for retry"
+  '#retry': {
+    '#when': {
+      '#status': [500, 503],
+      '#message': "my custom expected message for retry"
     }, 
-    max_attempts: 5,
-    type: "constant", // or random, exponential
-    interval: "PT15s"
+    '#max_attempts': 5,
+    '#type': "constant", // or random, exponential
+    '#interval': "PT15s"
   },
-  auth_url: "",
-  some_config: ''
+  '#auth_url': "",
+  '#some_config': ''
 };
 
 export {

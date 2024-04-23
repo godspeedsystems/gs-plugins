@@ -179,7 +179,8 @@ class FastifyEventSource extends GSEventSource {
 const SourceType = 'ES';
 const Type = "fastify"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "fastify"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {port: 3000, docs: {endpoint: '/api-docs'}};
+const DEFAULT_CONFIG = {'#comment note':'we have commented additional properties from the config, uncomment required properties to use for your project. also refer documentation to know more about the properties.',port: 3000,'#request_body_limit': 30000000,
+'#file_size_limit' : 30000000, docs: {endpoint: '/api-docs'}};
 
 export {
   FastifyEventSource,

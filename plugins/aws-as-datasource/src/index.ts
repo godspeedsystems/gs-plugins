@@ -145,9 +145,10 @@ const SourceType = 'DS';
 const Type = 'aws'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = 'aws'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {
+'#comment':"please fill required default config properties value to use aws plugin: accessKeyId , region and secretAccessKey.",
  type:'aws',
  default_client_config:{
-    region:"",
+    region:"", 
     credentials:{
       accessKeyId:"",
       secretAccessKey:""

@@ -77,15 +77,16 @@ const SourceType = "DS";
 const Type = "mongoose"; // this is the default name of the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "mongoose"; // This is the default name of the generated yaml file. in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {
+	'#comment note':'we have commented additional properties from the config, uncomment required properties to use for your project. also refer documentation to know more about the properties.',
 	type:" mongoose",
-	successResponseCodes: 
+	'#successResponseCodes': 
 	  	{
-			create: 201,
-			find: 200,
-			findOne: 200,
-			aggregate: 200,
-			findOneAndUpdate: 201,
-			findOneAndDelete: 202
+			'#create': 201,
+			'#find': 200,
+			'#findOne': 200,
+			'#aggregate': 200,
+			'#findOneAndUpdate': 201,
+			'#findOneAndDelete': 202
 		}
 	};
 

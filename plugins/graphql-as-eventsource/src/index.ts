@@ -181,24 +181,25 @@ const SourceType = 'ES';
 const Type = "graphql"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "graphql"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
 const DEFAULT_CONFIG = {
+  '#comment note':'we have commented additional properties from the config, uncomment required properties to use for your project. also refer documentation to know more about the properties.',
   type: "graphql",
   port: 4000,
-  authn:{
-    jwt:{
-      secretOrKey: "",
-      audience: "",
-      issuer: ""
+  '#authn':{
+    '#jwt':{
+      '#secretOrKey': "",
+      '#audience': "",
+      '#issuer': ""
     }},
-  authz:[{
-    id: "",
-    fn: "",
-    args: ""
+  '#authz':[{
+    '#id': "",
+    '#fn': "",
+    '#args': ""
   }],
-  on_request_validation_error:"",
-  on_response_validation_error: "",
-  log:{ 
-    attributes:{
-    eventsource_type: ""
+  '#on_request_validation_error':"",
+  '#on_response_validation_error': "",
+  '#log':{ 
+    '#attributes':{
+    '#eventsource_type': ""
     }
   }
 };
