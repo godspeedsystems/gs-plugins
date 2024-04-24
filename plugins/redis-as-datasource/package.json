@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-redis-as-datasource",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "description": "redis as datasource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
