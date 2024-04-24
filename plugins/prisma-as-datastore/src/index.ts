@@ -65,7 +65,7 @@ class DataSource extends GSDataSource {
       // Try to connect by performing an operation that requires a connection
       let result: string;
       if (prisma._activeProvider != "mongodb") {
-        result = await prisma.$queryRaw`{ SELECT 1 }`;
+        result = await prisma.$queryRaw`SELECT 1`;
       } else {
         result = await prisma.$runCommandRaw({ ping: 1 });
       }
