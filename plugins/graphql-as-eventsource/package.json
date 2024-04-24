@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-graphql-as-eventsource",
-        "version": "1.2.2",
+        "version": "1.2.3",
         "description": "graphql as eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
