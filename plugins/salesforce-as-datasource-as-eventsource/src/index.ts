@@ -258,7 +258,14 @@ class EventSource extends GSDataSourceAsEventSource {
 const SourceType = "BOTH";
 const Type = "salesforce"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "salesforce"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {
+  type: "salesforce",
+  loginUrl: "",
+  username: "",
+  password: ""
+};
+
+
 
 export {
   DataSource,
