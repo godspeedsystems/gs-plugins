@@ -41,13 +41,12 @@ export default class DataSource extends GSDataSource {
     const { logger } = ctx;
     try {
       const {
-        meta: {fnNameInWorkflow },
+        meta: {entityType, method},
         ...rest
       } = args as {
         meta: { entityType: string; method: string; fnNameInWorkflow: string };
       };
-      logger.fatal(rest);
-      const {index, method} = getEtAndMethod(fnNameInWorkflow);
+      // const {index, method} = getEtAndMethod(fnNameInWorkflow);
 
       const { deep, collect } = this.config;
 
@@ -62,11 +61,11 @@ export default class DataSource extends GSDataSource {
         } else {
           fn = this.client[method];
         }
-        let egResponse = await fn({
-          index,
-          // type: '_doc',
-          ...rest
-        });
+        // const args = {
+        //   _type: entityType,
+        //   body: rest,
+        // };
+        let egResponse = await fn(rest);
         return new GSStatus(true, responseCodes[method], undefined, egResponse);
       } else {
         throw new Error('Elasticgraph client not initialized')
