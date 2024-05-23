@@ -3,8 +3,11 @@ import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic
 import { PrismaClient } from "@prisma/client";
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
+import os from 'os';
 
 const iv = Buffer.alloc(16);
+const platform = os.platform();
+
 type AuthzPerms = {
   can_access?: string[]
   no_access?: string[]
@@ -57,7 +60,8 @@ class DataSource extends GSDataSource {
   }
 
   async loadPrismaClient(): Promise<PlainObject> {
-    const pathString: string = `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
+    // const pathString: string = platform == 'win32' ? `${process.cwd()}\dist\datasources\prisma-clients\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
+    const pathString: string = platform === 'win32'? `${process.cwd()}\\dist\\datasources\\prisma-clients\\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
     const { Prisma, PrismaClient } = require(pathString);
     const prisma = new PrismaClient();
     try {
