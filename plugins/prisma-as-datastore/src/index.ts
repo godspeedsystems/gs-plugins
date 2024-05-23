@@ -60,7 +60,8 @@ class DataSource extends GSDataSource {
   }
 
   async loadPrismaClient(): Promise<PlainObject> {
-    const pathString: string = platform == 'win32' ? `${process.cwd()}\dist\datasources\prisma-clients\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
+    // const pathString: string = platform == 'win32' ? `${process.cwd()}\dist\datasources\prisma-clients\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
+    const pathString: string = platform === 'win32'? `${process.cwd()}\\dist\\datasources\\prisma-clients\\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
     const { Prisma, PrismaClient } = require(pathString);
     const prisma = new PrismaClient();
     try {
