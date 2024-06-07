@@ -208,16 +208,18 @@ export default class DataSource extends GSDataSource {
   }
 
   setHeaders(headers: PlainObject): PlainObject {
-    if (!headers) {
-      return this.config.headers;
-    }
+    // if (!headers) {
+    //   return this.config.headers;
+    // }
 
     //Next remove null value header keys
-    Object.keys(headers).forEach((header) => {
-      if (!headers[header]) {
+    if(headers){
+      Object.keys(headers).forEach((header) => {
+       if (!headers[header]) {
         delete headers[header];
-      }
-    });
+       }
+     });
+    }
     const security = this.config.security
     const securitySchemes: PlainObject = this.config.securitySchemes
     let securityHeaders = {} as { [key: string]: any };
