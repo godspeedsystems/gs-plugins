@@ -1,5 +1,5 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosBasicCredentials } from 'axios';
 import axiosRetry from 'axios-retry';
 export default class DataSource extends GSDataSource {
   // rand = Math.random();
@@ -133,7 +133,7 @@ export default class DataSource extends GSDataSource {
       }
       //Hit the API with headers
       headers = this.setHeaders(headers);
-
+      let auth: AxiosBasicCredentials | any = this.setSecruitySchemeAuth()
       const query = {
         method: method.toLowerCase(),
         url,
@@ -149,7 +149,10 @@ export default class DataSource extends GSDataSource {
       //   delete this.config.headers['X-COREOS-ORIGIN-TOKEN'];
       //   ctx.childLogger.error('unset')
       // };
-
+      if(auth && Object.keys(auth).length){
+        client.defaults.auth = auth
+      }
+    
       let response = await client(query);
       // ++this.successCount;
       return new GSStatus(true, response.status, response.statusText, response.data, response.headers);
@@ -205,19 +208,76 @@ export default class DataSource extends GSDataSource {
   }
 
   setHeaders(headers: PlainObject): PlainObject {
-    if (!headers) {
-      return this.config.headers;
-    }
+    // if (!headers) {
+    //   return this.config.headers;
+    // }
 
     //Next remove null value header keys
-    Object.keys(headers).forEach((header) => {
-      if (!headers[header]) {
+    if(headers){
+      Object.keys(headers).forEach((header) => {
+       if (!headers[header]) {
         delete headers[header];
-      }
-    });
-    // Create and return final headers with default values from this.config.headers
-    return Object.assign({}, this.config.headers, headers);
+       }
+     });
+    }
+    const security = this.config.security
+    const securitySchemes: PlainObject = this.config.securitySchemes
+    let securityHeaders = {} as { [key: string]: any };
+    if(security && security.length){
+      for (let values of security) {
+        let [scheme, value] = Object.entries(values)[0];
+        let securityScheme = securitySchemes[scheme];
 
+        if (securityScheme.type == 'apiKey') {
+
+          if (securityScheme.in == 'header') {
+              securityHeaders[securityScheme.name] = value
+          }
+
+        } else if (securityScheme.type == 'http') {
+          if (securityScheme.scheme == 'bearer') {
+            securityHeaders['Authorization'] = `Bearer ${value}`;
+          } else {
+            securityHeaders['Authorization'] = `${securityScheme.scheme} ${value}`;
+          }
+        }
+      }
+    }
+    // Create and return final headers with default values from this.config.headers
+    return Object.assign({}, this.config.headers, headers, securityHeaders);
+
+  }
+
+  setSecruitySchemeAuth(){
+    const security = this.config.security
+    const securitySchemes: PlainObject = this.config.securitySchemes
+    if(security && security.length){
+      for (let values of security) {
+        let [scheme, value] = Object.entries(values)[0];
+        let securityScheme = securitySchemes[scheme];
+        if (securityScheme.type == 'http') {
+          if (securityScheme.scheme == 'basic') {
+            let auth = { username: '', password: '' };
+            if (Array.isArray(value)) {
+              auth.username = value[0];
+              auth.password = value[1];
+            } else {
+              //@ts-ignore
+              auth.username = value.username;
+              //@ts-ignore
+              auth.password = value.password;
+            }
+
+            // ds.client.defaults.auth = auth;
+            return auth
+          } 
+        }else {
+          return null
+        }
+      }
+    }else{
+      return null
+    }
   }
 
   isAuthFailed(response: AxiosResponse) {
