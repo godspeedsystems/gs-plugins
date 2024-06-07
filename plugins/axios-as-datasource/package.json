@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-axios-as-datasource",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Axios as datasource plugin for Godspeed Framework",
   "publishConfig": {
     "access": "public"
