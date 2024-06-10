@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-elasticgraph-as-datasource",
-        "version": "1.1.9",
+        "version": "1.2.0",
         "description": "elasticgraph as datasource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
@@ -19,7 +19,7 @@
         },
         "dependencies": {
                 "@godspeedsystems/core": "^2.5.2",
-                "@godspeedsystems/elasticgraph": "^2.0.7",
+                "@godspeedsystems/elasticgraph": "^2.0.8",
                 "pino-pretty": "^10.2.0"
         }
 }
