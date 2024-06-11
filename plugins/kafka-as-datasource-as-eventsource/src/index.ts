@@ -1,11 +1,22 @@
-import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSCloudEvent, GSStatus, GSActor} from "@godspeedsystems/core";
-import { Kafka } from "kafkajs";
+import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
+import { Kafka, logLevel } from "kafkajs";
+import fs from 'fs';
+import path from 'path';
+
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     const kafka = new Kafka({
       clientId: this.config.clientId,
       brokers: this.config.brokers,
+      ssl: {
+        rejectUnauthorized: false, // optional, depends on your requirements
+        key: fs.readFileSync(path.resolve(this.config.ssl.key)),
+        cert: fs.readFileSync(path.resolve(this.config.ssl.cert)),
+        ca: [fs.readFileSync(path.resolve(this.config.ssl.ca))],
+      },
+      logLevel: logLevel.INFO, // optional, for logging
     });
+
     return kafka;
   }
 
@@ -25,6 +36,7 @@ class DataSource extends GSDataSource {
             topic: topic,
             messages: [{ value: JSON.stringify(message) }],
           });
+          await producer.disconnect();
           return result;
         } else {
           return "Invalid method";
@@ -106,13 +118,18 @@ class EventSource extends GSDataSourceAsEventSource {
         },
       });
     }
-    
   }
 }
+
 const SourceType = 'BOTH';
 const Type = "kafka"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "kafka"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
-const DEFAULT_CONFIG = {type: "kafka", clientId: "kafka_proj",brokers: ["kafka:9092"], log:{ attributes:{ eventsource_type: "kafka" }}};
+const DEFAULT_CONFIG = {
+  type: "kafka",
+  clientId: "kafka_proj",
+  brokers: ["kafka:9092"],
+  log: { attributes: { eventsource_type: "kafka" } }
+};
 
 export {
   DataSource,
@@ -122,4 +139,3 @@ export {
   CONFIG_FILE_NAME,
   DEFAULT_CONFIG
 }
-
