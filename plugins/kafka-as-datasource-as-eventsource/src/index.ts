@@ -13,6 +13,7 @@ class DataSource extends GSDataSource {
         key: fs.readFileSync(path.resolve(this.config.ssl.key)),
         cert: fs.readFileSync(path.resolve(this.config.ssl.cert)),
         ca: [fs.readFileSync(path.resolve(this.config.ssl.ca))],
+        passphrase: this.config.ssl.passphrase, // optional, if your key has a passphrase
       },
       logLevel: logLevel.INFO, // optional, for logging
     });
