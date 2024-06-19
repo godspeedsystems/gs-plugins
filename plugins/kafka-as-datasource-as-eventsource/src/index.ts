@@ -10,9 +10,9 @@ class DataSource extends GSDataSource {
       brokers: this.config.brokers,
       ssl: {
         rejectUnauthorized: false, // optional, depends on your requirements
-        key: fs.readFileSync(path.resolve(this.config.ssl.key)),
-        cert: fs.readFileSync(path.resolve(this.config.ssl.cert)),
-        ca: [fs.readFileSync(path.resolve(this.config.ssl.ca))],
+        key: fs.readFileSync(path.resolve(this.config.ssl.key),'utf-8'),
+        cert: fs.readFileSync(path.resolve(this.config.ssl.cert),'utf-8'),
+        ca: [fs.readFileSync(path.resolve(this.config.ssl.ca),'utf-8')],
         passphrase: this.config.ssl.passphrase, // optional, if your key has a passphrase
       },
       logLevel: logLevel.INFO, // optional, for logging
