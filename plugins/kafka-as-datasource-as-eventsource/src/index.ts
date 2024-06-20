@@ -1,23 +1,19 @@
 import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSCloudEvent, GSStatus, GSActor } from "@godspeedsystems/core";
 import { Kafka, logLevel } from "kafkajs";
 import fs from 'fs';
-import path from 'path';
-
 class DataSource extends GSDataSource {
   protected async initClient(): Promise<PlainObject> {
     const kafka = new Kafka({
       clientId: this.config.clientId,
       brokers: this.config.brokers,
       ssl: {
-        rejectUnauthorized: false, // optional, depends on your requirements
-        key: fs.readFileSync(path.resolve(this.config.ssl.key),'utf-8'),
-        cert: fs.readFileSync(path.resolve(this.config.ssl.cert),'utf-8'),
-        ca: [fs.readFileSync(path.resolve(this.config.ssl.ca),'utf-8')],
-        passphrase: this.config.ssl.passphrase, // optional, if your key has a passphrase
+        rejectUnauthorized: this.config.ssl.reject, // optional, depends on your requirements
+        key: fs.readFileSync(this.config.ssl.key,'utf-8'),
+        cert: fs.readFileSync(this.config.ssl.cert,'utf-8'),
+        ca: [fs.readFileSync(this.config.ssl.ca,'utf-8')],
       },
       logLevel: logLevel.INFO, // optional, for logging
     });
-
     return kafka;
   }
 
