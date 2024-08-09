@@ -7,6 +7,7 @@ import promMid from '@godspeedsystems/express-prometheus-middleware';
 import passport from "passport";
 import fileUpload from "express-fileupload"
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy as GithubStrategy } from 'passport-github2';
 
 export default class EventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
@@ -17,6 +18,7 @@ export default class EventSource extends GSEventSource {
       file_size_limit = 50 * 1024 * 1024,
     } = this.config;
     const jwtConfig = this.config.authn?.jwt || this.config.jwt;
+    const githubConfig = this.config.authn?.github|| this.config.github;
 
     app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
     app.use(bodyParser.json({ limit: file_size_limit }));
@@ -53,6 +55,26 @@ export default class EventSource extends GSEventSource {
       );
     };
 
+    if (githubConfig) {
+      if (!githubConfig.client_id || !githubConfig.client_secret || !githubConfig.callback_url) {
+        logger.fatal('Github Setting error in http event source. Check all three Github settings are set properly for Express HTTP event source: client_id, client_secret or callback_url. Exiting');
+        process.exit(1);
+      }
+      app.use(passport.initialize());
+      passport.use(
+        new GithubStrategy(
+          {
+            clientID: githubConfig.client_id,
+            clientSecret: githubConfig.client_secret,
+            callbackURL: githubConfig.callback_url
+          },
+          function(accessToken: any, refreshToken: any, profile: any, done: any) {
+            return done(null, profile);
+          }
+        ),
+      );
+    };
+
     app.listen(port);
     // logger.info('Started Express server at port %s', port);
     if (process.env.OTEL_ENABLED == 'true') {
@@ -72,8 +94,10 @@ export default class EventSource extends GSEventSource {
 
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
+      if (authn !== false && this.config.authn?.jwt) {
         return passport.authenticate('jwt', { session: false })(req, res, next)
+      } else if (authn !== false && this.config.authn?.github){
+        return passport.authenticate('github', { scope: [ 'user:email' ] })(req, res, next)
       } else {
         next();
       }
