@@ -73,7 +73,7 @@ export default class EventSource extends GSEventSource {
         useTempFiles: true,
         //@ts-ignore
         limits: { fileSize: file_size_limit },
-        // abortOnLimit:true,
+        abortOnLimit:true,
       })
     );
   
@@ -118,17 +118,15 @@ export default class EventSource extends GSEventSource {
     return app;
   }
 
-
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      if (authn !== false && this.config.authn) {
-        // if authn is true and authn config exists
-        return passport.authenticate('jwt', { session: false })(req, res, next);
-      } else{
-             next();           // No authentication required       
+      if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
+        return passport.authenticate('jwt', { session: false })(req, res, next)
+      } else {
+        next();
       }
     };
-  }
+  };
   subscribeToEvent(eventRoute: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event?: PlainObject): Promise<void> {
     const routeSplit = eventRoute.split('.');
     const httpMethod: string = routeSplit[1];
