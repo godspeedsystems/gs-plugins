@@ -52,7 +52,7 @@ export default class EventSource extends GSEventSource {
       );
     }
     // Authentication routes for github login
-    app.get('/login/github', passport.authenticate('github', { session: true, scope: ['user:email'] }), (req, res) => {
+    app.get('/auth/github', passport.authenticate('github', { session: true, scope: ['user:email'] }), (req, res) => {
     });
     app.get('/auth/github/callback', passport.authenticate('github'), 
     async (req, res) => {
