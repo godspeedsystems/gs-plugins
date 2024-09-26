@@ -104,8 +104,62 @@ The Godspeed Express Plugin provides the following benefits:
 
 4. **Integration with Godspeed Core:** The plugin works seamlessly with the Godspeed Core library, enabling the processing of cloud events and facilitating event-driven architecture.
 
-5. **File upload feature:** The Express plugin allows you to upload your files using postman
+5. **File upload feature:** The Express plugin allows you to upload your files using postman.
 
+6. **Authenticating users using oauth2:** This will allow your users to sign in to your application using their existing Google/Linkedin/GitHub credentials.
+
+## How OAuth2 Feature works
+
+### Configuring oauth2 authentication
+
+You can configure oauth2 settings within the eventsources/http.yaml. Here's an example of such a configuration:
+
+```
+type: express
+
+authn:
+  oauth2:
+    github:
+      client_id: <% process.env.GITHUB_CLIENT_ID %>  
+      client_secret: <% process.env.GITHUB_CLIENT_SECRET %>    
+      callback_url: <% process.env.GITHUB_CALLBACK_URL %>
+      callback_route: <% process.env.GITHUB_CALLBACK_ROUTE %>
+      auth_route: <% process.env.GITHUB_AUTH_ROUTE %>
+      success_redirect: <% process.env.GITHUB_SUCCESS_REDIRECT_URL %>
+      failure_redirect: <% process.env.GITHUB_FAILURE_REDIRECT_URL %>
+```
+### Set up your session secret as:
+```
+session:
+  secret: <% process.env.SESSION_SECRET %>
+```
+
+### Add your oauth2 app credentials in .env file as
+
+```
+.env
+
+GITHUB_CLIENT_ID=  your_client_id
+GITHUB_CLIENT_SECRET= your_client_secret  
+GITHUB_CALLBACK_URL= your_callback_url e.g http://localhost:4000/auth/github/callback
+GITHUB_AUTH_ROUTE  = /auth/github
+GITHUB_CALLBACK_ROUTE = /auth/github/callback
+GITHUB_SUCCESS_REDIRECT_URL = /verify/user
+GITHUB_FAILURE_REDIRECT_URL = /error
+
+SESSION_SECRET = mysecret
+
+```
+## Configuring jwt
+
+You can configure JWT settings within the eventsources/http.yaml. Here's an example of such a configuration:
+```
+type: express
+jwt:
+  issuer: <#config.issues#> # must be equal to the key iss in your jwt token
+  audience: <#config.audience#> #must be equal to the key aud in your jwt token
+  secretOrKey: <#config.secret#>
+```
 ## How file upload feature works
 
 ### Uploading file
@@ -115,7 +169,6 @@ The Express plugin allows you to upload your files
 ### Steps to use fileupload feature
 
 Framework will give you below folder structure.
-
 ```
     .
     ├── src
@@ -139,36 +192,18 @@ Framework will give you below folder structure.
             |
             └── helloworld.yaml
 ```
-
 The default file size accepted is 50MB. If you wish to specify a custom file size, you can modify the value in `"./src/eventsources/http.yaml`".
 
 ### Configuration( src/eventsources/http.yaml )
 ```yaml
 type: express
 port: 3003
-request_body_limit: 30000000
-file_size_limit : 30000000
+request_body_limit: 3000000
+file_size_limit : 3000000
 docs:
-  endpoint: /
-  info: 
-    version: 0.0.1
-    title: 'Godspeed: Sample Microservice'
-    description: Sample API calls demonstrating the functionality of Godspeed framework
-    termsOfService: 'http://swagger.io/terms/'
-    contact:
-      name: Mindgrep Technologies Pvt Ltd
-      email: talktous@mindgrep.com
-      url: 'https://docs.mindgrep.com/docs/microservices/intro'
-    license:
-      name: Apache 2.0
-      url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
-  servers:
-    - url: https://api.example.com:8443/api
-      description: staging
+ 
 ```
-
 - The file size may vary from the original size and could potentially increase in kilobytes(KB) after uploading. Please take this into consideration when setting your file size.
-
 
 ### Example Event
 
@@ -184,8 +219,6 @@ http.post./helloworld:
             fileName:
               type: string
               format: binary
-
-
   responses:
     200:
       content:
@@ -194,7 +227,6 @@ http.post./helloworld:
             type: object
 
 ```
-
 ### Example workflow
 
 ```yaml
@@ -220,18 +252,9 @@ type: axios
 base_url: https://httpbin.org
 ```
 
-## Configuring jwt
 
-You can configure JWT settings within the eventsources/http.yaml. Here's an example of such a configuration:
 
-```
-type: express
-jwt:
-  issuer: <#config.issues#> # must be equal to the key iss in your jwt token
-  audience: <#config.audience#> #must be equal to the key aud in your jwt token
-  secretOrKey: <#config.secret#>
-```
-## Plugin Explaination
+## Plugin Explanation
 
 This plugin is designed to integrate with the Godspeed framework and provides functionality related to event sources using Express.js, a popular Node.js web application framework. It allows you to create event sources that can listen for incoming HTTP requests and trigger actions based on those requests.
 
