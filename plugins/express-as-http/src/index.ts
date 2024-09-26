@@ -6,127 +6,146 @@ import cors from 'cors';
 //@ts-ignore
 import promMid from '@godspeedsystems/express-prometheus-middleware';
 import passport from "passport";
-const session = require('express-session');
 import fileUpload from "express-fileupload";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GithubStrategy } from 'passport-github2';
+import session from 'express-session';
 
 export default class EventSource extends GSEventSource {
+  
+  // Initialize express and middleware
   async initClient(): Promise<PlainObject> {
     const app = express();
     const {
       port = 3000,
-      request_body_limit = 50 * 1024 * 1024,
-      file_size_limit = 50 * 1024 * 1024,
+      request_body_limit = '50mb',
+      file_size_limit = '50mb',
     } = this.config;
-    
-    // dotenv.config();
-    const jwtConfig = this.config.authn?.jwt || this.config.jwt;
-    const githubConfig = this.config.authn.oauth2?.github || this.config.oauth2.github;
-    app.use(cors());
-    app.use(session({
-      secret: 'mysecret',
-      resave: false,
-      saveUninitialized: false
-    }));
-    
-    if (githubConfig) {
-      if (!githubConfig.client_id || !githubConfig.client_secret || !githubConfig.callback_url) {
-        logger.fatal('Github Setting error in http event source. Check all three Github settings are set properly for Express HTTP event source: client_id, client_secret or callback_url. Exiting');
-        process.exit(1);
-      }
-      app.use(passport.initialize());
-      app.use(passport.session());
-      passport.use(
-        new GithubStrategy(
-          {
-            clientID: githubConfig.client_id,
-            clientSecret: githubConfig.client_secret,
-            callbackURL: githubConfig.callback_url,
-            scope: ['user:email']
-          },
-          async function (accessToken: any, refreshToken: any, profile: any, done: any) {
-            return done(null, profile);
-          }
-        ),
-      );
-    }
-    // Authentication routes for github login
-    app.get('/auth/github', passport.authenticate('github', { session: true, scope: ['user:email'] }), (req, res) => {
-    });
-    app.get('/auth/github/callback', passport.authenticate('github'), 
-    async (req, res) => {
-        const redirectUrl = '/verify/user' ;
-        res.redirect(redirectUrl);    
-      }
-    );  
-    passport.serializeUser(function (user, done) {
-      done(null, user);
-    });
-    passport.deserializeUser(function (obj: any, done) {
-      done(null, obj);
-    });
-    app.use(bodyParser.urlencoded({ extended: true, limit: request_body_limit }));
-    app.use(bodyParser.json({ limit: file_size_limit }));
-    app.use(
-      fileUpload({
-        useTempFiles: true,
-        //@ts-ignore
-        limits: { fileSize: file_size_limit },
-        abortOnLimit:true,
-      })
-    );
-  
-    if (jwtConfig) {
-      if (!jwtConfig.secretOrKey || !jwtConfig.audience || !jwtConfig.issuer) {
-        logger.fatal('JWT Setting error in http event source. Check all three JWT values are set properly for Express HTTP event source: secretOrKey, audience or issuer. Exiting');
-        process.exit(1);
-      }
-      app.use(passport.initialize());
-      app.use(passport.session());
-      passport.use(
-        new JwtStrategy(
-          {
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: jwtConfig.secretOrKey,
-            ignoreExpiration: true,
-            jsonWebTokenOptions: {
-              audience: jwtConfig.audience,
-              issuer: jwtConfig.issuer,
-            },
-          },
-          function (jwtPayload, done) {
-            return done(null, jwtPayload);
-          },
-        ),
-      );
-    };
 
-    app.listen(port);
-    // logger.info('Started Express server at port %s', port);
-    if (process.env.OTEL_ENABLED == 'true') {
-      app.use(
-        promMid({
-          metricsPath: false,
-          collectDefaultMetrics: true,
-          requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
-          requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
-          responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
-        })
-      );
+    this.setupMiddleware(app);
+    this.setupAuthentication(app);
+
+    // Start the Express server
+    app.listen(port, () => {
+      logger.info(`Server running on port ${port}`);
+    });
+
+    if (process.env.OTEL_ENABLED === 'true') {
+      this.setupMetrics(app);
     }
+
     return app;
   }
 
+  // Modularized middleware setup
+  setupMiddleware(app: express.Express) {
+    app.use(cors());
+    app.use(bodyParser.urlencoded({ extended: true, limit: this.config.request_body_limit || '50mb' }));
+    app.use(bodyParser.json({ limit: this.config.file_size_limit || '50mb' }));
+    app.use(fileUpload({ useTempFiles: true, limits: { fileSize: this.config.file_size_limit || '50mb' }, abortOnLimit: true }));
+    
+    // Session middleware setup if required
+    if (this.config.session) {
+      app.use(session({
+        secret: this.config.session.secret || 'defaultsecret',
+        resave: false,
+        saveUninitialized: false,
+      }));
+    }
+  }
+
+  // Modularized authentication setup
+  setupAuthentication(app: express.Express) {
+    const jwtConfig = this.config.authn?.jwt || this.config.jwt;
+    const githubConfig = this.config.authn?.oauth2?.github || this.config.oauth2?.github;
+
+    if (jwtConfig) {
+      this.setupJwtAuthentication(app, jwtConfig);
+    }
+
+    if (githubConfig) {
+      this.setupGithubAuthentication(app, githubConfig);
+    }
+  }
+
+  setupJwtAuthentication(app: express.Express, jwtConfig: PlainObject) {
+    if (!jwtConfig.secretOrKey || !jwtConfig.audience || !jwtConfig.issuer) {
+      logger.fatal('JWT configuration error. Exiting');
+      process.exit(1);
+    }
+    app.use(passport.initialize());
+    passport.use(new JwtStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: jwtConfig.secretOrKey,
+        ignoreExpiration: true,
+        jsonWebTokenOptions: {
+          audience: jwtConfig.audience,
+          issuer: jwtConfig.issuer,
+        },
+      },
+      (jwtPayload, done) => done(null, jwtPayload),
+    ));
+  }
+
+  setupGithubAuthentication(app: express.Express, githubConfig: PlainObject) {
+    if (!githubConfig.client_id || !githubConfig.client_secret || !githubConfig.callback_url) {
+      logger.fatal('Github configuration error. Exiting');
+      process.exit(1);
+    }
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use(new GithubStrategy(
+      {
+        clientID: githubConfig.client_id,
+        clientSecret: githubConfig.client_secret,
+        callbackURL: githubConfig.callback_url,
+        scope: ['user:email'],
+      },
+      (accessToken:any, refreshToken:any, profile:any, done: any) => {
+        const pro = {
+          "accessToken" : accessToken,
+          "refresh": refreshToken,
+          "profile" : profile
+        }
+        done(null, profile)
+      },
+    ));
+
+    // Authentication routes
+    app.get('/auth/github', passport.authenticate('github', { session: true, scope: ['user:email'] }));
+    app.get('/auth/github/callback', passport.authenticate('github'), (req, res) => {
+      res.redirect('/verify/user');
+    });
+
+    passport.serializeUser((user, done) => done(null, user));
+    passport.deserializeUser((obj:any, done) => done(null, obj));
+  }
+
+  // Setup OpenTelemetry metrics
+  setupMetrics(app: express.Express) {
+    app.use(promMid({
+      metricsPath: false,
+      collectDefaultMetrics: true,
+      requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
+      requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
+      responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
+    }));
+  }
+
+  // Auth middleware as higher-order function
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
-        return passport.authenticate('jwt', { session: false })(req, res, next)
+      if (authn && (this.config.authn?.jwt || this.config.authn)) {
+        return passport.authenticate('jwt', { session: false })(req, res, next);
       } else {
         next();
       }
     };
-  };
+  }
+
+  // Subscribe to events with flexibility
   subscribeToEvent(eventRoute: string, eventConfig: PlainObject, processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>, event?: PlainObject): Promise<void> {
     const routeSplit = eventRoute.split('.');
     const httpMethod: string = routeSplit[1];
@@ -134,13 +153,6 @@ export default class EventSource extends GSEventSource {
     let baseUrl = this.config.base_url;
     let fullUrl;
     if (baseUrl) {
-      // if (endpoint[0] === '/') {
-      //   endpoint = endpoint.substring(1);
-      // }
-      // endpoint = endpoint.replace(/^\//,''); //remove trailing ./
-      // baseUrl = trimSlashes(baseUrl);
-      // baseUrl = baseUrl.replace(/^\//,''); //remove starting /
-      // baseUrl = baseUrl.replace(/^\//,''); //remove starting /
       fullUrl = "/" + baseUrl + "/" + endpoint;
       fullUrl = fullUrl.replace(/\/\//g, '/');
     } else {
@@ -150,7 +162,7 @@ export default class EventSource extends GSEventSource {
     const app: express.Express = this.client as express.Express;
     //@ts-ignore
     app[httpMethod](fullUrl, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
-      const gsEvent: GSCloudEvent = createGSEvent(req, endpoint)
+      const gsEvent: GSCloudEvent = this.createGSEvent(req, endpoint)
       const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
       res
         .status(status.code || 200)
@@ -160,63 +172,29 @@ export default class EventSource extends GSEventSource {
     return Promise.resolve();
   }
 
-}
-// Remove leading and trailing / (slash) if present
-function trimSlashes(endpoint: string) {
-  if (endpoint[0] === '/') {
-    endpoint = endpoint.substring(1);
+  // Utility to create GSEvent from request
+  private createGSEvent(req: express.Request, endpoint: string): GSCloudEvent {
+    const reqData = { ...this.omit(req, ['_readableState', 'socket', 'client', '_parsedUrl', 'res', 'app']), ...this.pick(req, ['headers']) };
+    return new GSCloudEvent('id', endpoint, new Date(), 'http', '1.0', reqData, 'REST', new GSActor('user'), {});
   }
-  if (endpoint[endpoint.length - 1] === '/') {
-    endpoint = endpoint.substring(0, endpoint.length - 1);
+
+  // Omit and pick utilities
+  private pick(obj: PlainObject, keys: string[]): PlainObject {
+    const result: any = {};
+    keys.forEach(key => { result[key] = obj[key]; });
+    return result;
   }
-  return endpoint;
-}
-function createGSEvent(req: express.Request, endpoint: string) {
-  const reqProp = omit(req, [
-    '_readableState',
-    'socket',
-    'client',
-    '_parsedUrl',
-    'res',
-    'app'
-  ]);
-  const reqHeaders = pick(req, ['headers']);
-  let data = { ...reqProp, ...reqHeaders };
 
-  const event: GSCloudEvent = new GSCloudEvent(
-    'id',
-    endpoint,
-    new Date(),
-    'http',
-    '1.0',
-    data,
-    'REST',
-    new GSActor('user'),
-    {}
-  );
-
-  return event;
-}
-
-function pick(o: PlainObject, keys: string[]): PlainObject {
-  let newObj: PlainObject = {};
-  for (let key of keys) {
-    newObj[key] = o[key];
+  private omit(obj: PlainObject, keys: string[]): PlainObject {
+    const result = { ...obj };
+    keys.forEach(key => { delete result[key]; });
+    return result;
   }
-  return newObj; //return new copy
-}
-
-function omit(o: PlainObject, keys: string[]): PlainObject {
-  o = { ...o }; //shallow clone
-  for (let key of keys) {
-    delete o[key];
-  }
-  return o; //return new copy
 }
 
 const SourceType = 'ES';
-const Type = 'express'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
-const CONFIG_FILE_NAME = 'http'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const Type = 'express';
+const CONFIG_FILE_NAME = 'http';
 const DEFAULT_CONFIG = { port: 3000, docs: { endpoint: '/api-docs' } };
 
 export {
