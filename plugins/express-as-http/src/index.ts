@@ -9,6 +9,7 @@ import passport from "passport";
 import fileUpload from "express-fileupload";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GithubStrategy } from 'passport-github2';
+import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 import session from 'express-session';
 
 export default class EventSource extends GSEventSource {
@@ -58,6 +59,7 @@ export default class EventSource extends GSEventSource {
   setupAuthentication(app: express.Express) {
     const jwtConfig = this.config.authn?.jwt || this.config.jwt;
     const githubConfig = this.config.authn?.oauth2?.github || this.config.oauth2?.github;
+    const linkedinConfig = this.config.authn?.oauth2?.linkedin || this.config.oauth2?.linkedin;
 
     if (jwtConfig) {
       this.setupJwtAuthentication(app, jwtConfig);
@@ -65,6 +67,9 @@ export default class EventSource extends GSEventSource {
 
     if (githubConfig) {
       this.setupGithubAuthentication(app, githubConfig);
+    }
+    if (linkedinConfig) {
+      this.setupLinkedInAuthentication(app, linkedinConfig);
     }
   }
 
@@ -87,7 +92,34 @@ export default class EventSource extends GSEventSource {
       (jwtPayload, done) => done(null, jwtPayload),
     ));
   }
+  setupLinkedInAuthentication(app: express.Express, linkedinConfig: PlainObject) {
+    if (!linkedinConfig.client_id || !linkedinConfig.client_secret || !linkedinConfig.callback_url) {
+      logger.fatal('LinkedIn configuration error. Exiting');
+      process.exit(1);
+    }
 
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use(new LinkedInStrategy(
+      {
+        clientID: linkedinConfig.client_id,
+        clientSecret: linkedinConfig.client_secret,
+        callbackURL: linkedinConfig.callback_url,
+        scope: linkedinConfig.scope || ['r_emailaddress', 'r_liteprofile']
+      },
+      (accessToken:any, refreshToken:any, profile:any, done:any) => done(null, profile),
+    ));
+
+    // LinkedIn Authentication Routes
+    app.get('/auth/linkedin', passport.authenticate('linkedin'));
+
+    app.get('/auth/linkedin/callback', passport.authenticate('linkedin', { failureRedirect: '/' }), (req, res) => {
+      res.redirect('/profile');
+    });
+
+    passport.serializeUser((user, done) => done(null, user));
+    passport.deserializeUser((obj:any, done) => done(null, obj));
+  }
   setupGithubAuthentication(app: express.Express, githubConfig: PlainObject) {
     if (!githubConfig.client_id || !githubConfig.client_secret || !githubConfig.callback_url) {
       logger.fatal('Github configuration error. Exiting');
