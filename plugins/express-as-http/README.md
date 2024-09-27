@@ -127,6 +127,24 @@ authn:
       auth_route: <% process.env.GITHUB_AUTH_ROUTE %>
       success_redirect: <% process.env.GITHUB_SUCCESS_REDIRECT_URL %>
       failure_redirect: <% process.env.GITHUB_FAILURE_REDIRECT_URL %>
+    
+    linkedin:
+      client_id: <% process.env.LINKEDIN_CLIENT_ID %>
+      client_secret: <% process.env.LINKEDIN_CLIENT_SECRET %>
+      callback_url: <% process.env.LINKEDIN_CALLBACK_URL %>
+      callback_route: <% process.env.LINKEDIN_CALLBACK_ROUTE %>
+      auth_route: <% process.env.LINKEDIN_AUTH_ROUTE %>
+      success_redirect: <% process.env.LINKEDIN_SUCCESS_REDIRECT_URL %>
+      failure_redirect: <% process.env.LINKEDIN_FAILURE_REDIRECT_URL %>
+    
+    google:
+      client_id: <% process.env.GOOGLE_CLIENT_ID %>
+      client_secret: <% process.env.GOOGLE_CLIENT_SECRET %>
+      callback_url: <% process.env.GOOGLE_CALLBACK_URL %>
+      callback_route: <% process.env.GOOGLE_CALLBACK_ROUTE %>
+      auth_route: <% process.env.GOOGLE_AUTH_ROUTE %>
+      success_redirect: <% process.env.GOOGLE_SUCCESS_REDIRECT_URL %>
+      failure_redirect: <% process.env.GOOGLE_FAILURE_REDIRECT_URL %>
 ```
 ### Set up your session secret as:
 ```
@@ -138,7 +156,7 @@ session:
 
 ```
 .env
-
+# GitHub OAuth2 Credentials
 GITHUB_CLIENT_ID=  your_client_id
 GITHUB_CLIENT_SECRET= your_client_secret  
 GITHUB_CALLBACK_URL= your_callback_url e.g http://localhost:4000/auth/github/callback
@@ -147,6 +165,25 @@ GITHUB_CALLBACK_ROUTE = /auth/github/callback
 GITHUB_SUCCESS_REDIRECT_URL = /verify/user
 GITHUB_FAILURE_REDIRECT_URL = /error
 
+# LinkedIn OAuth2 Credentials
+LINKEDIN_CLIENT_ID=your_linkedin_client_id
+LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
+LINKEDIN_CALLBACK_URL=http://localhost:4000/auth/linkedin/callback
+LINKEDIN_AUTH_ROUTE=/auth/linkedin
+LINKEDIN_CALLBACK_ROUTE=/auth/linkedin/callback
+LINKEDIN_SUCCESS_REDIRECT_URL=/verify/user
+LINKEDIN_FAILURE_REDIRECT_URL=/error
+
+# Google OAuth2 Credentials
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:4000/auth/google/callback
+GOOGLE_AUTH_ROUTE=/auth/google
+GOOGLE_CALLBACK_ROUTE=/auth/google/callback
+GOOGLE_SUCCESS_REDIRECT_URL=/verify/user
+GOOGLE_FAILURE_REDIRECT_URL=/error
+
+# Session Secret
 SESSION_SECRET = mysecret
 
 ```
@@ -160,6 +197,11 @@ jwt:
   audience: <#config.audience#> #must be equal to the key aud in your jwt token
   secretOrKey: <#config.secret#>
 ```
+
+## Accessing User Information
+Once the user has authenticated through Google, GitHub, or LinkedIn, you can access the authenticated user’s information via the req.user object in your godspeed application.
+
+
 ## How file upload feature works
 
 ### Uploading file
