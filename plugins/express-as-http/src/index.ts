@@ -38,7 +38,7 @@ export default class EventSource extends GSEventSource {
     app.use(fileUpload({ useTempFiles: true, limits: { fileSize: this.config.file_size_limit || '50mb' }, abortOnLimit: true }));
 
     app.use(session({
-      secret: 'mysecret' || this.config.session.secret,
+      secret: this.config.session.secret,   //give secret in http.yaml and .env
       resave: false,
       saveUninitialized: false
     }));
@@ -238,10 +238,14 @@ export default class EventSource extends GSEventSource {
     app[httpMethod](fullUrl, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
       const gsEvent: GSCloudEvent = createGSEvent(req, endpoint)
       const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
+      if (status.code && status.code === 302 && status.data?.redirectUrl) {
+        res.redirect(302, status.data.redirectUrl);
+      } else {
       res
         .status(status.code || 200)
         // if data is a integer, it takes it as statusCode, so explicitly converting it to string
         .send(Number.isInteger(status.data) ? String(status.data) : status.data);
+      }
     });
     return Promise.resolve();
   }
