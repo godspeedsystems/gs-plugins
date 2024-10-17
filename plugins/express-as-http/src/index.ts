@@ -38,7 +38,7 @@ export default class EventSource extends GSEventSource {
     app.use(fileUpload({ useTempFiles: true, limits: { fileSize: this.config.file_size_limit || '50mb' }, abortOnLimit: true }));
 
     app.use(session({
-      secret: this.config.session.secret,   //give secret in http.yaml and .env
+      secret: 'mysecret' || this.config.session.secret,
       resave: false,
       saveUninitialized: false
     }));
@@ -46,9 +46,9 @@ export default class EventSource extends GSEventSource {
 
   setupAuthentication(app: express.Express) {
     const jwtConfig = this.config.authn?.jwt || this.config.jwt;
-    const githubConfig = this.config.authn.oauth2?.github;
-    const googleConfig = this.config.authn.oauth2?.google;
-    const linkedinConfig = this.config.authn.oauth2?.linkedin;
+    const githubConfig = this.config.authn?.oauth2?.github;
+    const googleConfig = this.config.authn?.oauth2?.google;
+    const linkedinConfig = this.config.authn?.oauth2?.linkedin;
 
     if (jwtConfig) {
       this.setupJwtAuthentication(app, jwtConfig);
