@@ -38,7 +38,7 @@ export default class EventSource extends GSEventSource {
     app.use(fileUpload({ useTempFiles: true, limits: { fileSize: this.config.file_size_limit || '50mb' }, abortOnLimit: true }));
 
     app.use(session({
-      secret: 'mysecret' || this.config.session.secret,
+      secret: this.config.session?.secret || 'mysecret',
       resave: false,
       saveUninitialized: false
     }));
