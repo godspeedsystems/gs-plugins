@@ -16,15 +16,16 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 export default class EventSource extends GSEventSource {
   async initClient(): Promise<PlainObject> {
     const app = express();
-    const {
-      port = 3000,
-      } = this.config;
+    const { port = 3000, docs = { endpoint: '/api-docs' } } = this.config;
+
 
     this.setupMiddleware(app);
     this.setupAuthentication(app);
     // Start the Express server
     app.listen(port, () => {
       logger.info(`Server running on port ${port}`);
+      logger.info(`Try it out at: http://localhost:${port}${docs.endpoint}`);
+
     });
     if (process.env.OTEL_ENABLED === 'true') {
       this.setupMetrics(app);
