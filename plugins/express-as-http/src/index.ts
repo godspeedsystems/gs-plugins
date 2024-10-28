@@ -70,7 +70,7 @@ export default class EventSource extends GSEventSource {
       process.exit(1);
     }
     app.use(passport.initialize());
-    //  app.use(passport.session());
+    app.use(passport.session());
     passport.use(new JwtStrategy(
       {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
