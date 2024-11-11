@@ -1,0 +1,34 @@
+{
+        "name": "@godspeedsystems/plugins-text-to-sql-as-datasource",
+        "version": "1.0.0",
+        "description": "text-to-sql as datasource plugin for Godspeed Framework",
+        "publishConfig": {
+                "access": "public"
+        },
+        "main": "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "devDependencies": {
+                "typescript": "^4.9.5"
+        },
+        "dependencies": {
+                "@godspeedsystems/core": "^2.0.0-alpha.23",
+                "@google/generative-ai": "^0.21.0",
+                "@types/mongodb": "^4.0.7",
+                "@types/oracledb": "^6.5.2",
+                "@types/pg": "^8.11.10",
+                "@types/redis": "^4.0.11",
+                "mongodb": "^6.10.0",
+                "mysql2": "^3.11.4",
+                "openai": "^4.71.1",
+                "oracledb": "^6.6.0",
+                "pg": "^8.13.1",
+                "pino-pretty": "^10.2.0",
+                "redis": "^4.7.0"
+        }
+}
