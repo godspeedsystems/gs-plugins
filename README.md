@@ -61,6 +61,10 @@ Certainly, here are the provided steps rephrased:
      DataSource-As-EventSource 
    ```
 
+   ⚠️ **Note:** In certain network environments, particularly on WiFi connections, you may encounter a `Request failed with status code 403` error due to network security protocols or firewall restrictions that 
+   block specific API requests. To bypass this limitation, consider switching to a **mobile data hotspot**, which often has fewer restrictions. This workaround can help ensure successful command execution and 
+   avoid network-related request failures.
+
 5. Depending on your selection, the plugin generator will generate a template with your chosen plugin name, such as "your-plugin-name-as-datasource." The structure of the generated files will be as follows:
 
    ```
