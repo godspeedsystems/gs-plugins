@@ -107,6 +107,7 @@ Run godspeed serve to start the development server.
 ```bash
 godspeed serve
 ```
+Link to the godspeed-test-project: https://github.com/qu-bit1/stripe-test-project
 
 ## Thank You For Using Godspeed 
 
