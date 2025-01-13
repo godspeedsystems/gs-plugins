@@ -9,8 +9,6 @@ Stripe is a comprehensive and developer-friendly payment platform that enables b
 ## How to Use
 - Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI, do `npm i /path/to/stripe-as-datasource` to integrate the plugin
 
-- You will find the a file in your project related to the Prisma plugin at `src/datasources/types/prisma.ts` 
-
 
 `stripe.ts`
 
