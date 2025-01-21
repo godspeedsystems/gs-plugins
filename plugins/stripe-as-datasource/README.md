@@ -19,6 +19,25 @@ export default DataSource;
 
 `stripe-events.yaml`
 ```yaml
+"http.post./stripe/create-payment":
+  fn: stripe_create_payment
+  authn: false
+  body:
+    type: object
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+    required:
+      - amount
+      - currency
+  responses:
+    200:
+      content:
+        application/json:
+          type: object
+
 "http.post./stripe/payment-success":
   fn: stripe_payment_success
   authn: false
@@ -69,10 +88,46 @@ tasks:
   - id: create_payment
     fn: datasource.stripe.paymentIntents.create
     args:
-      amount: 200
+      amount: 2000000
       currency: "usd"
       payment_method_types:
         - "card"
+```
+
+
+`stripe_create_payment.ts`
+```ts
+import { GSContext, GSStatus, PlainObject } from "@godspeedsystems/core";
+
+export default async function (ctx: GSContext) {
+  ctx.logger.info("Creating Stripe payment intent");
+
+  try {
+    const { amount, currency } = ctx.inputs.data.body;
+
+    ctx.logger.info("Attempting to create payment intent", { amount, currency });
+
+    const result = await ctx.datasources.stripe.execute(ctx, {
+      meta: { resource: "paymentIntents", method: "create" },
+      args: [{
+        amount,
+        currency,
+        payment_method_types: ["card"],
+        metadata: { integration_check: "accept_a_payment" }
+      }]
+    });
+
+    ctx.logger.info("Payment intent created successfully", { paymentIntentId: result.data.id });
+
+    return new GSStatus(true, 200, "Payment intent created successfully", {
+      paymentIntentId: result.data.id,
+      clientSecret: result.data.client_secret
+    });
+  } catch (error) {
+    ctx.logger.error("Failed to create payment intent", { error: error.message });
+    return new GSStatus(false, 500, `Failed to create payment intent: ${error.message}`);
+  }
+}
 
 ```
 
@@ -84,7 +139,7 @@ export default async function (ctx: GSContext, args: PlainObject) {
   ctx.logger.info("Payment succeeded event received.WOOHOO");
   ctx.logger.info("Event data:", args);
 
-  return new GSStatus(true, 200, "Payment processed successfully YIPEE.");
+  return new GSStatus(true, 200, "Payment processed successfully");
 }
 ```
 
@@ -98,7 +153,6 @@ export default async function (ctx: GSContext, args: PlainObject) {
 
   return new GSStatus(false, 500, "Payment failed. Please check logs.");
 }
-
 ```
 
 Run godspeed serve to start the development server.
