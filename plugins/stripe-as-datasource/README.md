@@ -1,23 +1,76 @@
-# godspeed-plugin-stripe-as-datasource
+# **Godspeed Plugin: Stripe as a Datasource**  
+🚀 **Seamlessly integrate Stripe’s secure payment processing with the Godspeed framework.**  
 
-Welcome to the [Godspeed](https://www.godspeed.systems/) Stripe Plugin! 🚀
+> **"Stripe: Simplifying Payments for Developers. One Platform, Any Business."**  
 
-**"Stripe: Simplifying Payments for Developers. One Platform, Any Business."**
+Stripe is a powerful, developer-friendly payment platform that enables businesses to accept payments online and in mobile apps. It provides a robust API for **payment processing, subscription management, fraud prevention, and financial reporting**.  
 
-Stripe is a comprehensive and developer-friendly payment platform that enables businesses to easily accept payments online and in mobile apps. It provides a seamless API for payment processing, subscription management, fraud prevention, and financial reporting. With support for various payment methods, currencies, and advanced security features, Stripe empowers developers to integrate and scale payment solutions quickly and securely for businesses of any size.
+This plugin allows you to integrate **Stripe** as a datasource in **Godspeed**, making it easy to process payments and handle event-based responses, such as **payment success and failure notifications**.
 
-## How to Use
-- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI, do `npm i /path/to/stripe-as-datasource` to integrate the plugin
+---
 
+## **📌 Features**
+✔ **Create payment intents** using Stripe API  
+✔ **Listen to payment events** (success & failure)  
+✔ **Secure and scalable integration** with Stripe  
+✔ **Easily configurable within the Godspeed framework**  
 
-`stripe.ts`
+---
 
-```typescript
+## **📖 Installation & Setup**
+### **1️⃣ Install the Plugin**
+Run the following command inside your Godspeed project:
+```sh
+npm install /path/to/stripe-as-datasource
+```
+
+### **2️⃣ Add the Datasource**
+Create `src/datasources/stripe.yaml`:
+```yaml
+type: stripe
+apiKey: <%config.STRIPE_API_KEY%>
+```
+💡 **Replace** `<%config.STRIPE_API_KEY%>` with your actual Stripe API key in `.env`:
+```env
+STRIPE_API_KEY=sk_test_1234567890abcdef
+```
+
+### **3️⃣ Add the Stripe Plugin**
+Create `src/datasources/types/stripe.ts`:
+```ts
 import { DataSource } from "@godspeedsystems/plugins-stripe-as-datasource";
 export default DataSource;
 ```
 
-`stripe-events.yaml`
+---
+
+## **🔧 API Endpoints**
+The following **API endpoints** are registered in Godspeed to handle payments:
+
+### **1️⃣ Create Payment Intent**
+✅ **Endpoint:** `POST /stripe/create-payment`  
+✅ **Description:** Creates a Stripe payment intent  
+✅ **Request Body:**
+```json
+{
+  "amount": 2000,
+  "currency": "usd"
+}
+```
+✅ **Response:**
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "Payment intent created successfully",
+  "data": {
+    "paymentIntentId": "pi_xxx",
+    "clientSecret": "secret_xxx"
+  }
+}
+```
+✅ **Implementation:**
+- **Event Definition (`src/events/stripe-events.yaml`)**:
 ```yaml
 "http.post./stripe/create-payment":
   fn: stripe_create_payment
@@ -80,6 +133,7 @@ export default DataSource;
           type: object
 
 ```
+
 `stripe_create_payment.yaml`
 ```yaml
 id: create_stripe_payment
@@ -93,19 +147,15 @@ tasks:
       payment_method_types:
         - "card"
 ```
-
-
-`stripe_create_payment.ts`
+- **Function (`src/functions/stripe_create_payment.ts`)**:
 ```ts
-import { GSContext, GSStatus, PlainObject } from "@godspeedsystems/core";
+import { GSContext, GSStatus } from "@godspeedsystems/core";
 
 export default async function (ctx: GSContext) {
   ctx.logger.info("Creating Stripe payment intent");
 
   try {
     const { amount, currency } = ctx.inputs.data.body;
-
-    ctx.logger.info("Attempting to create payment intent", { amount, currency });
 
     const result = await ctx.datasources.stripe.execute(ctx, {
       meta: { resource: "paymentIntents", method: "create" },
@@ -117,8 +167,6 @@ export default async function (ctx: GSContext) {
       }]
     });
 
-    ctx.logger.info("Payment intent created successfully", { paymentIntentId: result.data.id });
-
     return new GSStatus(true, 200, "Payment intent created successfully", {
       paymentIntentId: result.data.id,
       clientSecret: result.data.client_secret
@@ -128,22 +176,46 @@ export default async function (ctx: GSContext) {
     return new GSStatus(false, 500, `Failed to create payment intent: ${error.message}`);
   }
 }
-
 ```
 
-`stripe_payment_success.ts`
+---
+
+### **2️⃣ Payment Success Webhook**
+✅ **Endpoint:** `POST /stripe/payment-success`  
+✅ **Description:** Captures successful payments from Stripe  
+✅ **Request Body:**
+```json
+{
+  "id": "pi_xxx",
+  "amount": 2000,
+  "currency": "usd"
+}
+```
+✅ **Implementation (`src/functions/stripe_payment_success.ts`)**:
 ```ts
 import { GSContext, GSStatus, PlainObject } from "@godspeedsystems/core";
 
 export default async function (ctx: GSContext, args: PlainObject) {
-  ctx.logger.info("Payment succeeded event received.WOOHOO");
+  ctx.logger.info("Payment succeeded event received.");
   ctx.logger.info("Event data:", args);
 
-  return new GSStatus(true, 200, "Payment processed successfully");
+  return new GSStatus(true, 200, "Payment processed successfully.");
 }
 ```
 
-`stripe_payment_failure.ts`
+---
+
+### **3️⃣ Payment Failure Webhook**
+✅ **Endpoint:** `POST /stripe/payment-failure`  
+✅ **Description:** Captures failed payments from Stripe  
+✅ **Request Body:**
+```json
+{
+  "error_code": "card_declined",
+  "message": "Your card was declined."
+}
+```
+✅ **Implementation (`src/functions/stripe_payment_failure.ts`)**:
 ```ts
 import { GSContext, GSStatus, PlainObject } from "@godspeedsystems/core";
 
@@ -155,11 +227,54 @@ export default async function (ctx: GSContext, args: PlainObject) {
 }
 ```
 
-Run godspeed serve to start the development server.
-```bash
+---
+
+## **🚀 Running the Server**
+Once everything is set up, start the Godspeed server:
+```sh
 godspeed serve
 ```
-Link to the godspeed-test-project: https://github.com/qu-bit1/stripe-test-project
+---
 
-## Thank You For Using Godspeed 
+## **🛠 Testing the Plugin**
+### **1️⃣ Create a Payment Intent**
+Run:
+```sh
+curl -X POST http://localhost:3000/stripe/create-payment \
+     -H "Content-Type: application/json" \
+     -d '{"amount": 2000, "currency": "usd"}'
+```
 
+### **2️⃣ Test Payment Failure**
+Run:
+```sh
+stripe trigger payment_intent.payment_failed
+```
+Expected Logs:
+```
+ERROR: Payment failed event received.
+ERROR: Event data: { error_code: "card_declined", message: "Your card was declined." }
+```
+
+### **3️⃣ Test Payment Success**
+Run:
+```sh
+stripe trigger payment_intent.succeeded
+```
+Expected Logs:
+```
+INFO: Payment succeeded event received.
+INFO: Event data: { id: "pi_xxx", amount: 2000, currency: "usd" }
+```
+
+---
+
+## **📂 Project Repository**
+🔗 **Godspeed Test Project:** [GitHub Repository](https://github.com/qu-bit1/stripe-test-project)
+
+---
+
+## **🙌 Thank You for Using Godspeed!**  
+Need help? **Join our community or open an issue!** 🚀💳  
+
+---
