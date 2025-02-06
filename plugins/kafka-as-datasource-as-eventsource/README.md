@@ -41,6 +41,12 @@ A brief description of how to use Kafka plug-in in our godspeed framework as Dat
 type: kafka
 clientId: "kafka_proj"
 brokers: ["kafka:9092"]
+# optional ssl config
+ssl: 
+  reject: false # Set to true if you want to enforce certificate validation
+  key: <%config.kafka.ssl_key_path%>    # Path to the private key file
+  cert: <%config.kafka.ssl_cert_path%>  # Path to the certificate file
+  ca: <%config.kafka.ssl_ca_path%>   # Path to the CA certificate file (if required)
 ```
 
 
@@ -94,7 +100,12 @@ tasks:
 ```yaml
 type: kafka
 groupId: "kafka_proj"
-
+# optional ssl config
+ssl: 
+  reject: false # Set to true if you want to enforce certificate validation
+  key: <%config.kafka.ssl_key_path%>    # Path to the private key file
+  cert: <%config.kafka.ssl_cert_path%>  # Path to the certificate file
+  ca: <%config.kafka.ssl_ca_path%>   # Path to the CA certificate file (if required)
 ```
 
 #### kafka event for consumer ( src/events/kafka_pub.yaml )
