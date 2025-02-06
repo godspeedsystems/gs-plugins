@@ -2,20 +2,46 @@ import { GSContext, GSDataSource, PlainObject, GSDataSourceAsEventSource, GSClou
 import { Kafka, logLevel } from "kafkajs";
 import fs from 'fs';
 class DataSource extends GSDataSource {
+  // protected async initClient(): Promise<PlainObject> {
+  //   const kafka = new Kafka({
+  //     clientId: this.config.clientId,
+  //     brokers: this.config.brokers,
+  //     ssl: {
+  //       rejectUnauthorized: this.config.ssl.reject, // optional, depends on your requirements
+  //       key: fs.readFileSync(this.config.ssl.key,'utf-8'),
+  //       cert: fs.readFileSync(this.config.ssl.cert,'utf-8'),
+  //       ca: [fs.readFileSync(this.config.ssl.ca,'utf-8')],
+  //     },
+  //     logLevel: logLevel.INFO, // optional, for logging
+  //   });
+  //   return kafka;
+  // }
   protected async initClient(): Promise<PlainObject> {
+    
+    const sslConfig: PlainObject = {};
+
+  // Ensure ssl config exists before accessing its properties
+    if (this.config?.ssl) {
+        sslConfig.rejectUnauthorized = this.config.ssl?.reject ?? false; // Default to false
+    }
+    if (this.config?.ssl?.key) {
+        sslConfig.key = fs.readFileSync(this.config.ssl?.key, 'utf-8');
+    }
+    if (this.config?.ssl?.cert) {
+        sslConfig.cert = fs.readFileSync(this.config.ssl?.cert, 'utf-8');
+    }
+    if (this.config?.ssl?.ca) {
+        sslConfig.ca = [fs.readFileSync(this.config.ssl?.ca, 'utf-8')];
+    }
     const kafka = new Kafka({
-      clientId: this.config.clientId,
-      brokers: this.config.brokers,
-      ssl: {
-        rejectUnauthorized: this.config.ssl.reject, // optional, depends on your requirements
-        key: fs.readFileSync(this.config.ssl.key,'utf-8'),
-        cert: fs.readFileSync(this.config.ssl.cert,'utf-8'),
-        ca: [fs.readFileSync(this.config.ssl.ca,'utf-8')],
-      },
-      logLevel: logLevel.INFO, // optional, for logging
+        clientId: this.config.clientId,
+        brokers: this.config.brokers,
+        ssl: sslConfig,
+        logLevel: logLevel.INFO, // Optional, for logging
     });
+
     return kafka;
-  }
+}
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     try {
@@ -117,7 +143,6 @@ class EventSource extends GSDataSourceAsEventSource {
     }
   }
 }
-
 const SourceType = 'BOTH';
 const Type = "kafka"; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "kafka"; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
@@ -126,6 +151,13 @@ const DEFAULT_CONFIG = {
   clientId: "kafka_proj",
   brokers: ["kafka:9092"],
   log: { attributes: { eventsource_type: "kafka" } }
+  // Uncomment and update the SSL configuration if your Kafka cluster requires SSL/TLS authentication.
+  // ssl: {
+  //   reject: false,  // Set to true if you want to enforce certificate validation
+  //   key: "<%config.kafka.ssl_key_path%>",  // Path to the private key file
+  //   cert: "<%config.kafka.ssl_cert_path%>", // Path to the certificate file
+  //   ca: "<%config.kafka.ssl_ca_path%>" // Path to the CA certificate file (if required)
+  // }
 };
 
 export {

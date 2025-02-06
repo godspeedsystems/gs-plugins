@@ -1,6 +1,6 @@
 {
         "name": "@godspeedsystems/plugins-kafka-as-datasource-as-eventsource",
-        "version": "1.0.6",
+        "version": "1.0.7",
         "description": "kafka as datasource-as-eventsource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
