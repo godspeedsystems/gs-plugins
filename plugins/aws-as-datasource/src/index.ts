@@ -166,8 +166,8 @@ const DEFAULT_CONFIG = {
     ssm:{
       type: "ssm"
     },
-    lamdba:{
-      type: "lamdba"
+    lambda:{
+      type: "lambda"
     }
     
   },
