@@ -1,17 +1,19 @@
 {
-        "compilerOptions": {
-          "target": "es6",
-          "module": "commonjs",
-          "outDir": "./dist",
-          "rootDir": "./src",
-          "strict": true,
-          "declaration": true,
-          "moduleResolution": "node",
-          "sourceMap": true,
-          "esModuleInterop": true
-        },
-        "exclude":[
-          "./node_modules",
-          "./dist"
-        ]
+  "compilerOptions": {
+    "target": "es2018",                          // ← upgraded from es6
+    "lib": ["es2018", "dom"],                    // ← added for AsyncGenerator and Symbol.asyncIterator
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["node"]                            // ← critical for Node globals like process, http
+  },
+  "exclude": [
+    "./node_modules",
+    "./dist"
+  ]
       }

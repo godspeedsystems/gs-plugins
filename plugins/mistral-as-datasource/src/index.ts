@@ -1,7 +1,5 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject } from "@godspeedsystems/core";
 import { Mistral } from '@mistralai/mistralai';
-import fs from "fs";
-import path from "path";
 
 export default class DataSource extends GSDataSource {
   protected async initClient(): Promise<object> {
@@ -40,7 +38,7 @@ export default class DataSource extends GSDataSource {
             messages: [{role: 'user', content: prompt}],
           });
           
-          const responseContent = chatResponse.choices[0].message.content ?? "No response text generated";
+          const responseContent = chatResponse.choices?.[0]?.message?.content ?? "No response text generated";
           return new GSStatus(true, 200, "Success", responseContent);
         }
         
@@ -54,7 +52,7 @@ export default class DataSource extends GSDataSource {
             messages: [{role: 'system', content: instruction}, {role: 'user', content: prompt}],
           });
           
-          const responseContent = chatResponse.choices[0].message.content ?? "No response code generated";
+          const responseContent = chatResponse.choices?.[0]?.message?.content ?? "No response text generated";
           return new GSStatus(true, 200, "Success", responseContent);
         }
         
@@ -81,7 +79,7 @@ export default class DataSource extends GSDataSource {
             ],
           });
           
-          const responseContent = chatResponse.choices[0].message.content ?? "No response code generated";
+          const responseContent = chatResponse.choices?.[0]?.message?.content ?? "No response text generated";
           return new GSStatus(true, 200, "Success", responseContent);
           
         }
@@ -97,7 +95,7 @@ export default class DataSource extends GSDataSource {
             responseFormat: {type: 'json_object'},
           });
           
-          const responseContent = chatResponse.choices[0].message.content ?? "No response text generated";
+          const responseContent = chatResponse.choices?.[0]?.message?.content ?? "No response text generated";
           return new GSStatus(true, 200, "Success", responseContent);
           
         }

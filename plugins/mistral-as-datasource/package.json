@@ -3,22 +3,24 @@
         "version": "1.0.0",
         "description": "mistral as datasource plugin for Godspeed Framework",
         "publishConfig": {
-          "access": "public"
+                "access": "public"
         },
-        "main" : "dist/index.js",
+        "main": "dist/index.js",
         "types": "dist/index.d.js",
         "scripts": {
-          "dev": "tsc --watch",
-          "build": "tsc",
-          "prepublishOnly": "npm run build"
+                "dev": "tsc --watch",
+                "build": "tsc",
+                "prepublishOnly": "npm run build"
         },
         "license": "ISC",
         "devDependencies": {
-          "typescript": "^4.9.5"
+                "@types/events": "^3.0.3",
+                "@types/node": "^22.13.14",
+                "typescript": "^4.9.5"
         },
         "dependencies": {
-          "@godspeedsystems/core": "^2.0.0-alpha.23",
-          "pino-pretty": "^10.2.0",
-          "@mistralai/mistralai": "^1.3.6"
+                "@godspeedsystems/core": "^2.0.0-alpha.23",
+                "@mistralai/mistralai": "^1.3.6",
+                "pino-pretty": "^10.2.0"
         }
-      }
+}
