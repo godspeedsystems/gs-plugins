@@ -6,13 +6,21 @@
                 "access": "public"
         },
         "main": "dist/index.js",
-        "types": "dist/index.d.js",
+        "types": "dist/index.d",
         "scripts": {
                 "dev": "tsc --watch",
                 "build": "tsc",
                 "prepublishOnly": "npm run build"
         },
-        "license": "ISC",
+        "author": {
+                "name": "Godspeed Systems",
+                "email": "admin@godspeed.systems"
+        },
+        "keywords": [
+                "chatgpt",
+                "godspeed"
+        ],
+        "license": "Godspeed License 1.0",
         "devDependencies": {
                 "typescript": "^4.9.5"
         },
