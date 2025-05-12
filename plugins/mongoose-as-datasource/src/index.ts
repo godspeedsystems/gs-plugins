@@ -21,7 +21,6 @@ export default class DataSource extends GSDataSource {
             await mongoose.connect(process.env.MONGO_URL!, {
                 // Mongoose connection options
             });
-            
             console.log("[DEBUG] MongoDB connection successful");
             return await this.loadModels();
         } catch (error) {
@@ -30,85 +29,125 @@ export default class DataSource extends GSDataSource {
         }
     }
     
-    private async loadModels(): Promise<PlainObject> {
-        // Fix path handling for Windows compatibility
-        const modelsPath = path.resolve(__dirname.replace(/[\/\\]types$/, ''), this.config.name, 'models');
-        console.log(`[DEBUG] Models path: ${modelsPath}`);
+    // private async loadModels(): Promise<PlainObject> {
+    //     const modelsPath = path.join(__dirname, '..', 'dist', 'models');
+    //     console.log(`[DEBUG] Models path: ${modelsPath}`);
+    //     // Check if directory exists
+    //     try {
+    //         if (!fs.existsSync(modelsPath)) {
+    //             console.error(`[ERROR] Models directory not found: ${modelsPath}`);
+    //             return {};
+    //         }
+    //         console.log(`[DEBUG] Models directory found: ${modelsPath}`);
+    //     } catch (dirCheckError) {
+    //         console.error(`[ERROR] Error checking models directory: ${dirCheckError}`);
+    //         return {};
+    //     }
+    //     // Find model files
+    //     const modules: string[] = glob.sync(path.join(modelsPath, '*.{ts,js}'), { ignore: 'node_modules/**' });
         
-        // Check if directory exists
+    //     // Log number of model files found
+    //     if (modules.length === 0) {
+    //         console.warn(`[WARN] No model files found in: ${modelsPath}`);
+    //         return {};
+    //     }
+    //     console.log(`[DEBUG] Found ${modules.length} model file(s)`);
+
+    //     const models: PlainObject = {}; 
+    //     for (let file of modules) {
+    //         try {
+    //             const relativePath = path.relative(__dirname, file).replace(/\.(js)/, '');
+    //             console.log(`[DEBUG] Loading model from: ${relativePath}`);
+                
+    //             const model = await require(relativePath);
+                
+    //             if (!model.type || !model.model) {
+    //                 console.warn(`[WARN] Invalid model structure in file: ${file}`);
+    //                 continue;
+    //             }
+    //             models[model.type] = model.model;
+    //             console.log(`[DEBUG] Loaded model type: ${model.type}`);
+    //         } catch (modelLoadError) {
+    //             console.error(`[ERROR] Failed to load model from ${file}: ${modelLoadError}`);
+    //         }
+    //     }
+    //     console.log(`[DEBUG] Total models loaded: ${Object.keys(models).length}`);
+    //     return models;
+    // }
+    private async loadModels(): Promise<PlainObject> {
+    // Specific path for user's project models
+    const modelsPath = path.join(process.cwd(), 'dist', 'datasources', 'mongoose', 'models');
+    
+    console.log(`[DEBUG] Attempting to load models from: ${modelsPath}`);
+
+    // Check if directory exists
+    try {
         if (!fs.existsSync(modelsPath)) {
-            console.error(`[DEBUG] Models directory doesn't exist: ${modelsPath}`);
+            console.error(`[ERROR] Models directory not found: ${modelsPath}`);
+            console.log(`[DEBUG] Current working directory: ${process.cwd()}`);
             
-            // Try to list parent directory to help with debugging
-            const parentDir = path.dirname(modelsPath);
-            console.log(`[DEBUG] Parent directory (${parentDir}) contents:`, 
-                fs.existsSync(parentDir) ? fs.readdirSync(parentDir) : 'Parent directory not found');
+            // Log directory structure for debugging
+            try {
+                const basePath = path.join(process.cwd(), 'dist', 'datasources');
+                if (fs.existsSync(basePath)) {
+                    console.log('[DEBUG] Contents of datasources directory:');
+                    fs.readdirSync(basePath).forEach(dir => {
+                        console.log(`[DEBUG] - ${dir}`);
+                    });
+                } else {
+                    console.log(`[DEBUG] Datasources base path does not exist: ${basePath}`);
+                }
+            } catch (structureCheckError) {
+                console.error('[ERROR] Error checking directory structure:', structureCheckError);
+            }
             
-            // Create a fallback empty object if no models are found
             return {};
         }
-        // Use normalized path pattern for glob
-        const modelPattern = path.join(modelsPath, '*.{ts,js}').replace(/\\/g, '/');
-                
+        console.log(`[DEBUG] Models directory found: ${modelsPath}`);
+    } catch (dirCheckError) {
+        console.error(`[ERROR] Error checking models directory: ${dirCheckError}`);
+        return {};
+    }
+    // Find model files
+   // const modules: string[] =glob.sync(path.join(modelsPath, '*.{ts,js}'), { ignore: 'node_modules/**' })
+    const modelPattern = path.join(modelsPath, '*.{ts,js}').replace(/\\/g, '/');
         // Use glob with normalized pattern and explicit options
         const modules: string[] = await glob(modelPattern, { 
             ignore: 'node_modules/**',
             windowsPathsNoEscape: true // Important for Windows paths
         });
-        
-        console.log(`[DEBUG] Found ${modules.length} model files: ${JSON.stringify(modules)}`);
-        
-        const models: PlainObject = {};
-        
-        // If no modules found via glob, try direct file reading
-        if (modules.length === 0) {
-            console.log(`[DEBUG] No models found with glob, trying direct file reading`);
-            try {
-                const files = fs.readdirSync(modelsPath);
-                for (const file of files) {
-                    if (file.endsWith('.js') || file.endsWith('.ts')) {
-                        try {
-                            const filePath = path.join(modelsPath, file);
-                            console.log(`[DEBUG] Loading model from: ${filePath}`);
-                            // Use require with absolute path
-                            const model = require(filePath);
-                            if (model && model.type && model.model) {
-                                console.log(`[DEBUG] Model loaded with type: ${model.type}`);
-                                models[model.type] = model.model;
-                            } else {
-                                console.error(`[DEBUG] Invalid model format in file ${file}`);
-                            }
-                        } catch (err) {
-                            console.error(`[DEBUG] Error loading model from file ${file}:`, err);
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error(`[DEBUG] Error reading models directory:`, err);
-            }
-        } else {
-            // Process modules found by glob
-            for (let file of modules) {
-                try {
-                    console.log(`[DEBUG] Loading model from: ${file}`);
-                    // Use require with absolute path
-                    const model = require(file);
-                    if (model && model.type && model.model) {
-                        console.log(`[DEBUG] Model loaded with type: ${model.type}`);
-                        models[model.type] = model.model;
-                    } else {
-                        console.error(`[DEBUG] Invalid model format in file ${file}`);
-                    }
-                } catch (err) {
-                    console.error(`[DEBUG] Error loading model from file ${file}:`, err);
-                }
-            }
-        }
-        
-        console.log(`[DEBUG] Loaded models: ${Object.keys(models).join(', ')}`);
-        return models;
-    }
+   
+    console.log(`[DEBUG] Found ${modules.length} model file(s)`);
+
+    const models: PlainObject = {}; 
     
+    for (let file of modules) {
+        try {
+            const tsEquivalent = file.replace('.js', '.ts');
+            if (file.endsWith('.js') && modules.includes(tsEquivalent)) {
+                console.log(`[DEBUG] Skipping .js file as .ts equivalent exists: ${file}`);
+                continue;
+            }
+            console.log(`[DEBUG] Attempting to load model from: ${file}`);
+            // Use dynamic import for better ES module support
+            const modelModule = await import(file);
+            // Check for default export or direct export
+            const model = modelModule.default || modelModule;
+            
+            if (!model.type || !model.model) {
+                console.warn(`[WARN] Invalid model structure in file: ${file}`);
+                continue;
+            }
+            models[model.type] = model.model;
+            console.log(`[DEBUG] Loaded model type: ${model.type}`);
+        } catch (modelLoadError) {
+            console.error(`[ERROR] Failed to load model from ${file}:`, modelLoadError);
+        }
+    }
+    console.log(`[DEBUG] Total models loaded: ${Object.keys(models).length}`);   
+    return models;
+}
+
     async execute(ctx: GSContext, args: PlainObject): Promise<any> {
         console.log(`[DEBUG] Execute called with args:`, JSON.stringify(args));
         
@@ -170,6 +209,7 @@ export default class DataSource extends GSDataSource {
         }
     }
 }
+
 const SourceType = "DS"; 
 const Type = "mongoose"; // this is the default name of the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = "mongoose"; // This is the default name of the generated yaml file. in case of event source, this also works as event identifier, and in case of datasource works as datasource name
