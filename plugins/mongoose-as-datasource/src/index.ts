@@ -170,3 +170,22 @@ export default class DataSource extends GSDataSource {
         }
     }
 }
+const SourceType = "DS"; 
+const Type = "mongoose"; // this is the default name of the loader file of the plugin, So the final loader file will be `types/${Type.js}`
+const CONFIG_FILE_NAME = "mongoose"; // This is the default name of the generated yaml file. in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+const DEFAULT_CONFIG = {
+	type:" mongoose",
+	successResponseCodes: 
+	  	{
+			create: 201,
+			find: 200,
+			findOne: 200,
+			aggregate: 200,
+			findOneAndUpdate: 201,
+			findOneAndDelete: 202
+		}
+	};
+
+export {
+	DataSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG
+}
