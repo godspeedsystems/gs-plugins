@@ -201,7 +201,8 @@ export default class EventSource extends GSEventSource {
   // Setup OpenTelemetry metrics
   setupMetrics(app: express.Express) {
     app.use(promMid({
-      metricsPath: false,
+      metricsPath: '/metrics',
+     
       collectDefaultMetrics: true,
       requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
       requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
