@@ -9,11 +9,14 @@ export default class DataSource extends GSDataSource {
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {  
     try {
       const {
-        from,
-        to,
-        subject,
-        text,
+        meta: {
+          from,
+          to,
+          subject,
+          text
+        },
       } = args;
+
       const method = args.method ?? "send";
       
     // let method = fnNameInWorkflow?.split(".")[2]; // for yaml workflows extract method from fn field
