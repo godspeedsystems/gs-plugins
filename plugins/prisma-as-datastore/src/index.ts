@@ -1,6 +1,5 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject, logger } from "@godspeedsystems/core";
 import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic-search-field-encryption';
-import { PrismaClient } from "@prisma/client";
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 import os from 'os';
@@ -141,7 +140,7 @@ class DataSource extends GSDataSource {
     }
   }
 }
-function modifyForAuthz(client: typeof PrismaClient, args: PlainObject, authzPerms: AuthzPerms, entityType: string, method: string): GSStatus | undefined {
+function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, entityType: string, method: string): GSStatus | undefined {
 
   // Find the model for this entityType
   const model = client?.models.find((m: any) => m.name === entityType);
