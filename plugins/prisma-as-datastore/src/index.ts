@@ -3,6 +3,8 @@ import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 import os from 'os';
+// CHANGE 0: In Prisma Client v6.8.2, PrismaClient is not directly exported from the main @prisma/client package.
+// Instead, it's generated and available after running npx prisma generate.
 
 const iv = Buffer.alloc(16);
 const platform = os.platform();
@@ -43,12 +45,6 @@ class DataSource extends GSDataSource {
 
   protected async initClient(): Promise<object> {
     try {
-      // TODO: until we figure out, how to share path between prisma file and our module loader
-      // we are supporting only one prisma db
-
-      // const module = await import(`../../../node_modules/.prisma/${this.config.name}`);
-      // const prisma = new module.PrismaClient();
-
       const client = await this.loadPrismaClient();
       return client;
     } catch (error) {
@@ -59,15 +55,16 @@ class DataSource extends GSDataSource {
   }
 
   async loadPrismaClient(): Promise<PlainObject> {
-    // const pathString: string = platform == 'win32' ? `${process.cwd()}\dist\datasources\prisma-clients\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
     const pathString: string = platform === 'win32'? `${process.cwd()}\\dist\\datasources\\prisma-clients\\${this.config.name}`: `${process.cwd()}/dist/datasources/prisma-clients/${this.config.name}`;
     const { Prisma, PrismaClient } = require(pathString);
     const prisma = new PrismaClient();
+    
     try {
       await prisma.$connect();
       // Try to connect by performing an operation that requires a connection
       let result: string;
-      if (prisma._activeProvider != "mongodb") {
+      // CHANGE 1: Updated provider check to use new property name
+      if (prisma._engineConfig?.activeProvider !== "mongodb") {
         result = await prisma.$queryRaw`SELECT 1`;
       } else {
         result = await prisma.$runCommandRaw({ ping: 1 });
@@ -76,14 +73,18 @@ class DataSource extends GSDataSource {
       throw error;
     }
 
+    // CHANGE 2: Updated middleware usage for Prisma v6
     prisma.$use(
       fieldEncryptionMiddleware({
         encryptFn: (decrypted: any) => this.cipher(decrypted),
         decryptFn: (encrypted: string) => this.decipher(encrypted),
-        dmmf: Prisma.dmmf,
+        // CHANGE 3: Access DMMF through the new structure
+        dmmf: Prisma.dmmf || prisma._dmmf,
       })
     );
-    prisma.models = Prisma.dmmf.datamodel.models;
+    
+    // CHANGE 4: Updated models access for Prisma v6
+    prisma.models = Prisma.dmmf?.datamodel?.models || prisma._dmmf?.datamodel?.models;
     return prisma;
   }
 
@@ -108,13 +109,15 @@ class DataSource extends GSDataSource {
       },
       ...rest
     } = args as { meta: { entityType: string, method: string, fnNameInWorkflow: string, authzPerms: AuthzPerms }, rest: PlainObject };
+    
     if (authzPerms) {
       const authzFailRes = modifyForAuthz(this.client, rest, authzPerms, entityType, method);
       if (authzFailRes) {
         return authzFailRes;
       }
     }
-    // Now authz checks are set in select fields and passed in where clause
+  // Now authz checks are set in select fields and passed in where clause
+   
     let prismaMethod: any;
     try {
         const client = this.client;
@@ -131,6 +134,7 @@ class DataSource extends GSDataSource {
           logger.error('Invalid CRUD method %s in %s', method, fnNameInWorkflow);
           return new GSStatus(false, 500, undefined, { error: 'Internal Server Error'});
         }
+        
         // @ts-ignore
         const prismaResponse = await prismaMethod.bind(client)(rest);
         return new GSStatus(true, responseCode(method), undefined, prismaResponse);
@@ -140,8 +144,8 @@ class DataSource extends GSDataSource {
     }
   }
 }
-function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, entityType: string, method: string): GSStatus | undefined {
 
+function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, entityType: string, method: string): GSStatus | undefined {
   // Find the model for this entityType
   const model = client?.models.find((m: any) => m.name === entityType);
   //Find the fields of this model
@@ -155,7 +159,6 @@ function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, 
 
   if (args.where) {
     //Make sure where clause in the args does not query any fields which are not allowed
-
     const isWhereFine: GSStatus = assertWhereIsFine(args.where, authzPerms, method);
     if (!isWhereFine.success) {
       isWhereFine.success = true;
@@ -168,7 +171,7 @@ function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, 
       // Intentionally doing this after checking args.where first for allowed access,
       // which limits the API caller based on authz rules.
       // But allow authzPerms.where clause to not be limited by authz.can_access/no_access limits
-      args.where = Object.assign({}, args?.where, authzPerms?.where);
+       args.where = Object.assign({}, args?.where, authzPerms?.where);
       if (Object.keys(args.where).length === 0) {
         args.where = undefined;
       }
@@ -177,8 +180,8 @@ function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, 
     // The args.where is empty. So just assign that to authzPerms.where
     args.where = authzPerms.where;
   }
-
 }
+
 /**
  * Remove any not allowed columns from the select clause 
  * @param query Prisma query args
@@ -187,13 +190,13 @@ function modifyForAuthz(client: any, args: PlainObject, authzPerms: AuthzPerms, 
 function fixSelect(query: PlainObject, authzPerms: AuthzPerms, allFields: string[]): GSStatus {
   let querySelect: string = query.select;
   let finalSelect: string[];
-  if (!querySelect) { //Inpout query does not have select clause. Prisma by default returns all fields
+  if (!querySelect) { //Input query does not have select clause. Prisma by default returns all fields
     if (authzPerms.can_access) {
       finalSelect = authzPerms.can_access;
     } else if (authzPerms.no_access) {
       finalSelect = allFields.filter((f) => !authzPerms.no_access?.includes(f))
     } else {
-      //NO need to set query.select Let it be undefined
+      //No need to set query.select Let it be undefined
       return new GSStatus(true);
     }
   } else {
@@ -220,6 +223,7 @@ function fixSelect(query: PlainObject, authzPerms: AuthzPerms, allFields: string
   }
   return new GSStatus(true);
 }
+
 function assertWhereIsFine(queryWhere: PlainObject | any[], authzPerms: AuthzPerms, method: string): GSStatus {
   //Handle for Array
   if (Array.isArray(queryWhere)) {
@@ -258,15 +262,19 @@ function isFieldAllowed(key: string, authzPerms: PlainObject) {
     return true;
   }
 }
+
 function responseCode(method: string): number {
   return response_codes[method] || 200;
 }
+
 function defaultResponse(method: string) {
   return method === 'findMany' ? [] : {};
 }
+
 const SourceType = 'DS';
 const Type = 'prisma'; // this is the loader file of the plugin, So the final loader file will be `types/${Type.js}`
 const CONFIG_FILE_NAME = 'prisma'; // in case of event source, this also works as event identifier, and in case of datasource works as datasource name
+
 const DEFAULT_CONFIG = {};
 
 export {
