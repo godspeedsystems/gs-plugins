@@ -200,15 +200,27 @@ export default class EventSource extends GSEventSource {
  
   // Setup OpenTelemetry metrics
   setupMetrics(app: express.Express) {
+    const { metrics } = this.config;
+    // Validation helper
+    const validateBuckets = (buckets: any, name: string) => {
+      if (!buckets) return null;
+      if (!Array.isArray(buckets) || !buckets.every(b => typeof b === 'number' && !isNaN(b))) {
+        throw new Error(`${name} must be an array of numbers`);
+      }
+      return buckets;
+    };
     app.use(promMid({
       metricsPath: '/metrics',
-     
       collectDefaultMetrics: true,
-      requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
-      requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
-      responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
+      requestDurationBuckets: validateBuckets(metrics?.requestDurationBuckets, 'requestDurationBuckets') 
+                            || promClient.exponentialBuckets(0.2, 3, 6),
+      requestLengthBuckets: validateBuckets(metrics?.requestLengthBuckets, 'requestLengthBuckets')
+                          || promClient.exponentialBuckets(512, 2, 10),
+      responseLengthBuckets: validateBuckets(metrics?.responseLengthBuckets, 'responseLengthBuckets')
+                            || promClient.exponentialBuckets(512, 2, 10),
     }));
   }
+  
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
       if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
