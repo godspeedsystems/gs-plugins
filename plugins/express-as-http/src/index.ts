@@ -199,16 +199,63 @@ export default class EventSource extends GSEventSource {
   }
  
   // Setup OpenTelemetry metrics
-  setupMetrics(app: express.Express) {
-    app.use(promMid({
-      metricsPath: '/metrics',
-     
-      collectDefaultMetrics: true,
-      requestDurationBuckets: promClient.exponentialBuckets(0.2, 3, 6),
-      requestLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
-      responseLengthBuckets: promClient.exponentialBuckets(512, 2, 10),
-    }));
-  }
+  // setupMetrics(app: express.Express) {
+  // const { metrics } = this.config;
+  
+  // // Validation function
+  // const validateBuckets = (buckets: any, name: string): number[] | null => {
+  //   if (!buckets) return null;
+  //   if (!Array.isArray(buckets)) {
+  //     throw new Error(`${name} must be an array of numbers`);
+  //   }
+  //   if (!buckets.every(bucket => typeof bucket === 'number' && !isNaN(bucket))) {
+  //     throw new Error(`${name} must contain only valid numbers`);
+  //   }
+  //   return buckets;
+  // };
+  // // Validate the three bucket configurations
+  // const requestDurationBuckets = validateBuckets(metrics?.requestDurationBuckets, 'requestDurationBuckets') 
+  //                               || promClient.exponentialBuckets(0.2, 3, 6);
+  
+  // const requestLengthBuckets = validateBuckets(metrics?.requestLengthBuckets, 'requestLengthBuckets')
+  //                               || promClient.exponentialBuckets(512, 2, 10);
+  
+  // const responseLengthBuckets = validateBuckets(metrics?.responseLengthBuckets, 'responseLengthBuckets')
+  //                               || promClient.exponentialBuckets(512, 2, 10);
+
+  //   app.use(promMid({
+  //     metricsPath: '/metrics',
+  //     collectDefaultMetrics: true,
+  //     requestDurationBuckets,
+  //     requestLengthBuckets,
+  //     responseLengthBuckets,
+  //   }));
+  // }
+
+  
+// Setup OpenTelemetry metrics
+setupMetrics(app: express.Express) {
+  const { metrics } = this.config;
+  // Validation helper
+  const validateBuckets = (buckets: any, name: string) => {
+    if (!buckets) return null;
+    if (!Array.isArray(buckets) || !buckets.every(b => typeof b === 'number' && !isNaN(b))) {
+      throw new Error(`${name} must be an array of numbers`);
+    }
+    return buckets;
+  };
+
+  app.use(promMid({
+    metricsPath: '/metrics',
+    collectDefaultMetrics: true,
+    requestDurationBuckets: validateBuckets(metrics?.requestDurationBuckets, 'requestDurationBuckets') 
+                           || promClient.exponentialBuckets(0.2, 3, 6),
+    requestLengthBuckets: validateBuckets(metrics?.requestLengthBuckets, 'requestLengthBuckets')
+                         || promClient.exponentialBuckets(512, 2, 10),
+    responseLengthBuckets: validateBuckets(metrics?.responseLengthBuckets, 'responseLengthBuckets')
+                          || promClient.exponentialBuckets(512, 2, 10),
+  }));
+}
   private authnHOF(authn: boolean) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
       if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
