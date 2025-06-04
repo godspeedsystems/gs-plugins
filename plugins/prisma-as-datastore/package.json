@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-prisma-as-datastore",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "publishConfig": {
     "access": "public"
   },
@@ -18,16 +18,16 @@
   "license": "Godspeed License 1.0",
   "description": "Prisma as a datasource plugin for Godspeed Framework.",
   "devDependencies": {
-    "@types/node": "^18.14.2",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
+    "@types/node": "^22.15.21",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@godspeedsystems/core": "^2.4.8",
-    "@godspeedsystems/prisma-deterministic-search-field-encryption": "^0.0.4",
-    "@prisma/client": "^5.2.0",
-    "dotenv": "^16.0.3"
+    "@godspeedsystems/core": "^2.5.4",
+    "@godspeedsystems/prisma-deterministic-search-field-encryption": "^0.0.6",
+    "@prisma/client": "^6.8.2",
+    "dotenv": "^16.5.0"
   },
   "keywords": [
     "godspeed",
@@ -36,5 +36,6 @@
     "prisma",
     "datasource",
     "godspeed plugins"
-  ]
+  ],
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
