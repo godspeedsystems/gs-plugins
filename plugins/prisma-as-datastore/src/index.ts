@@ -45,6 +45,11 @@ class DataSource extends GSDataSource {
 
   protected async initClient(): Promise<object> {
     try {
+      // TODO: until we figure out, how to share path between prisma file and our module loader
+      // we are supporting only one prisma db
+      // const module = await import(`../../../node_modules/.prisma/${this.config.name}`);
+      // const prisma = new module.PrismaClient();
+
       const client = await this.loadPrismaClient();
       return client;
     } catch (error) {
