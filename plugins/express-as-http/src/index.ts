@@ -210,7 +210,7 @@ export default class EventSource extends GSEventSource {
       return buckets;
     };
     app.use(promMid({
-      metricsPath: metrics?.useDefaultMetricsPath ? '/metrics' : '',
+      metricsPath: metrics?.metricsPath || '/metrics',
       collectDefaultMetrics: true,
       requestDurationBuckets: validateBuckets(metrics?.requestDurationBuckets, 'requestDurationBuckets') 
                             || promClient.exponentialBuckets(0.2, 3, 6),
