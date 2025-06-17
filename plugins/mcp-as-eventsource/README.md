@@ -38,38 +38,78 @@ A **Tool** is a function an AI agent can execute to perform an action. The plugi
 
 **Event Schema (`src/events/mcpevent1.yaml`):**
 ```yaml
-"mcp.get-forecast":
-  fn: handle_weather_forecast
-  type: tools
-  params:
-    - name: latitude
-      in: query
-      required: true
-      schema:
-        type: number
-        minimum: -90
-        maximum: 90
-    - name: longitude
-      in: query
-      required: true
-      schema:
-        type: number
-        minimum: -180
-        maximum: 180
+"mcp.handle_api_key":
+  fn: mcp_api_key
+  type: tool
+  summary: Save provided Google Gemini API Key in .env file
+  description: Responds true if provided Google Gemini API Key is valid or raises error if its invalid.
+  body:
+    type: object
+    required:
+      - api_key
+    properties:
+      api_key:
+        type: string
 ```
 
-**Function Handler (`src/functions/handle_weather_forcast.yaml`):**
-```yaml
-id: handle_weather_forecast
-summary: Handle weather forecast from MCP
-tasks:
-  - id: process_forecast
-    description: Process weather forecast for the specified coordinates
-    fn: com.gs.return
-    args:
-      data: "Weather forecast for coordinates: <%inputs.params.latitude%>, <%inputs.params.longitude%>"
-      code: 200
-      success: true
+**Function Handler (`src/functions/mcp_api_key.ts`):**
+```typescript
+import { GSContext, GSStatus, PlainObject } from '@godspeedsystems/core';
+import { appendFileSync } from "fs";
+import axios from "axios";
+
+
+function formatGeminiMessages(messages: { role: string; content: string }[]) {
+  return {
+    contents: [
+      {
+        parts: messages.map(m => ({
+          text: `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`
+        }))
+      }
+    ]
+  };
+}
+
+export default async function handle_api_key(ctx: GSContext, args: PlainObject): Promise<GSStatus> {
+  const google_key  = ctx.inputs?.data?.body?.body?.api_key;
+  if (!google_key) {
+    throw new Error("Missing key or value to write to .env");
+  }
+  
+  const envLine = `\nGOOGLE_API_KEY=${google_key}`;
+
+  const prompt = formatGeminiMessages([
+    {
+      role: "user",
+      content: `This is just a testing message to check if GOOGLE_API_KEY is valid or not. If you get request please response following:
+      -[GOOGLE_API_KEY is VALID]`
+    }
+    ]);
+  try{
+    const geminiResp = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${google_key}`,
+      prompt,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+  const geminireply = geminiResp.data.candidates[0].content.parts[0].text.trim();
+
+  appendFileSync(`${process.cwd()}/.env`, envLine);
+  ctx.logger.info(`Saved GOOGLE_API_KEY to .env`);
+  return new GSStatus(true,200,`Saved GOOGLE_API_KEY successfully.`);
+
+ } catch (err){
+
+    return new GSStatus(false,400,`Provided GOOGLE_API_KEY is invalid.`);
+
+ }
+}
+
 ```
 
 ### 2. Defining a Resource
