@@ -219,20 +219,20 @@ export default class EventSource extends GSEventSource {
                           || promClient.exponentialBuckets(512, 2, 10),
       responseLengthBuckets: validateBuckets(metrics?.responseLengthBuckets, 'responseLengthBuckets')
                             || promClient.exponentialBuckets(512, 2, 10),
-      customLabels: ['traceId', 'spanId', 'traceFlags'], // Add custom label
-      transformLabels: (labels: any, req: any, res: any) => {
-        const span = trace.getSpan(context.active());
-        if (span) {
-          const ctx = span.spanContext();
-          labels.traceId = ctx.traceId;
-          labels.spanId = ctx.spanId;
-          labels.traceFlags = ctx.traceFlags.toString(); // usually 1 or 0
-        } else {
-          labels.traceId = 'unknown';
-          labels.spanId = 'unknown';
-          labels.traceFlags = '0';
-        }
-      }                     
+      // customLabels: ['traceId', 'spanId', 'traceFlags'], // Add custom label
+      // transformLabels: (labels: any, req: any, res: any) => {
+      //   const span = trace.getSpan(context.active());
+      //   if (span) {
+      //     const ctx = span.spanContext();
+      //     labels.traceId = ctx.traceId;
+      //     labels.spanId = ctx.spanId;
+      //     labels.traceFlags = ctx.traceFlags.toString(); // usually 1 or 0
+      //   } else {
+      //     labels.traceId = 'unknown';
+      //     labels.spanId = 'unknown';
+      //     labels.traceFlags = '0';
+      //   }
+      // }                     
     }));
   }
   
