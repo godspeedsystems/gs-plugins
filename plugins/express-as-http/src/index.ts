@@ -265,15 +265,28 @@ export default class EventSource extends GSEventSource {
     const app: express.Express = this.client as express.Express;
     //@ts-ignore
     app[httpMethod](fullUrl, this.authnHOF(event.authn), async (req: express.Request, res: express.Response) => {
-      const gsEvent: GSCloudEvent = createGSEvent(req, endpoint)
-      const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
-      if (status.code && status.code === 302 && status.data?.redirectUrl) {
-        res.redirect(302, status.data.redirectUrl);
-      } else {
-      res
-        .status(status.code || 200)
-        // if data is a integer, it takes it as statusCode, so explicitly converting it to string
-        .send(Number.isInteger(status.data) ? String(status.data) : status.data);
+      try {
+        const gsEvent: GSCloudEvent = createGSEvent(req, endpoint);
+        const status: GSStatus = await processEvent(gsEvent, { key: eventRoute, ...eventConfig });
+
+        if (status.code && status.data?.redirectUrl && status.code === 302) {
+          res.redirect(302, status.data.redirectUrl);
+        } else {
+          res
+            .status(status.code || 200)
+            // if data is a integer, it takes it as statusCode, so explicitly converting it to string
+            .send( 
+              Number.isInteger(status.data)
+                ? String(status.data)
+                : status.data
+            );
+        }
+      } catch (err) {
+        console.error("Unhandled error in API handler:", err);
+        res.status(500).json({
+          error: "Internal server error during request handling.",
+          details: err instanceof Error ? err.message : err,
+        });
       }
     });
     return Promise.resolve();
