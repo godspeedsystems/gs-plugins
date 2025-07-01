@@ -28,7 +28,6 @@
           "ts-node": "^10.9.2"
         }
       }
-=======
     "name": "rag-node",
     "version": "1.0.5",
     "description": "Godspeed RAG agent",
