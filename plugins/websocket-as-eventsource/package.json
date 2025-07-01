@@ -1,30 +1,30 @@
 {
-    "name": "rag-node",
-    "version": "1.0.5",
-    "description": "Godspeed RAG agent",
-    "license": "ISC",
-    "author": "Godspeed systems",
-    "type": "commonjs",
-    "main": "dist/index.js",
-    "scripts": {
-      "dev": "nodemon --watch src -e ts,js -r dotenv ./src/index.ts",
-      "build": "rm -rf dist && mkdir -p dist && npx swc src -d dist --strip-leading-paths && rsync -a --exclude '*.ts' ./src/ ./dist/",
-      "preview": "node dist/index.js",
-      "clean": "rm -rf dist"
-    },
-    "dependencies": {
-      "@godspeedsystems/core": "^2.5.4",
-      "ws": "^8.18.2",
-      "zod": "^3.25.56"
-    },
-    "devDependencies": {
-      "@swc/cli": "^0.7.7",
-      "@swc/core": "^1.11.24",
-      "@types/ws": "^8.18.1",
-      "nodemon": "^3.1.10",
-      "typescript": "^5.8.3",
-      "ts-node": "^10.9.2"
-    },
-    "packageManager": "pnpm@10.12.1"
+  "name": "@godspeedsystems/plugins-websocket-as-eventsource",
+  "version": "1.0.0",
+  "description": "websocket as eventsource plugin for Godspeed Framework",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@godspeedsystems/core": "^2.5.4",
+    "ws": "^8.18.2",
+    "zod": "^3.25.56",
+    "pino-pretty": "^10.2.0"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.7.7",
+    "@swc/core": "^1.11.24",
+    "@types/ws": "^8.18.1",
+    "nodemon": "^3.1.10",
+    "typescript": "^4.9.5",
+    "ts-node": "^10.9.2"
   }
-  
+}
