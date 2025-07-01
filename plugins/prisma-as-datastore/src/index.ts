@@ -115,33 +115,43 @@ class DataSource extends GSDataSource {
       ...rest
     } = args as { meta: { entityType: string, method: string, fnNameInWorkflow: string, authzPerms: AuthzPerms }, rest: PlainObject };
     
-    if (authzPerms) {
-      const authzFailRes = modifyForAuthz(this.client, rest, authzPerms, entityType, method);
-      if (authzFailRes) {
-        return authzFailRes;
+      if (authzPerms) {
+        const authzFailRes = modifyForAuthz(this.client, rest, authzPerms, entityType, method);
+        if (authzFailRes) {
+          return authzFailRes;
+        }
       }
-    }
-  // Now authz checks are set in select fields and passed in where clause
+    // Now authz checks are set in select fields and passed in where clause
    
-    let prismaMethod: any;
-    try {
+      let prismaMethod: any;
+      try {
         const client = this.client;
         // @ts-ignore
         if (entityType && !client[entityType]) {
           logger.error('Invalid entityType %s in %s', entityType, fnNameInWorkflow);
           return new GSStatus(false, 400, undefined, { error: `Invalid entityType ${entityType} in ${fnNameInWorkflow}`});
         }
-
         // @ts-ignore
         prismaMethod = client[entityType][method];
-
         if (method && !prismaMethod) {
           logger.error('Invalid CRUD method %s in %s', method, fnNameInWorkflow);
           return new GSStatus(false, 500, undefined, { error: 'Internal Server Error'});
         }
         
         // @ts-ignore
-        const prismaResponse = await prismaMethod.bind(client)(rest);
+        let prismaResponse = await prismaMethod.bind(client)(rest);
+
+        if(Object.keys(prismaResponse).length > 0 && typeof prismaResponse === 'object' && !Array.isArray(prismaResponse)){
+        let finalResult: { [key: string]: any } = {};
+        for (const [key, value] of Object.entries(prismaResponse)) {
+          if (typeof value === 'bigint') {
+            finalResult[key] = Number(value);
+          } else {
+            finalResult[key] = value;
+          }
+          prismaResponse = {...finalResult};
+        }
+    }
         return new GSStatus(true, responseCode(method), undefined, prismaResponse);
     } catch (error: any) {
       logger.error('Error in executing Prisma query for args %o \n Error: %o', args, error);
