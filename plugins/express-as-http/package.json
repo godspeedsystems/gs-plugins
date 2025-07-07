@@ -1,6 +1,6 @@
 {
   "name": "@godspeedsystems/plugins-express-as-http",
-  "version": "1.0.28",
+  "version": "1.0.33",
   "publishConfig": {
     "access": "public"
   },
@@ -39,7 +39,7 @@
   "dependencies": {
     "@godspeedsystems/core": "^2.4.8",
     "@godspeedsystems/express-prometheus-middleware": "^0.0.1",
-    "@godspeedsystems/metrics": "^0.0.3",
+    "@godspeedsystems/metrics": "^0.0.6",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
