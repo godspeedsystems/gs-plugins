@@ -1,23 +1,34 @@
 {
-        "name": "@godspeedsystems/plugins-mcp-as-eventsource",
-        "version": "1.0.0",
-        "description": "mcp as eventsource plugin for Godspeed Framework",
-        "publishConfig": {
-          "access": "public"
-        },
-        "main" : "dist/index.js",
-        "types": "dist/index.d.js",
-        "scripts": {
-          "dev": "tsc --watch",
-          "build": "tsc",
-          "prepublishOnly": "npm run build"
-        },
-        "license": "ISC",
-        "devDependencies": {
-          "typescript": "^4.9.5"
-        },
-        "dependencies": {
-          "@godspeedsystems/core": "^2.0.0-alpha.23",
-          "pino-pretty": "^10.2.0"
-        }
-      }
+  "name": "@godspeedsystems/plugins-mcp-as-eventsource",
+  "version": "1.0.0",
+  "description": "mcp as eventsource plugin for Godspeed Framework",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "Godspeed License 1.0",
+  "author": "Godspeed Systems <admin@godspeed.systems>",
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@godspeedsystems/core": "^2.0.0-alpha.23",
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "pino-pretty": "^10.2.0",
+    "zod": "^3.25.75"
+  },
+  "keywords": [
+    "godspeed",
+    "mcp",
+    "godspeed plugin",
+    "eventsource",
+    "microservice"
+  ]
+}
