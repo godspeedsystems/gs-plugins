@@ -44,12 +44,15 @@ A **Tool** is a function an AI agent can execute to perform an action. The plugi
   summary: Save provided Google Gemini API Key in .env file
   description: Responds true if provided Google Gemini API Key is valid or raises error if its invalid.
   body:
-    type: object
-    required:
-      - api_key
-    properties:
-      api_key:
-        type: string
+    content: 
+      application/json: 
+        schema: 
+          type: object
+          required:
+            - api_key
+          properties:
+            api_key:
+              type: string
 ```
 
 **Function Handler (`src/functions/mcp_api_key.ts`):**
