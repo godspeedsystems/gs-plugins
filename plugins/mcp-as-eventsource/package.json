@@ -15,12 +15,12 @@
   "license": "Godspeed License 1.0",
   "author": "Godspeed Systems <admin@godspeed.systems>",
   "devDependencies": {
-    "@types/node": "^24.0.10",
-    "typescript": "^4.9.5"
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@godspeedsystems/core": "^2.0.0-alpha.23",
-    "@modelcontextprotocol/sdk": "^1.15.0",
+    "@modelcontextprotocol/sdk": "^1.17.2",
     "pino-pretty": "^10.2.0",
     "zod": "^3.25.75"
   },
