@@ -177,16 +177,21 @@ class DataSource extends GSDataSource {
   }
 
   private shouldEncryptField(field: any, model: string): boolean {
-    // Implement your logic to determine if a field should be encrypted
-    // This could be based on field annotations, field names, or configuration
+    // Check multiple indicators
+    if (field.documentation?.includes('@encrypted')) return true;
 
-    // Example: encrypt fields with names containing 'secret', 'password', 'sensitive'
-    const encryptablePatterns = ['secret', 'password', 'sensitive', 'encrypted'];
-    return encryptablePatterns.some(pattern =>
-      field.name.toLowerCase().includes(pattern)
-    );
+    // Check field name patterns
+    const sensitivePatterns = ['password', 'secret', 'token', 'key', 'sensitive'];
+    if (sensitivePatterns.some(pattern => field.name.toLowerCase().includes(pattern))) {
+      return true;
+    }
+
+    // Check configuration
+    const encryptionConfig = this.config.encryptFields?.[model];
+    if (encryptionConfig?.includes(field.name)) return true;
+
+    return false;
   }
-
   cipher(decrypted: any) {
     const cipher = crypto.createCipheriv('aes-256-gcm', this.password_hash, iv);
     let encrypted = cipher.update(decrypted, 'utf-8', 'hex');
@@ -204,13 +209,13 @@ class DataSource extends GSDataSource {
         const decipher = crypto.createDecipheriv('aes-256-gcm', this.password_hash, iv);
         return decipher.update(encrypted, 'hex', 'utf-8');
       }
-      
+
       const [encryptedData, authTagHex] = parts;
       const authTag = Buffer.from(authTagHex, 'hex');
-      
+
       const decipher = crypto.createDecipheriv('aes-256-gcm', this.password_hash, iv);
       decipher.setAuthTag(authTag);
-      
+
       let decrypted = decipher.update(encryptedData, 'hex', 'utf-8');
       decrypted += decipher.final('utf-8');
       return decrypted;
