@@ -1,0 +1,27 @@
+{
+        "name": "@godspeedsystems/plugins-socket-as-datasource-as-eventsource",
+        "version": "1.0.0",
+        "description": "socket as datasource-as-eventsource plugin for Godspeed Framework",
+        "publishConfig": {
+          "access": "public"
+        },
+        "main" : "dist/index.js",
+        "types": "dist/index.d.js",
+        "scripts": {
+          "dev": "tsc --watch",
+          "build": "tsc",
+          "prepublishOnly": "npm run build"
+        },
+        "license": "ISC",
+        "devDependencies": {
+      "typescript": "^4.9.5",
+      "@types/jsonwebtoken": "^8.5.9"
+        },
+        "dependencies": {
+            "@godspeedsystems/core": "^2.0.0-alpha.23",
+            "pino-pretty": "^10.2.0",
+            "socket.io": "^4.7.2",
+          "zod": "^3.22.2",
+          "jsonwebtoken": "^9.0.2"
+        }
+      }
