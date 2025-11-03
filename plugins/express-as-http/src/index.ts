@@ -95,7 +95,7 @@ export default class EventSource extends GSEventSource {
         {
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           secretOrKey: jwtConfig.secretOrKey,
-          ignoreExpiration: true,
+          ignoreExpiration: jwtConfig?.ignoreExpiration || false,
           jsonWebTokenOptions: {
             audience: jwtConfig.audience,
             issuer: jwtConfig.issuer,
