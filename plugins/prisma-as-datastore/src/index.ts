@@ -1,10 +1,8 @@
 import { GSContext, GSDataSource, GSStatus, PlainObject, logger } from "@godspeedsystems/core";
-import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic-search-field-encryption';
+// import { fieldEncryptionMiddleware } from '@godspeedsystems/prisma-deterministic-search-field-encryption';
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 import os from 'os';
-// CHANGE 0: In Prisma Client v6.8.2, PrismaClient is not directly exported from the main @prisma/client package.
-// Instead, it's generated and available after running npx prisma generate.
 
 const iv = Buffer.alloc(16);
 const platform = os.platform();
@@ -77,18 +75,16 @@ class DataSource extends GSDataSource {
     } catch (error: any) {
       throw error;
     }
+    // Commented out encryption middleware for now, as prisma has removed $use middleware support in latest versions
 
-    // CHANGE 2: Updated middleware usage for Prisma v6
-    prisma.$use(
-      fieldEncryptionMiddleware({
-        encryptFn: (decrypted: any) => this.cipher(decrypted),
-        decryptFn: (encrypted: string) => this.decipher(encrypted),
-        // CHANGE 3: Access DMMF through the new structure
-        dmmf: Prisma.dmmf || prisma._dmmf,
-      })
-    );
-    
-    // CHANGE 4: Updated models access for Prisma v6
+    // prisma.$use(
+    //   fieldEncryptionMiddleware({
+    //     encryptFn: (decrypted: any) => this.cipher(decrypted),
+    //     decryptFn: (encrypted: string) => this.decipher(encrypted),
+    //     // CHANGE 3: Access DMMF through the new structure
+    //     dmmf: Prisma.dmmf || prisma._dmmf,
+    //   })
+    // );
     prisma.models = Prisma.dmmf?.datamodel?.models || prisma._dmmf?.datamodel?.models;
     return prisma;
   }
