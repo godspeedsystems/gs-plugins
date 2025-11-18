@@ -1,25 +1,25 @@
 import {
+  GSActor,
+  GSCloudEvent,
   GSContext,
   GSDataSource,
-  PlainObject,
   GSDataSourceAsEventSource,
-  GSCloudEvent,
   GSStatus,
-  GSActor,
+  PlainObject,
   logger,
 } from "@godspeedsystems/core";
-import { Server, Socket, Namespace } from "socket.io";
+import { DisconnectReason, Namespace, Server, Socket } from "socket.io";
 import { createServer } from "http";
 import crypto from "crypto";
 import { z, ZodSchema } from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-interface ExtendedSocket extends Socket {
+type ExtendedSocket = Socket & {
   clientId?: string;
   context?: Record<string, any>;
   heartbeatInterval?: NodeJS.Timeout;
   lastHeartbeat?: number;
-}
+};
 
 const socketSchemas: Record<string, ZodSchema<any>> = {};
 const CONNECTION_CONFIG = {
@@ -28,10 +28,8 @@ const CONNECTION_CONFIG = {
   reconnectGracePeriod: 5000,
 };
 
-// Minimal JWT payload type for this datasource
 type JWTPayload = JwtPayload & { username?: string };
 
-// Inline JWT verification function (moved from helper/auth)
 export function verifyToken(token: string, config: any): JWTPayload | null {
   try {
     const decoded = jwt.verify(token, config?.jwt?.secret, {
@@ -64,7 +62,6 @@ class DataSource extends GSDataSource {
 
     logger.info(`Socket.IO server listening on port ${port}`);
 
-    // 🔒 Authentication middleware
     this.io.use((socket: ExtendedSocket, next) => {
       const token = socket.handshake.auth.token || socket.handshake.query.token;
       if (token) {
@@ -84,14 +81,12 @@ class DataSource extends GSDataSource {
         return next(new Error("Invalid token"));
       }
 
-      // guest connection
       socket.context = { connectedAt: Date.now(), authenticated: false };
       socket.clientId = `guest-${crypto.randomUUID()}`;
       logger.info(`Guest client connected: ${socket.clientId}`);
       next();
     });
 
-    // ✅ Handle new connections
     this.io.on("connection", (socket: ExtendedSocket) => {
       this.handleConnection(socket);
     });
@@ -103,10 +98,13 @@ class DataSource extends GSDataSource {
   private handleConnection(socket: ExtendedSocket) {
     logger.info(`Socket connected: ${socket.clientId}`);
     if (socket.clientId) this.activeConnections.set(socket.clientId, socket);
+    if (socket.clientId) socket.join(socket.clientId);
+    if (socket.clientId) {
+      socket.emit("client.assigned", { clientId: socket.clientId });
+    }
 
     this.setupHeartbeat(socket);
 
-    // Generic event handler
     socket.onAny((event: string, message: any) => {
       if (event.startsWith("socket.io")) return;
 
@@ -126,14 +124,19 @@ class DataSource extends GSDataSource {
       socket.emit("heartbeat.ack", { timestamp: Date.now() });
     });
 
-    socket.on("disconnect", (reason) => this.handleDisconnect(socket, reason));
+    socket.on("disconnect", (reason: DisconnectReason) =>
+      this.handleDisconnect(socket, reason)
+    );
   }
 
   private setupHeartbeat(socket: ExtendedSocket) {
     socket.lastHeartbeat = Date.now();
     socket.heartbeatInterval = setInterval(() => {
       const now = Date.now();
-      if (now - (socket.lastHeartbeat || now) > CONNECTION_CONFIG.heartbeatTimeout) {
+      if (
+        now - (socket.lastHeartbeat || now) >
+        CONNECTION_CONFIG.heartbeatTimeout
+      ) {
         logger.warn(`Heartbeat timeout for ${socket.clientId}`);
         socket.disconnect(true);
       } else {
@@ -147,7 +150,10 @@ class DataSource extends GSDataSource {
     logger.info(`Client disconnected: ${socket.clientId} - ${reason}`);
 
     setTimeout(() => {
-      if (socket.clientId && this.activeConnections.get(socket.clientId) === socket) {
+      if (
+        socket.clientId &&
+        this.activeConnections.get(socket.clientId) === socket
+      ) {
         this.activeConnections.delete(socket.clientId);
         logger.info(`Cleaned up ${socket.clientId}`);
       }
@@ -156,34 +162,34 @@ class DataSource extends GSDataSource {
 
   async execute(ctx: GSContext, args: PlainObject): Promise<any> {
     try {
-      const { event, data } = args;
-      // Emit on the root namespace first
-      this.io.emit(event, data);
-
-      // Also attempt to emit on any other initialized namespaces so clients
-      // connected to non-root namespaces (e.g. '/internal') receive the event.
-      // Access internal namespace map defensively because it's not part of the
-      // public API across versions.
-      try {
-        const anyIo: any = this.io as any;
-        const nsps = anyIo._nsps || anyIo.nsps || anyIo.of && new Map([["/", anyIo.of("/")]]);
-        if (nsps instanceof Map) {
-          for (const [name, nsp] of nsps) {
-            try {
-              // avoid double-emitting to root namespace if we've already emitted
-              if (name === "/") continue;
-              nsp.emit(event, data);
-            } catch (e) {
-              logger.debug(`Failed to emit on namespace ${name}: ${String(e)}`);
-            }
-          }
-        }
-      } catch (e) {
-        logger.debug('Could not iterate namespaces to emit event:', String(e));
+      const { event, data, targetClientId, namespace } = args;
+      const ns = namespace;
+      if (typeof event !== "string") {
+        logger.warn(`Expected event key to be string, got ${typeof event}`);
+        this.io.of(ns).emit(event as any, data);
+        return { success: true, message: "Event broadcasted" };
       }
 
-      return { success: true, message: "Event broadcasted" };
+      // Direct client in specified namespace
+      if (targetClientId && typeof targetClientId === "string") {
+        if (this.isClientInNamespace(ns, targetClientId)) {
+          this.io.of(ns).to(targetClientId).emit(event, data);
+          return {
+            success: true,
+            message: `Event sent to ${targetClientId} in namespace ${ns}`,
+          };
+        } else {
+          logger.warn(
+            `ClientId ${targetClientId} not found in namespace ${ns}`
+          );
+          return {
+            success: false,
+            message: `ClientId ${targetClientId} not found in namespace ${ns}`,
+          };
+        }
+      }
     } catch (error) {
+      logger.error(`Failed to emit socket event: ${String(error)}`);
       throw error;
     }
   }
@@ -197,6 +203,13 @@ class DataSource extends GSDataSource {
     this.httpServer.close();
     this.activeConnections.clear();
   }
+
+  public isClientInNamespace(namespace: string, clientId: string): boolean {
+    if (!namespace || !clientId) return false;
+    const nsp = this.io.of(namespace);
+    if (!nsp) return false;
+    return nsp.sockets.has(clientId);
+  }
 }
 
 class EventSource extends GSDataSourceAsEventSource {
@@ -204,10 +217,7 @@ class EventSource extends GSDataSourceAsEventSource {
   private io!: Server;
 
   constructor(config: PlainObject, datasourceClient: PlainObject) {
-    // ✅ Pass both arguments to parent constructor
     super(config, datasourceClient);
-
-    // ✅ Access the Socket.IO server instance from datasource client
     this.io = datasourceClient.io;
   }
 
@@ -226,23 +236,22 @@ class EventSource extends GSDataSourceAsEventSource {
 
       const nsp = this.io.of(namespaceName);
 
-      // Register schema if provided
       if (eventConfig.schema) {
         const schema = this.convertJsonSchemaToZod(eventConfig.schema);
         socketSchemas[`${namespaceName}:${eventName}`] = schema;
       }
 
-      // Initialize namespace only once
       if (!this.initializedNamespaces.has(nsp)) {
         this.initializedNamespaces.add(nsp);
         nsp.on("connection", (socket: ExtendedSocket) => {
           logger.info(`Client connected to namespace ${namespaceName}`);
           this.setupHeartbeat(socket);
-          socket.on("disconnect", (r) => this.handleDisconnect(socket, r));
+          socket.on("disconnect", (r: DisconnectReason) =>
+            this.handleDisconnect(socket, r)
+          );
         });
       }
 
-      // Bind event
       nsp.on("connection", (socket: ExtendedSocket) => {
         socket.on(eventName, async (payload: any) => {
           try {
@@ -262,7 +271,8 @@ class EventSource extends GSDataSourceAsEventSource {
             );
 
             const status = await processEvent(cloudEvent, eventConfig);
-            if (!status.success) socket.emit("stream.error", { message: status.message });
+            if (!status.success)
+              socket.emit("stream.error", { message: status.message });
           } catch (err: any) {
             socket.emit("stream.error", { message: err.message });
           }
@@ -279,7 +289,10 @@ class EventSource extends GSDataSourceAsEventSource {
     socket.lastHeartbeat = Date.now();
     socket.heartbeatInterval = setInterval(() => {
       const now = Date.now();
-      if (now - (socket.lastHeartbeat || now) > CONNECTION_CONFIG.heartbeatTimeout) {
+      if (
+        now - (socket.lastHeartbeat || now) >
+        CONNECTION_CONFIG.heartbeatTimeout
+      ) {
         socket.disconnect(true);
       }
     }, CONNECTION_CONFIG.heartbeatInterval);
@@ -287,7 +300,9 @@ class EventSource extends GSDataSourceAsEventSource {
 
   private handleDisconnect(socket: ExtendedSocket, reason: string) {
     if (socket.heartbeatInterval) clearInterval(socket.heartbeatInterval);
-    logger.info(`Namespace socket disconnected: ${socket.clientId} - ${reason}`);
+    logger.info(
+      `Namespace socket disconnected: ${socket.clientId} - ${reason}`
+    );
   }
 
   private convertJsonSchemaToZod(schema: PlainObject): ZodSchema {
@@ -324,8 +339,6 @@ class EventSource extends GSDataSourceAsEventSource {
     return z.any();
   }
 }
-
-// ------------------ Exports ------------------
 
 const SourceType = "BOTH";
 const Type = "socket";
