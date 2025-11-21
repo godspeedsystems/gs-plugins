@@ -7,6 +7,7 @@ import {
   logger,
 } from "@godspeedsystems/core";
 import express from "express";
+import { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import promClient from "@godspeedsystems/metrics";
 import cors from "cors";
@@ -333,11 +334,12 @@ export default class EventSource extends GSEventSource {
 
   private authnHOF(authn: boolean) {
     return (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
+      req: Request,
+      res: Response,
+      next: NextFunction,
     ) => {
-      if (authn !== false && (this.config.authn?.jwt || this.config.authn)) {
+    
+      if ((authn !== false || (authn === false && req.headers.authorization)) && (this.config.authn?.jwt || this.config.authn)) {
         return passport.authenticate("jwt", { session: false })(req, res, next);
       }
       if (
