@@ -1,7 +1,7 @@
 {
-        "name": "@godspeedsystems/plugins-sendgrip-as-datasource",
-        "version": "1.0.0",
-        "description": "sendgrip as datasource plugin for Godspeed Framework",
+        "name": "@godspeedsystems/plugins-sendgrid-as-datasource",
+        "version": "1.0.1",
+        "description": "sendgrid as datasource plugin for Godspeed Framework",
         "publishConfig": {
                 "access": "public"
         },

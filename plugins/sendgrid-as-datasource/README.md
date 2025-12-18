@@ -1,6 +1,6 @@
-# godspeed-plugin-sendgrip-as-datasource
+# godspeed-plugin-sendgrid-as-datasource
 
-Welcome to the [Godspeed](https://www.godspeed.systems/) Sendgrip Plugin! 🚀This project helps you automate email sending and track email metrics using SendGrid, with status logging to Google Sheets.
+Welcome to the [Godspeed](https://www.godspeed.systems/) sendgrid Plugin! 🚀This project helps you automate email sending and track email metrics using SendGrid, with status logging to Google Sheets.
 
 ## Features
 
@@ -16,11 +16,11 @@ Welcome to the [Godspeed](https://www.godspeed.systems/) Sendgrip Plugin! 🚀Th
 - A Google Cloud account
 - Basic familiarity with API concepts
 
-## Steps to use sendgrip plug-in in godspeed framework:
+## Steps to use sendgrid plug-in in godspeed framework:
 
 ### How to install:
 
-- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode using `godspeed plugin add`, select the `@godspeedsystems/plugins-sendgrip-as-datasource` to integrate the plugin.
+- Create a godspeed project from the CLI , open the created project in vscode and then add the plugin from the CLI of vscode using `godspeed plugin add`, select the `@godspeedsystems/plugins-sendgrid-as-datasource` to integrate the plugin.
 
 ### SendGrid Configuration:
 
@@ -44,7 +44,7 @@ Welcome to the [Godspeed](https://www.godspeed.systems/) Sendgrip Plugin! 🚀Th
      - Follow the DNS configuration steps
      - Add provided DNS records to your domain provider
    - **Alternative**: Single Sender Verification
-     - If you don't have a domain, then you opt for Single Sender Verification but this is not encouraged by sendgrip.
+     - If you don't have a domain, then you opt for Single Sender Verification but this is not encouraged by sendgrid.
      - Use for testing only
      - Verify your sender email address, even the default sender that you set in env
 
@@ -52,7 +52,7 @@ Welcome to the [Godspeed](https://www.godspeed.systems/) Sendgrip Plugin! 🚀Th
 
 #### A. Configuration file
 
-1. Create a file `sendgrip.yaml` inside datasources folder.
+1. Create a file `sendgrid.yaml` inside datasources folder.
 2. Copy this inside that file:
 
 ```
@@ -63,7 +63,7 @@ defaultSender: <%process.env.SENDGRID_DEFAULT_SENDER%>
 
 #### B. Event trigger
 
-1. Create a file `sendgrip.yaml` inside events folder.
+1. Create a file `sendgrid.yaml` inside events folder.
 2. Copy this inside that file:
 
 ```
@@ -194,7 +194,7 @@ export default async function (ctx: GSContext, args: any) {
 }
 ```
 
-#### That's it, now you can start the project using `godspeed serve`. To test it out, go to `/api-docs` endpoint to access the swagger UI. Then try to send a mail using `/send-mail` endpoint. Remember, only verified email addresses with sendgrip can be used in the `from` field.
+#### That's it, now you can start the project using `godspeed serve`. To test it out, go to `/api-docs` endpoint to access the swagger UI. Then try to send a mail using `/send-mail` endpoint. Remember, only verified email addresses with sendgrid can be used in the `from` field.
 
 ---
 
@@ -202,7 +202,7 @@ export default async function (ctx: GSContext, args: any) {
 
 #### For this, we will manually create another datasource to track the events and log them on the spreadsheet.
 
-### Sendgrip Event Webhook Setup:
+### sendgrid Event Webhook Setup:
 
 1. Go to Settings → Mail Settings → Event Webhook
 2. Click on **Create Webhook URL** and configure webhook:
