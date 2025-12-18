@@ -24,7 +24,7 @@ type ExtendedSocket = Socket & {
 const socketSchemas: Record<string, ZodSchema<any>> = {};
 const CONNECTION_CONFIG = {
   heartbeatInterval: 30000,
-  heartbeatTimeout: 300000,
+  heartbeatTimeout: 600000,
   reconnectGracePeriod: 5000,
 };
 
@@ -124,19 +124,14 @@ class DataSource extends GSDataSource {
       socket.emit("heartbeat.ack", { timestamp: Date.now() });
     });
 
-    socket.on("disconnect", (reason: DisconnectReason) =>
-      this.handleDisconnect(socket, reason)
-    );
+    socket.on("disconnect", (reason: DisconnectReason) => this.handleDisconnect(socket, reason));
   }
 
   private setupHeartbeat(socket: ExtendedSocket) {
     socket.lastHeartbeat = Date.now();
     socket.heartbeatInterval = setInterval(() => {
       const now = Date.now();
-      if (
-        now - (socket.lastHeartbeat || now) >
-        CONNECTION_CONFIG.heartbeatTimeout
-      ) {
+      if (now - (socket.lastHeartbeat || now) > CONNECTION_CONFIG.heartbeatTimeout) {
         logger.warn(`Heartbeat timeout for ${socket.clientId}`);
         socket.disconnect(true);
       } else {
@@ -150,10 +145,7 @@ class DataSource extends GSDataSource {
     logger.info(`Client disconnected: ${socket.clientId} - ${reason}`);
 
     setTimeout(() => {
-      if (
-        socket.clientId &&
-        this.activeConnections.get(socket.clientId) === socket
-      ) {
+      if (socket.clientId && this.activeConnections.get(socket.clientId) === socket) {
         this.activeConnections.delete(socket.clientId);
         logger.info(`Cleaned up ${socket.clientId}`);
       }
@@ -164,30 +156,23 @@ class DataSource extends GSDataSource {
     try {
       const { event, data, targetClientId, namespace } = args;
       const ns = namespace;
-      if (typeof event !== "string") {
+      if (typeof event !== 'string') {
         logger.warn(`Expected event key to be string, got ${typeof event}`);
         this.io.of(ns).emit(event as any, data);
-        return { success: true, message: "Event broadcasted" };
+        return { success: true, message: 'Event broadcasted' };
       }
 
       // Direct client in specified namespace
-      if (targetClientId && typeof targetClientId === "string") {
+      if (targetClientId && typeof targetClientId === 'string') {
         if (this.isClientInNamespace(ns, targetClientId)) {
           this.io.of(ns).to(targetClientId).emit(event, data);
-          return {
-            success: true,
-            message: `Event sent to ${targetClientId} in namespace ${ns}`,
-          };
+          return { success: true, message: `Event sent to ${targetClientId} in namespace ${ns}` };
         } else {
-          logger.warn(
-            `ClientId ${targetClientId} not found in namespace ${ns}`
-          );
-          return {
-            success: false,
-            message: `ClientId ${targetClientId} not found in namespace ${ns}`,
-          };
+          logger.warn(`ClientId ${targetClientId} not found in namespace ${ns}`);
+          return { success: false, message: `ClientId ${targetClientId} not found in namespace ${ns}` };
         }
       }
+
     } catch (error) {
       logger.error(`Failed to emit socket event: ${String(error)}`);
       throw error;
@@ -224,10 +209,7 @@ class EventSource extends GSDataSourceAsEventSource {
   async subscribeToEvent(
     eventKey: string,
     eventConfig: PlainObject,
-    processEvent: (
-      event: GSCloudEvent,
-      eventConfig: PlainObject
-    ) => Promise<GSStatus>
+    processEvent: (event: GSCloudEvent, eventConfig: PlainObject) => Promise<GSStatus>
   ): Promise<void> {
     try {
       const match = eventKey.match(/^socket\.((\/[a-zA-Z0-9_-]+)?)\.?(.+)?$/);
@@ -246,9 +228,7 @@ class EventSource extends GSDataSourceAsEventSource {
         nsp.on("connection", (socket: ExtendedSocket) => {
           logger.info(`Client connected to namespace ${namespaceName}`);
           this.setupHeartbeat(socket);
-          socket.on("disconnect", (r: DisconnectReason) =>
-            this.handleDisconnect(socket, r)
-          );
+          socket.on("disconnect", (r: DisconnectReason) => this.handleDisconnect(socket, r));
         });
       }
 
@@ -271,8 +251,7 @@ class EventSource extends GSDataSourceAsEventSource {
             );
 
             const status = await processEvent(cloudEvent, eventConfig);
-            if (!status.success)
-              socket.emit("stream.error", { message: status.message });
+            if (!status.success) socket.emit("stream.error", { message: status.message });
           } catch (err: any) {
             socket.emit("stream.error", { message: err.message });
           }
@@ -289,10 +268,7 @@ class EventSource extends GSDataSourceAsEventSource {
     socket.lastHeartbeat = Date.now();
     socket.heartbeatInterval = setInterval(() => {
       const now = Date.now();
-      if (
-        now - (socket.lastHeartbeat || now) >
-        CONNECTION_CONFIG.heartbeatTimeout
-      ) {
+      if (now - (socket.lastHeartbeat || now) > CONNECTION_CONFIG.heartbeatTimeout) {
         socket.disconnect(true);
       }
     }, CONNECTION_CONFIG.heartbeatInterval);
@@ -300,9 +276,7 @@ class EventSource extends GSDataSourceAsEventSource {
 
   private handleDisconnect(socket: ExtendedSocket, reason: string) {
     if (socket.heartbeatInterval) clearInterval(socket.heartbeatInterval);
-    logger.info(
-      `Namespace socket disconnected: ${socket.clientId} - ${reason}`
-    );
+    logger.info(`Namespace socket disconnected: ${socket.clientId} - ${reason}`);
   }
 
   private convertJsonSchemaToZod(schema: PlainObject): ZodSchema {
@@ -330,9 +304,7 @@ class EventSource extends GSDataSourceAsEventSource {
           default:
             zodType = z.any();
         }
-        zodShape[key] = schema.required?.includes(key)
-          ? zodType
-          : zodType.optional();
+        zodShape[key] = schema.required?.includes(key) ? zodType : zodType.optional();
       }
       return z.object(zodShape);
     }
@@ -348,11 +320,5 @@ const DEFAULT_CONFIG = {
   cors: { origin: "*", methods: ["GET", "POST"] },
 };
 
-export {
-  DataSource,
-  EventSource,
-  SourceType,
-  Type,
-  CONFIG_FILE_NAME,
-  DEFAULT_CONFIG,
-};
+export { DataSource, EventSource, SourceType, Type, CONFIG_FILE_NAME, DEFAULT_CONFIG };
+
