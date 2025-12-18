@@ -1,0 +1,34 @@
+{
+  "name": "gs-plugins",
+  "version": "1.0.0",
+  "description": "Godspeed plugins monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.13.0",
+    "@eslint/json": "^0.13.2",
+    "@eslint/markdown": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.46.1"
+  },
+  "lint-staged": {
+    "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  }
+}
