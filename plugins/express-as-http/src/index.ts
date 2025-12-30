@@ -332,7 +332,7 @@ export default class EventSource extends GSEventSource {
     );
   }
 
-  private authnHOF(authn: boolean) {
+  protected authnHOF(authn: boolean) {
     return (
       req: Request,
       res: Response,
@@ -409,7 +409,7 @@ export default class EventSource extends GSEventSource {
     );
     return Promise.resolve();
   }
-  private parseJsonIfPossible(value: any) {
+  protected parseJsonIfPossible(value: any) {
     if (!value) return null;
 
     const decoded = value;
