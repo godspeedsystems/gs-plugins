@@ -5,21 +5,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "ts-mocha \"src/**/__tests__/**/*.test.ts\"",
+    "build:src": "tsc --project tsconfig.src.json"
   },
   "devDependencies": {
     "@eslint/css": "^0.13.0",
     "@eslint/json": "^0.13.2",
     "@eslint/markdown": "^7.4.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
+    "chai": "^4.3.10",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.4",
+    "mocha": "^10.2.0",
     "prettier": "^3.3.3",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.3.3",
     "typescript-eslint": "^8.46.1"
   },
   "lint-staged": {
