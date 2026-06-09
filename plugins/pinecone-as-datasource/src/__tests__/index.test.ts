@@ -12,6 +12,22 @@ jest.mock("@pinecone-database/pinecone", () => ({
   Pinecone: jest.fn(),
 }));
 
+// Helper function to create a properly mocked GSContext
+function createMockContext() {
+  return {
+    childLogger: {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      fatal: jest.fn(),
+      trace: jest.fn(),
+      child: jest.fn(),
+      level: "info",
+    },
+  } as any;
+}
+
 describe("Pinecone DataSource Plugin", () => {
   let dataSource: DataSource;
   let mockClient: any;
@@ -83,6 +99,15 @@ describe("Pinecone DataSource Plugin", () => {
       const client = await ds["initClient"]();
       expect(client).toBeDefined();
     });
+
+    test("Should call Pinecone constructor with correct api_key", async () => {
+      const { Pinecone } = require("@pinecone-database/pinecone");
+      const ds = new DataSource(mockConfig);
+      await ds["initClient"]();
+      expect(Pinecone).toHaveBeenCalledWith({
+        apiKey: "test-api-key",
+      });
+    });
   });
 
   describe("execute - insert operation", () => {
@@ -94,7 +119,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.upsert.mockResolvedValue({ upsertedCount: 2 });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
           vectors,
@@ -108,7 +133,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if vectors is missing", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
         }
@@ -120,7 +145,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if vectors is not an array", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
           vectors: "not-an-array",
@@ -135,7 +160,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.upsert.mockRejectedValue(new Error("Pinecone error"));
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
           vectors: [{ id: "1", values: [0.1, 0.2] }],
@@ -154,7 +179,7 @@ describe("Pinecone DataSource Plugin", () => {
       });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: [0.1, 0.2, 0.3],
@@ -172,7 +197,7 @@ describe("Pinecone DataSource Plugin", () => {
       });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: [0.1, 0.2, 0.3],
@@ -186,7 +211,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if vector is missing", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
         }
@@ -198,7 +223,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if vector is not an array", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: "not-an-array",
@@ -213,7 +238,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.query.mockResolvedValue({ matches: [] });
 
       await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: [0.1, 0.2, 0.3],
@@ -231,7 +256,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.query.mockRejectedValue(new Error("Query error"));
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: [0.1, 0.2, 0.3],
@@ -248,7 +273,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.update.mockResolvedValue({ id: "1" });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.update" },
           id: "1",
@@ -264,7 +289,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.update.mockResolvedValue({ id: "1" });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.update" },
           id: "1",
@@ -279,7 +304,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if id is missing", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.update" },
           values: [0.1, 0.2, 0.3],
@@ -294,7 +319,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.update.mockRejectedValue(new Error("Update error"));
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.update" },
           id: "1",
@@ -312,7 +337,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.deleteMany.mockResolvedValue({ deletedCount: 2 });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.delete" },
           ids: ["1", "2"],
@@ -327,7 +352,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.deleteAll.mockResolvedValue({ deletedCount: 100 });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.delete" },
           deleteAll: true,
@@ -342,7 +367,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.deleteMany.mockResolvedValue({ deletedCount: 5 });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.delete" },
           filter: { status: "inactive" },
@@ -355,7 +380,7 @@ describe("Pinecone DataSource Plugin", () => {
 
     test("Should return error if no delete parameters provided", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.delete" },
         }
@@ -369,7 +394,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.deleteMany.mockRejectedValue(new Error("Delete error"));
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.delete" },
           ids: ["1"],
@@ -386,7 +411,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockClient.deleteIndex.mockResolvedValue({ status: "ok" });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.deleteIndex" },
         }
@@ -402,7 +427,7 @@ describe("Pinecone DataSource Plugin", () => {
       );
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.deleteIndex" },
         }
@@ -416,7 +441,7 @@ describe("Pinecone DataSource Plugin", () => {
   describe("execute - unknown operation", () => {
     test("Should return error for unknown operation", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.unknown" },
         }
@@ -430,7 +455,7 @@ describe("Pinecone DataSource Plugin", () => {
   describe("execute - general error handling", () => {
     test("Should return error if fnNameInWorkflow is missing", async () => {
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: {},
         }
@@ -444,7 +469,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.query.mockResolvedValue({ matches: [] });
 
       await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.query" },
           vector: [0.1, 0.2, 0.3],
@@ -464,7 +489,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.update.mockResolvedValue({ id: "1" });
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.update" },
           id: "1",
@@ -484,7 +509,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.upsert.mockResolvedValue({ upsertedCount: 1 });
 
       await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
           vectors: [{ id: "1", values: [0.1] }],
@@ -499,7 +524,7 @@ describe("Pinecone DataSource Plugin", () => {
       mockIndex.upsert.mockResolvedValue(mockData);
 
       const result = await dataSource.execute(
-        { childLogger: { info: jest.fn() } },
+        createMockContext(),
         {
           meta: { fnNameInWorkflow: "datasource.pinecone.insert" },
           vectors: [{ id: "1", values: [0.1] }],
