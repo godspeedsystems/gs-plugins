@@ -247,3 +247,4 @@ b.Create and use plugins using Godspeed framework Part 2| Godspeed
 | 9  | Axios      |Datasource|[npm](https://www.npmjs.com/package/@godspeedsystems/plugins-axios-as-datasource)|[readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/axios-as-datasource/README.md)|Godspeed                                 |      |                  |               |               |
 | 10   | Fastify  | Eventsource | npm |[readme](./plugins/fastify-as-http/README.md)|Godspeed|
 | 11   | Apollo GraphQL                                |Eventsource      |  [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-graphql-as-eventsource) | [readme](https://github.com/godspeedsystems/gs-plugins/blob/main/plugins/graphql-as-eventsource/README.md)              |Godspeed               |
+| 12  | Pinecone | Datasource | [npm](https://www.npmjs.com/package/@godspeedsystems/plugins-pinecone-as-datasource) | [readme](./plugins/pinecone-as-datasource/README.md) | Godspeed |
