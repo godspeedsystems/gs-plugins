@@ -698,6 +698,8 @@ describeIntegration('DataSource integration tests', () => {
 
     // Should not find the vector inserted in namespace A
     expect(result.success).toBe(true);
+    // Namespace B should not contain vectors inserted in namespace A
+    expect(result.data.matches.length).toBe(0);
   });
 
   // T07: Query with metadata filter
@@ -730,6 +732,10 @@ describeIntegration('DataSource integration tests', () => {
     });
 
     expect(result.success).toBe(true);
+    // Verify all matches have the expected metadata
+    for (const match of result.data.matches) {
+      expect(match.metadata?.category).toBe('news');
+    }
   });
 
   // T08: Update metadata

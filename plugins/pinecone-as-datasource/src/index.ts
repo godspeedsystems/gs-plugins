@@ -56,6 +56,9 @@ export default class DataSource extends GSDataSource {
         case 'insert': {
           // Accepts a single document object or an array of documents.
           // Each document: { id: string, values: number[], metadata?: object }
+          if (!rest.documents) {
+            return new GSStatus(false, 400, 'documents is required for insert');
+          }
           const docs: Array<{ id: string; values: number[]; metadata?: PlainObject }> =
             Array.isArray(rest.documents) ? rest.documents : [rest.documents];
 
@@ -153,7 +156,7 @@ export default class DataSource extends GSDataSource {
           return new GSStatus(false, 400, `Unknown method '${method}'. Valid: insert|update|delete|query|deleteIndex`);
       }
     } catch (error: any) {
-      ctx.childLogger.error(`[pinecone] ${method} failed: ${error?.message ?? error}`);
+      ctx.childLogger?.error(`[pinecone] ${method} failed: ${error?.message ?? error}`);
       return new GSStatus(false, error?.statusCode ?? 500, `Pinecone ${method} error`, { error: error?.message });
     }
   }
