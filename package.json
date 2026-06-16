@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "prepare": "husky install",
-    "test": "ts-mocha \"src/**/__tests__/**/*.test.ts\"",
+    "test": "ts-mocha --project tsconfig.src.json \"src/**/__tests__/**/*.test.ts\"",
     "build:src": "tsc --project tsconfig.src.json"
   },
   "devDependencies": {
